@@ -69,12 +69,30 @@ export class Clients implements OnInit {
   }
 
   saveClient(): void {
-    if (!this.formData.name || !this.formData.dni || !this.formData.password_hash) {
-      this.errorMessage = 'Completa todos los campos.';
+    // ✅ Validar solo nombre y dni (la contraseña no es obligatoria en edición)
+    if (!this.formData.name || !this.formData.dni) {
+      this.errorMessage = 'Nombre y DNI son obligatorios.';
       return;
     }
 
-    const clientToSave = this.formData as Client;
+    // ✅ Solo validar contraseña si es NUEVO cliente
+    if (
+      !this.editingId &&
+      (!this.formData.password_hash || this.formData.password_hash.trim() === '')
+    ) {
+      this.errorMessage = 'La contraseña es obligatoria para nuevos clientes';
+      return;
+    }
+
+    const clientToSave = { ...this.formData } as Client;
+
+    // ✅ Si es edición y no hay contraseña, la eliminamos
+    if (
+      this.editingId &&
+      (!clientToSave.password_hash || clientToSave.password_hash.trim() === '')
+    ) {
+      delete clientToSave.password_hash;
+    }
 
     (this.editingId
       ? this.clientService.updateClient(this.editingId, clientToSave)
@@ -113,8 +131,13 @@ export class Clients implements OnInit {
   // Asegúrate de que esto esté dentro de la clase Clients
   editClient(client: Client): void {
     this.editingId = client.id || null;
-    this.formData = { ...client };
+    this.formData = {
+      ...client,
+      password_hash: '',
+    };
+
     this.showForm = true;
+    this.cdr.detectChanges();
   }
 
   cancelDelete(): void {

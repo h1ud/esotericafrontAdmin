@@ -1,1 +1,145 @@
-<p>employees works!</p>
+<div class="employees-container">
+  <h1>Gestión de Empleados</h1>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Botón para agregar nuevo empleado -->
+  <div class="top-controls" *ngIf="!loading">
+    <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Empleado</button>
+  </div>
+
+  <!-- Tabla de empleados -->
+  <div class="table-section" *ngIf="!loading">
+    <h2>Lista de Empleados</h2>
+    <table class="employees-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Rol</th>
+        <th>Fecha de Creación</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let employee of employees">
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.username }}</td>
+        <td>{{ employee.name }}</td>
+        <td>{{ employee.lastName }}</td>
+        <td>{{ employee.roleName }}</td>
+        <td>{{ employee.createDate | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td class="actions">
+          <button class="btn btn-edit" (click)="editEmployee(employee)">Editar</button>
+          <button class="btn btn-delete" (click)="deleteEmployee(employee.id!)">Eliminar</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="employees.length === 0" class="no-data">
+      No hay empleados registrados
+    </div>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="showForm" class="form-section">
+    <div class="form-overlay"></div>
+    <div class="form-container">
+      <h2>{{ editingId ? 'Editar Empleado' : 'Agregar Nuevo Empleado' }}</h2>
+
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              [(ngModel)]="formData.username"
+              name="username"
+              placeholder="Nombre de usuario"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="name">Nombre:</label>
+            <input
+              type="text"
+              id="name"
+              [(ngModel)]="formData.name"
+              name="name"
+              placeholder="Nombre del empleado"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="lastName">Apellido:</label>
+            <input
+              type="text"
+              id="lastName"
+              [(ngModel)]="formData.lastName"
+              name="lastName"
+              placeholder="Apellido del empleado"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input
+              type="password"
+              id="password"
+              [(ngModel)]="formData.password"
+              name="password"
+              placeholder="Contraseña"
+              [required]="!editingId"
+            />
+            <small *ngIf="editingId" class="hint-text">
+              Dejar en blanco para mantener la contraseña actual
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="idRole">Rol:</label>
+            <select id="idRole" [(ngModel)]="formData.idRole" name="idRole" required>
+              <option value="" disabled selected>Seleccionar rol</option> <option *ngFor="let role of roles" [value]="role.id">
+              {{ role.roleName }}
+            </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ✅ CAMBIADO: roleId → idRole -->
+
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-save" (click)="saveEmployee()">
+            {{ editingId ? 'Actualizar' : 'Guardar' }}
+          </button>
+          <button type="button" class="btn btn-cancel" (click)="closeForm()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmación de eliminación -->
+  <div *ngIf="showDeleteConfirm" class="form-section">
+    <div class="form-overlay"></div>
+    <div class="confirm-container">
+      <h2>Confirmar eliminación</h2>
+      <p>¿Está seguro que desea eliminar este empleado?</p>
+      <div class="confirm-actions">
+        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
+        <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

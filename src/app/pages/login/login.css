@@ -1,10 +1,103 @@
-.body{
-  height: 100vh;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
+/* Estilos específicos para el menú */
+.menu-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+.categories-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.category-card {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.category-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.menu-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.menu-table thead {
+  background-color: #f9f9f9;
+  border-bottom: 2px solid #ddd;
+}
+
+.menu-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-right: 1px solid #eee;
+}
+
+.menu-table th:last-child {
+  border-right: none;
+}
+
+.menu-table tbody tr {
+  border-bottom: 1px solid #eee;
+}
+
+.menu-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-table td {
+  padding: 10px 12px;
+  border-right: 1px solid #eee;
+}
+
+.menu-table td:last-child {
+  border-right: none;
+}
+
+.menu-table .no-data {
+  padding: 15px;
+  text-align: center;
+  color: #777;
+}
+
+/* Estilos para textarea y select en formularios */
+.form-group textarea,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}

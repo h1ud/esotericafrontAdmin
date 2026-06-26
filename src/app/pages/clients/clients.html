@@ -14,7 +14,17 @@
   <!-- Botón para agregar nuevo cliente -->
   <div class="top-controls" *ngIf="!loading">
     <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Cliente</button>
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="filteredClients()"
+        placeholder="buscar por DNI..."
+      />
+    </div>
   </div>
+
 
 
   <!-- Tabla de clientes -->
@@ -32,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let client of clients">
+        <tr *ngFor="let client of filteredClients()">
           <td>{{ client.id }}</td>
           <td>{{ client.name }}</td>
           <td>{{ client.dni }}</td>
@@ -89,7 +99,7 @@
             [(ngModel)]="formData.password_hash"
             name="password_hash"
             placeholder="Contraseña"
-            required
+            [required]="!editingId"
           />
         </div>
 
