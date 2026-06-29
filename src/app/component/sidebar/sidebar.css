@@ -1,9 +1,28 @@
+/* sidebar.component.css - Estilo simple en blanco */
+
 .sidebar {
-  background-color: gray ;
   width: 250px;
   height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #ddd;
+  box-shadow: none;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+
+.sidebar-header {
   padding: 20px;
-  box-sizing: border-box;
+  border-bottom: 1px solid #ddd;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #333;
 }
 
 .sidebar ul {
@@ -12,11 +31,41 @@
   margin: 0;
 }
 
-.sidebar li {
-  margin-bottom: 10px;
+.sidebar ul li {
+  border-bottom: 1px solid #eee;
 }
 
-.sidebar a {
-  color: black  ;
+.sidebar ul li:last-child {
+  border-bottom: none;
+}
+
+.sidebar ul li a {
+  display: block;
+  padding: 12px 20px;
+  color: #333;
   text-decoration: none;
+  font-size: 14px;
+}
+
+.sidebar ul li a:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar ul li a.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  font-weight: bold;
+}
+
+.logout-item {
+  border-top: 1px solid #ddd;
+  margin-top: 20px;
+}
+
+.logout-item a {
+  color: #d32f2f !important;
+}
+
+.logout-item a:hover {
+  background-color: #ffebee !important;
 }

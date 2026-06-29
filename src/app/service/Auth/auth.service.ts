@@ -11,7 +11,7 @@ export class AuthService {
   login(credentials: any) {
     return this.http.post<{ token: string }>(this.apiUrl, credentials).pipe(
       tap((response) => {
-        localStorage.setItem('token', response.token); // Guardamos el token
+        localStorage.setItem('token', response.token); // se guarda el token localstorage
       }),
     );
   }

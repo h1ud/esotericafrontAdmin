@@ -1,103 +1,77 @@
-/* Estilos específicos para el menú */
-.menu-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+/* login.component.css - Estilo simple y limpio */
 
-.categories-container {
+.login-container {
   display: flex;
-  flex-direction: column;
-  gap: 30px;
-  margin-bottom: 40px;
-}
-
-.category-card {
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-
-.category-header {
-  display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
-}
-
-.category-header h2 {
-  margin: 0;
-  color: #333;
-}
-
-.menu-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #fff;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.menu-table thead {
-  background-color: #f9f9f9;
-  border-bottom: 2px solid #ddd;
-}
-
-.menu-table th {
-  padding: 12px;
-  text-align: left;
-  font-weight: bold;
-  border-right: 1px solid #eee;
-}
-
-.menu-table th:last-child {
-  border-right: none;
-}
-
-.menu-table tbody tr {
-  border-bottom: 1px solid #eee;
-}
-
-.menu-table tbody tr:hover {
+  min-height: 100vh;
   background-color: #f5f5f5;
 }
 
-.menu-table td {
-  padding: 10px 12px;
-  border-right: 1px solid #eee;
+.login-box {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 100%;
+  max-width: 400px;
 }
 
-.menu-table td:last-child {
-  border-right: none;
-}
-
-.menu-table .no-data {
-  padding: 15px;
+.login-box h2 {
   text-align: center;
-  color: #777;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 24px;
 }
 
-/* Estilos para textarea y select en formularios */
-.form-group textarea,
-.form-group select {
-  padding: 8px;
+.error-message {
+  background-color: #ffebee;
+  border: 1px solid #f44336;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: #c62828;
+  font-size: 14px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   font-size: 14px;
-  font-family: inherit;
-  width: 100%;
   box-sizing: border-box;
 }
 
-.form-group textarea:focus,
-.form-group select:focus {
+.form-group input:focus {
   outline: none;
   border-color: #2196f3;
-  box-shadow: 0 0 3px rgba(33, 150, 243, 0.3);
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 60px;
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  background-color: #1565c0;
 }

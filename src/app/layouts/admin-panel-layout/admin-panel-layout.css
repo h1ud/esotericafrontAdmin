@@ -1,9 +1,18 @@
+/* El contenedor principal que envuelve al Sidebar y al Contenido */
 .container {
   display: flex;
-  height: 100vh;
+  height: 100vh;      /* Ocupa exactamente el 100% del alto de la pantalla */
+  overflow: hidden;   /* Evita que toda la página web use el scroll del navegador */
 }
 
-.content {
-  flex: 1;
-  padding: 20px;
+/* El Sidebar izquierdo (Esoterica, Dashboard, Menu, etc.) */
+
+
+/* El panel derecho o contenedor donde cargan los componentes como tu Menú */
+.content-panel {
+  flex-grow: 1;       /* Toma todo el espacio restante a la derecha */
+  height: 100vh;      /* Alto completo de la pantalla */
+  overflow-y: auto;   /* ✅ ESTA ES LA MAGIA: Solo este panel tendrá su propia barra de scroll vertical */
+  padding: 20px;      /* El espaciado que ya manejas */
+  box-sizing: border-box;
 }

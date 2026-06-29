@@ -12,9 +12,15 @@ export interface Employee {
   createDate?: string;
 }
 
+// Interfaz para tus roles, ideal para el select del formulario
+export interface Role {
+  id: number;
+  roleName: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:8080/api/admin/users'; // Ajusta según tu backend
+  private apiUrl = 'http://localhost:8080/api/admin/users';
 
   constructor(private http: HttpClient) {}
 
@@ -26,15 +32,17 @@ export class EmployeeService {
     return this.http.post<void>(this.apiUrl, emp);
   }
 
-  updateEmployee(id: number, emp: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, emp);
+  // 🔄 Cambiado de <any> a <void> para acoplarse al ResponseEntity<Void> del backend
+  updateEmployee(id: number, emp: any): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, emp);
   }
 
   deleteEmployee(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  listRoles(): Observable<any[]> {
-    return this.http.get<any[]>('http://localhost:8080/api/admin/roles'); // Ajusta a tu URL real
+  // 🔄 Tipado con la interfaz Role para mayor control en tu HTML
+  listRoles(): Observable<Role[]> {
+    return this.http.get<Role[]>('http://localhost:8080/api/admin/roles');
   }
 }

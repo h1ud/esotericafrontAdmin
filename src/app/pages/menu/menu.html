@@ -1,121 +1,119 @@
-<div class="menu-container">
-  <h1>Gestión del Menú</h1>
+<!-- menu.html -->
+<div class="employees-container">
+  <h1>Gestión del Menú Administrativo</h1>
 
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
 
-  <!-- Indicador de carga -->
+  <!-- Loading -->
   <div *ngIf="loading" class="loading-indicator">
-    Cargando...
+    Cargando productos del menú...
   </div>
 
-  <!-- Botón para agregar nueva categoría (opcional) -->
-  <div class="top-controls" *ngIf="!loading">
-    <button class="btn btn-add">Agregar Nueva Categoría</button>
-  </div>
+  <!-- Contenido del menú -->
+  <div *ngIf="!loading">
+    <div *ngFor="let cat of categories" style="margin-bottom: 35px;">
 
-  <!-- Categorías y productos -->
-  <div class="categories-container" *ngIf="!loading">
-    <div *ngFor="let cat of categories" class="category-card">
-
-      <div class="category-header">
-        <h2>{{ cat.name }}</h2>
-        <button class="btn btn-add" (click)="openCreateForm(cat.id)">
-          + Agregar a {{ cat.name }}
-        </button>
+      <div class="top-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h2>Sección: {{ cat.name }}</h2>
+        <button class="btn btn-add" (click)="openForm(cat.id)">Agregar nuevo a {{ cat.name }}</button>
       </div>
 
       <div class="table-section">
-        <table class="menu-table">
+        <table class="employees-table">
           <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Acciones</th>
+            <th style="width: 80px;">ID</th>
+            <th>Nombre del Producto</th>
+            <th>Descripción / Notas</th>
+            <th style="width: 150px;">Precio</th>
+            <th style="width: 180px; text-align: center;">Acciones</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngIf="getProductsByCategory(cat.id).length === 0">
-            <td colspan="4" class="no-data">
-              No hay productos registrados en {{ cat.name }}.
-            </td>
-          </tr>
-
           <tr *ngFor="let item of getProductsByCategory(cat.id)">
-            <td><strong>{{ item.productName }}</strong></td>
-            <td>{{ item.description }}</td>
-            <td>S/. {{ item.price.toFixed(2) }}</td>
-            <td class="actions">
+            <td>{{ item.id }}</td>
+            <td style="font-weight: bold;">{{ item.productName }}</td>
+            <td style="color: #555;">{{ item.description || 'Sin descripción' }}</td>
+            <td>S/. {{ item.price | number:'1.2-2' }}</td>
+            <td class="actions" style="justify-content: center;">
               <button class="btn btn-edit" (click)="editProduct(item)">Editar</button>
-              <button class="btn btn-delete" (click)="deleteProduct(item.id!)">Borrar</button>
+              <button class="btn btn-delete" (click)="deleteProduct(item.id!)">Eliminar</button>
             </td>
           </tr>
           </tbody>
         </table>
+
+        <div *ngIf="getProductsByCategory(cat.id).length === 0" class="no-data">
+          No hay productos registrados en {{ cat.name }}
+        </div>
       </div>
 
     </div>
   </div>
 
-  <!-- Formulario para crear/editar producto -->
+  <!-- Formulario -->
   <div *ngIf="showForm" class="form-section">
-    <div class="form-overlay"></div>
+    <div class="form-overlay" (click)="closeForm()"></div>
     <div class="form-container">
-      <h2>{{ editingId ? 'Modificar Producto' : 'Agregar Producto' }}</h2>
+      <h2>{{ editingId ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h2>
 
-      <form (submit)="saveProduct()">
-        <div class="form-group">
-          <label for="productName">Nombre:</label>
-          <input
-            type="text"
-            id="productName"
-            [(ngModel)]="formData.productName"
-            name="productName"
-            placeholder="Nombre del producto"
-            required
-          />
+      <form (submit)="$event.preventDefault()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="productName">Nombre del Producto:</label>
+            <input
+              type="text"
+              id="productName"
+              [(ngModel)]="formData.productName"
+              name="productName"
+              placeholder="Ej. Choripán Clásico"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="price">Precio (S/.):</label>
+            <input
+              type="number"
+              step="0.01"
+              id="price"
+              [(ngModel)]="formData.price"
+              name="price"
+              placeholder="0.00"
+              required
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="description">Descripción:</label>
-          <textarea
-            id="description"
-            [(ngModel)]="formData.description"
-            name="description"
-            placeholder="Descripción del producto"
-            rows="3"
-          ></textarea>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="description">Descripción:</label>
+            <input
+              type="text"
+              id="description"
+              [(ngModel)]="formData.description"
+              name="description"
+              placeholder="Detalles del producto..."
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="price">Precio:</label>
-          <input
-            type="number"
-            step="0.01"
-            id="price"
-            [(ngModel)]="formData.price"
-            name="price"
-            placeholder="0.00"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="categoryId">Categoría:</label>
-          <select
-            id="categoryId"
-            [(ngModel)]="formData.categoryId"
-            name="categoryId"
-            required
-          >
-            <option value="" disabled>Seleccionar categoría</option>
-            <option *ngFor="let c of categories" [value]="c.id">
-              {{ c.name }}
-            </option>
-          </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="categoryId">Categoría Asignada:</label>
+            <select id="categoryId" [(ngModel)]="formData.categoryId" name="categoryId" required>
+              <option *ngFor="let c of categories" [value]="c.id">
+                {{ c.name }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-save">
+          <button type="button" class="btn btn-save" (click)="saveProduct()">
             {{ editingId ? 'Actualizar' : 'Guardar' }}
           </button>
           <button type="button" class="btn btn-cancel" (click)="closeForm()">Cancelar</button>
@@ -126,11 +124,15 @@
 
   <!-- Confirmación de eliminación -->
   <div *ngIf="showDeleteConfirm" class="form-section">
-    <div class="form-overlay"></div>
+    <div class="form-overlay" (click)="cancelDelete()"></div>
     <div class="confirm-container">
       <h2>Confirmar eliminación</h2>
-      <p>¿Está seguro que desea eliminar este producto?</p>
-
+      <p>¿Está seguro que desea eliminar este producto del menú?</p>
+      <div class="confirm-actions">
+        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
+        <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>
+      </div>
     </div>
   </div>
+
 </div>

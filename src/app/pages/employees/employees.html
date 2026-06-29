@@ -1,17 +1,26 @@
 <div class="employees-container">
   <h1>Gestión de Empleados</h1>
 
-  <!-- Mensaje de error -->
+  <!-- msg error -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
-  <!-- Botón para agregar nuevo empleado -->
+  <!-- btn add employee-->
   <div class="top-controls" *ngIf="!loading">
     <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Empleado</button>
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="filteredEmployees()"
+        placeholder="buscar por username..."
+      />
+    </div>
   </div>
 
-  <!-- Tabla de empleados -->
+  <!-- table -->
   <div class="table-section" *ngIf="!loading">
     <h2>Lista de Empleados</h2>
     <table class="employees-table">
@@ -27,7 +36,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let employee of employees">
+      <tr *ngFor="let employee of filteredEmployees()">
         <td>{{ employee.id }}</td>
         <td>{{ employee.username }}</td>
         <td>{{ employee.name }}</td>
@@ -47,7 +56,7 @@
     </div>
   </div>
 
-  <!-- Formulario -->
+  <!-- Form -->
   <div *ngIf="showForm" class="form-section">
     <div class="form-overlay"></div>
     <div class="form-container">
@@ -117,8 +126,6 @@
           </div>
         </div>
 
-        <!-- ✅ CAMBIADO: roleId → idRole -->
-
 
         <div class="form-actions">
           <button type="button" class="btn btn-save" (click)="saveEmployee()">
@@ -130,12 +137,11 @@
     </div>
   </div>
 
-  <!-- Confirmación de eliminación -->
   <div *ngIf="showDeleteConfirm" class="form-section">
     <div class="form-overlay"></div>
     <div class="confirm-container">
       <h2>Confirmar eliminación</h2>
-      <p>¿Está seguro que desea eliminar este empleado?</p>
+      <p>Está seguro que desea eliminar este empleado?</p>
       <div class="confirm-actions">
         <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
         <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>

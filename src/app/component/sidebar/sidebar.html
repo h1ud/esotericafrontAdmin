@@ -1,6 +1,8 @@
+<!-- sidebar.component.html -->
 <nav class="sidebar">
-
-  <h2>Esoterica</h2>
+  <div class="sidebar-header">
+    <h2>Esoterica</h2>
+  </div>
 
   <ul>
     <li>
@@ -39,11 +41,10 @@
       </a>
     </li>
 
-    <li>
-      <a routerLink="/admin/login">
+    <li class="logout-item">
+      <a routerLink="/admin/login" (click)="onLogout()">
         Logout
       </a>
     </li>
   </ul>
-
 </nav>

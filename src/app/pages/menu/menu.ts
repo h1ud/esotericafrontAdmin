@@ -1,132 +1,158 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // 1. Importado ChangeDetectorRef
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-// Definimos una interfaz interna para estructurar los productos
-interface ProductItem {
-  id?: number;
-  productName: string;
-  description: string;
-  price: number;
-  categoryId: number; // 1: Bebidas, 2: Empanadas, 3: Ensaladas
-  isAvailable: boolean;
-}
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MenuService, ProductDTO } from '../../service/menu.service';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './menu.html',
+  styleUrls: ['./menu.css'],
 })
-export class Menu {
-  // Lista de categorías fijas
+export class Menu implements OnInit {
   categories = [
-    { id: 1, name: 'Bebidas' },
+    { id: 1, name: 'Sándwiches' },
     { id: 2, name: 'Empanadas' },
-    { id: 3, name: 'Ensaladas' },
+    { id: 3, name: 'Choripanes' },
+    { id: 4, name: 'Portelilos' },
+    { id: 5, name: 'Cremas' },
+    { id: 6, name: 'Toppings' },
+    { id: 7, name: 'Postres Helados' },
+    { id: 8, name: 'Bebidas' },
+    { id: 9, name: 'Especiales' },
   ];
 
-  // Productos iniciales de ejemplo (Simulando la base de datos)
-  products: ProductItem[] = [
-    {
-      id: 1,
-      productName: 'Chicha Morada 1L',
-      description: 'Deliciosa chicha natural de la casa',
-      price: 12.0,
-      categoryId: 1,
-      isAvailable: true,
-    },
-    {
-      id: 2,
-      productName: 'Empanada de Carne',
-      description: 'Carne picada a cuchillo con huevo y aceituna',
-      price: 7.5,
-      categoryId: 2,
-      isAvailable: true,
-    },
-    {
-      id: 3,
-      productName: 'Ensalada Caprese',
-      description: 'Tomate, mozzarella fresca y albahaca con oliva',
-      price: 18.0,
-      categoryId: 3,
-      isAvailable: true,
-    },
-  ];
+  products: ProductDTO[] = [];
+  errorMessage: string = '';
+  loading: boolean = false;
+  showForm: boolean = false;
+  showDeleteConfirm: boolean = false;
+  editingId: number | null = null;
+  productIdToDelete: number | null = null;
 
-  // Objeto unificado para el formulario (Crear / Editar)
-  formData: ProductItem = {
+  formData: ProductDTO = {
     productName: '',
     description: '',
     price: 0,
-    categoryId: 1, // Por defecto Bebidas
+    categoryId: 1,
     isAvailable: true,
   };
 
-  editingId: number | null = null;
-  showForm: boolean = false;
+  // 2. Inyectado cdr en el constructor junto al servicio
+  constructor(
+    private menuService: MenuService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
-  // Filtra los productos según el ID de categoría que le pidas en el HTML
-  getProductsByCategory(categoryId: number): ProductItem[] {
-    return this.products.filter((p) => p.categoryId === Number(categoryId));
+  ngOnInit(): void {
+    this.loadProducts();
   }
 
-  // Abre el formulario para crear uno nuevo
-  openCreateForm(categoryId: number): void {
+  loadProducts(): void {
+    this.loading = true;
+    this.menuService.getAllProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+        this.loading = false;
+        this.cdr.detectChanges(); // Fuerza el renderizado al traer la lista global
+      },
+      error: (err) => {
+        this.errorMessage = 'Error al cargar los productos del menú.';
+        this.loading = false;
+        this.cdr.detectChanges(); // Asegura que se pinte el mensaje de error
+        console.error(err);
+      },
+    });
+  }
+
+  getProductsByCategory(categoryId: number): ProductDTO[] {
+    return this.products.filter((p) => p.categoryId === categoryId);
+  }
+
+  openForm(categoryId: number): void {
     this.editingId = null;
     this.formData = {
       productName: '',
       description: '',
       price: 0,
-      categoryId: categoryId, // Inicializa con la categoría de la lista donde diste click
+      categoryId: categoryId,
       isAvailable: true,
     };
     this.showForm = true;
+    this.cdr.detectChanges(); // Fuerza apertura limpia del modal
   }
 
-  // Carga los datos de un producto para editarlo
-  editProduct(product: ProductItem): void {
+  editProduct(product: ProductDTO): void {
     this.editingId = product.id || null;
-    this.formData = { ...product }; // Clonamos el objeto
+    this.formData = { ...product };
     this.showForm = true;
+    this.cdr.detectChanges(); // Muestra el modal con los datos cargados para editar
   }
 
-  // Guarda los cambios (Sirve para Crear y para Actualizar)
   saveProduct(): void {
     if (!this.formData.productName || this.formData.price <= 0) {
-      alert('Por favor, rellena los campos obligatorios.');
+      this.errorMessage = 'Por favor, complete los campos obligatorios.';
+      this.cdr.detectChanges();
       return;
     }
 
     if (this.editingId) {
-      // ACTUALIZAR (Simulado)
-      const index = this.products.findIndex((p) => p.id === this.editingId);
-      if (index !== -1) {
-        this.products[index] = { ...this.formData };
-      }
+      this.menuService.updateProduct(this.editingId, this.formData).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.closeForm();
+        },
+        error: (err) => {
+          this.errorMessage = 'Error al actualizar el producto.';
+          this.cdr.detectChanges();
+        },
+      });
     } else {
-      // CREAR (Simulado)
-      const newId =
-        this.products.length > 0 ? Math.max(...this.products.map((p) => p.id || 0)) + 1 : 1;
-      const newProduct: ProductItem = {
-        ...this.formData,
-        id: newId,
-      };
-      this.products.push(newProduct);
+      this.menuService.createProduct(this.formData).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.closeForm();
+        },
+        error: (err) => {
+          this.errorMessage = 'Error al guardar el producto.';
+          this.cdr.detectChanges();
+        },
+      });
     }
-
-    this.closeForm();
   }
 
-  // Borra un producto de la lista
   deleteProduct(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-      this.products = this.products.filter((p) => p.id !== id);
+    this.productIdToDelete = id;
+    this.showDeleteConfirm = true;
+    this.cdr.detectChanges(); // Fuerza que aparezca el modal de confirmación
+  }
+
+  confirmDelete(): void {
+    if (this.productIdToDelete) {
+      this.menuService.deleteProduct(this.productIdToDelete).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.cancelDelete();
+        },
+        error: (err) => {
+          this.errorMessage = 'Error al eliminar el producto.';
+          this.cancelDelete();
+        },
+      });
     }
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.productIdToDelete = null;
+    this.cdr.detectChanges(); // Cierra el modal de borrado de inmediato
   }
 
   closeForm(): void {
     this.showForm = false;
     this.editingId = null;
+    this.errorMessage = '';
+    this.cdr.detectChanges(); // Cierra el formulario limpiando el DOM
   }
 }

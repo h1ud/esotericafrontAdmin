@@ -69,13 +69,13 @@ export class Clients implements OnInit {
   }
 
   saveClient(): void {
-    // ✅ Validar solo nombre y dni (la contraseña no es obligatoria en edición)
+
     if (!this.formData.name || !this.formData.dni) {
-      this.errorMessage = 'Nombre y DNI son obligatorios.';
+      this.errorMessage = 'nombre y dni son obligatorios';
       return;
     }
 
-    // ✅ Solo validar contraseña si es NUEVO cliente
+    // solo si es nuevo client
     if (
       !this.editingId &&
       (!this.formData.password_hash || this.formData.password_hash.trim() === '')
