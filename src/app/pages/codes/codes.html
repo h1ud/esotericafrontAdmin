@@ -1,1 +1,125 @@
-<p>codes works!</p>
+<!-- promotions.component.html -->
+<div class="promotions-container">
+  <div class="header-section">
+    <h1>Gestión de Promociones Globales</h1>
+    <button class="btn btn-add" (click)="openForm()">+ Nueva Promoción</button>
+  </div>
+
+  <div class="search-section">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar por título..."
+      class="search-input"
+    />
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading" class="loading-indicator">
+    Cargando promociones...
+  </div>
+
+  <div class="table-section" *ngIf="!loading">
+    <table class="promotions-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Descuento</th>
+        <th>Creador</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let promo of filteredPromotions()">
+        <td>{{ promo.id }}</td>
+        <td>
+          <strong>{{ promo.title }}</strong>
+          <small *ngIf="promo.description" class="description-text">{{ promo.description }}</small>
+        </td>
+        <td>{{ promo.discount }}</td>
+        <td>{{ promo.username }}</td>
+        <td>
+            <span class="status-badge" [ngClass]="promo.isActive ? 'status-active' : 'status-inactive'">
+              {{ promo.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+        </td>
+        <td class="actions">
+          <button class="btn btn-edit" (click)="editPromotion(promo)">Editar</button>
+          <button *ngIf="promo.id" class="btn btn-delete" (click)="deletePromotion(promo.id)">Eliminar</button>
+        </td>
+      </tr>
+      <tr *ngIf="filteredPromotions().length === 0">
+        <td colspan="6" class="no-data">No se encontraron promociones.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="showForm" class="form-section">
+    <div class="form-overlay" (click)="closeForm()"></div>
+    <div class="form-container">
+      <h2>{{ editingId ? 'Editar Promoción' : 'Nueva Promoción' }}</h2>
+
+      <form (submit)="$event.preventDefault()">
+        <div class="form-group">
+          <label>Título *</label>
+          <input type="text" [(ngModel)]="formData.title" name="title" placeholder="Ingresa el título" />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="formData.description" name="description" placeholder="Descripción de la promoción"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Descuento *</label>
+          <input type="number" [(ngModel)]="formData.discount" name="discount" placeholder="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de Inicio *</label>
+          <input type="datetime-local" [(ngModel)]="formData.startDate" name="startDate" />
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de Fin</label>
+          <input type="datetime-local" [(ngModel)]="formData.endDate" name="endDate" />
+        </div>
+
+        <div class="form-group">
+          <label>URL Imagen</label>
+          <input type="text" [(ngModel)]="formData.imageUrl" name="imageUrl" placeholder="https://ejemplo.com/imagen.jpg" />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" [(ngModel)]="formData.isActive" id="isActive" name="isActive" />
+          <label for="isActive">Activo</label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-cancel" (click)="closeForm()">Cancelar</button>
+          <button type="button" class="btn btn-save" (click)="savePromotion()">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmación de eliminación -->
+  <div *ngIf="showDeleteConfirm" class="form-section">
+    <div class="form-overlay" (click)="cancelDelete()"></div>
+    <div class="confirm-container">
+      <h2>¿Eliminar Promoción?</h2>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
