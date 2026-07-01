@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// 1. Define la interfaz para que sea exportable
 export interface Client {
   id?: number;
   name: string;
   password_hash?: string;
   dni: string;
-  birthdayDate: string; // Cambiado a camelCase
+  birthdayDate: string;
   createDate?: string;
 }
 
@@ -18,7 +17,6 @@ export class ClientService {
 
   constructor(private http: HttpClient) {}
 
-  // 2. Asegúrate de que los nombres coincidan con los que usas en el componente
   listClients(): Observable<Client[]> {
     return this.http.get<Client[]>(this.apiUrl);
   }

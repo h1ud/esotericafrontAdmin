@@ -1,7 +1,6 @@
 .clients-container {
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
 }
 
 h1 {
@@ -11,7 +10,6 @@ h1 {
   padding-bottom: 10px;
 }
 
-/* Error Message */
 .error-message {
   background-color: #ffebee;
   border: 1px solid #f44336;
@@ -22,7 +20,6 @@ h1 {
   font-size: 14px;
 }
 
-/* Loading Indicator */
 .loading-indicator {
   padding: 40px;
   text-align: center;
@@ -40,14 +37,12 @@ h2 {
   margin-top: 20px;
 }
 
-/* Top Controls */
 .top-controls {
   margin-bottom: 20px;
   display: flex;
   gap: 10px;
 }
 
-/* Buttons */
 .btn {
   padding: 8px 16px;
   border: 1px solid #999;
@@ -170,7 +165,6 @@ h2 {
   background-color: #fafafa;
 }
 
-/* Form Section */
 .form-section {
   position: fixed;
   top: 0;
@@ -252,7 +246,6 @@ form {
   flex: 0 0 auto;
 }
 
-/* Confirmación de eliminación */
 .confirm-container {
   position: relative;
   background-color: #fff;

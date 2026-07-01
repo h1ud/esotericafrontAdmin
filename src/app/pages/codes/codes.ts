@@ -22,10 +22,10 @@ export class Codes implements OnInit {
   searchTerm: string = '';
 
   formData: Partial<PromotionDTO> = {
-    userId: 1, // Por ahora quemado en 1 o cámbialo según tu login actual
+    userId: 1,
     title: '',
     description: '',
-    discount: 0, // O el valor por defecto de tu negocio
+    discount: 0,
     visibility: 'GLOBAL',
     isActive: true,
     startDate: '',

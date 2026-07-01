@@ -1,17 +1,14 @@
 <div class="clients-container">
   <h1>Gestión de Clientes</h1>
 
-  <!-- Mensaje de error -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
-  <!-- Indicador de carga -->
   <div *ngIf="loading" class="loading-indicator">
     Cargando...
   </div>
 
-  <!-- Botón para agregar nuevo cliente -->
   <div class="top-controls" *ngIf="!loading">
     <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Cliente</button>
     <div class="search-container">
@@ -25,9 +22,6 @@
     </div>
   </div>
 
-
-
-  <!-- Tabla de clientes -->
   <div class="table-section" *ngIf="!loading">
     <h2>Lista de Clientes</h2>
     <table class="clients-table">

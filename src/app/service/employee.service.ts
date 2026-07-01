@@ -12,7 +12,6 @@ export interface Employee {
   createDate?: string;
 }
 
-// Interfaz para tus roles, ideal para el select del formulario
 export interface Role {
   id: number;
   roleName: string;

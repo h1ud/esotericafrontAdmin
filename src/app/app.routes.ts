@@ -39,7 +39,17 @@ export const routes: Routes = [
         path: 'reports',
         loadComponent: () => import('./pages/reports/reports').then((m) => m.Reports),
       },
+
+      {
+        path: 'password-reset-list',
+        loadComponent: () => import('./pages/password-reset-list/password-reset-list').then((m) => m.PasswordResetList),
+      },
     ],
+  },
+  {
+    path: 'passwordReset',
+    loadComponent: () =>
+      import('./pages/password-reset/password-reset').then((m) => m.PasswordReset),
   },
   {
     path: '**',

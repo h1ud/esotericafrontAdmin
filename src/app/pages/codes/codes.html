@@ -1,4 +1,3 @@
-<!-- promotions.component.html -->
 <div class="promotions-container">
   <div class="header-section">
     <h1>Gestión de Promociones Globales</h1>
@@ -19,7 +18,7 @@
   </div>
 
   <div *ngIf="loading" class="loading-indicator">
-    Cargando promociones...
+    cargando promociones...
   </div>
 
   <div class="table-section" *ngIf="!loading">
@@ -109,8 +108,7 @@
       </form>
     </div>
   </div>
-
-  <!-- Confirmación de eliminación -->
+  
   <div *ngIf="showDeleteConfirm" class="form-section">
     <div class="form-overlay" (click)="cancelDelete()"></div>
     <div class="confirm-container">

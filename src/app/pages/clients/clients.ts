@@ -75,18 +75,14 @@ export class Clients implements OnInit {
       return;
     }
 
-    // solo si es nuevo client
-    if (
-      !this.editingId &&
-      (!this.formData.password_hash || this.formData.password_hash.trim() === '')
-    ) {
+    if (!this.editingId && (!this.formData.password_hash || this.formData.password_hash.trim() === ''))
+    {
       this.errorMessage = 'La contraseña es obligatoria para nuevos clientes';
       return;
     }
 
     const clientToSave = { ...this.formData } as Client;
 
-    // ✅ Si es edición y no hay contraseña, la eliminamos
     if (
       this.editingId &&
       (!clientToSave.password_hash || clientToSave.password_hash.trim() === '')
@@ -128,7 +124,7 @@ export class Clients implements OnInit {
       });
     }
   }
-  // Asegúrate de que esto esté dentro de la clase Clients
+
   editClient(client: Client): void {
     this.editingId = client.id || null;
     this.formData = {

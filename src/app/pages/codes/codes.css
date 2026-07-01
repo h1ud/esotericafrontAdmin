@@ -1,13 +1,6 @@
-.container {
-  margin-left: 260px; /* ◄ Empuja todo el contenido a la derecha del sidebar */
-  width: calc(100% - 260px); /* Ajusta el ancho para que no cause scroll horizontal */
-}
-/* promotions.component.css - Estilo simple y limpio */
-
 .promotions-container {
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
 }
 
 h1 {

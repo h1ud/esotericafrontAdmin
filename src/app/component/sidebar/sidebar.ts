@@ -15,7 +15,7 @@ export class Sidebar {
   ) {}
 
   onLogout(): void {
-    this.authService.logout(); // Borra el token del localStorage
-    this.router.navigate(['/login']); // Lo redirige al login de inmediato
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
