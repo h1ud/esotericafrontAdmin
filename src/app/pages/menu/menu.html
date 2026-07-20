@@ -1,18 +1,15 @@
-<!-- menu.html -->
+
 <div class="employees-container">
   <h1>Gestión del Menú Administrativo</h1>
 
-  <!-- Mensaje de error -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-indicator">
     Cargando productos del menú...
   </div>
 
-  <!-- Contenido del menú -->
   <div *ngIf="!loading">
     <div *ngFor="let cat of categories" style="margin-bottom: 35px;">
 
@@ -54,7 +51,6 @@
     </div>
   </div>
 
-  <!-- Formulario -->
   <div *ngIf="showForm" class="form-section">
     <div class="form-overlay" (click)="closeForm()"></div>
     <div class="form-container">
@@ -122,7 +118,6 @@
     </div>
   </div>
 
-  <!-- Confirmación de eliminación -->
   <div *ngIf="showDeleteConfirm" class="form-section">
     <div class="form-overlay" (click)="cancelDelete()"></div>
     <div class="confirm-container">

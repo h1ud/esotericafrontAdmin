@@ -12,7 +12,7 @@ import { EmployeeService, Employee, Role } from '../../service/employee.service'
 })
 export class Employees implements OnInit {
   employees: Employee[] = [];
-  roles: Role[] = []; // ✅ Tipado estricto usando la interfaz de tu servicio
+  roles: Role[] = [];
   loading: boolean = false;
   errorMessage: string = '';
 
@@ -20,7 +20,7 @@ export class Employees implements OnInit {
   showDeleteConfirm: boolean = false;
   editingId: number | null = null;
   employeeToDelete: number | null = null;
-  searchTerm: string = ''; // ✅ Añadido para el filtro de búsqueda por username si quieres usarlo
+  searchTerm: string = '';
 
   formData: Partial<Employee> & { password?: string } = {
     username: '',
@@ -73,7 +73,7 @@ export class Employees implements OnInit {
       this.editingId = employee.id || null;
       this.formData = {
         ...employee,
-        password: '', // Siempre vacío por seguridad al abrir edición
+        password: '',
       };
     } else {
       this.editingId = null;
@@ -88,7 +88,6 @@ export class Employees implements OnInit {
   }
 
   saveEmployee(): void {
-    // ✅ Validar campos obligatorios obligados por el negocio
     if (
       !this.formData.username ||
       !this.formData.name ||
@@ -99,7 +98,6 @@ export class Employees implements OnInit {
       return;
     }
 
-    // ✅ Validar contraseña obligatoria solo para NUEVOS empleados
     if (!this.editingId && (!this.formData.password || this.formData.password.trim() === '')) {
       this.errorMessage = 'La contraseña es obligatoria para nuevos empleados';
       return;
@@ -107,7 +105,6 @@ export class Employees implements OnInit {
 
     const employeeToSave = { ...this.formData };
 
-    // ✅ Si es edición y no mandaron una nueva contraseña, la borramos para no pisar el hash en la BD
     if (this.editingId && (!employeeToSave.password || employeeToSave.password.trim() === '')) {
       delete employeeToSave.password;
     }
@@ -152,7 +149,7 @@ export class Employees implements OnInit {
     this.editingId = employee.id || null;
     this.formData = {
       ...employee,
-      password: '', // Sin vulnerar el hash viejo
+      password: '',
     };
     this.showForm = true;
     this.cdr.detectChanges();
@@ -163,7 +160,6 @@ export class Employees implements OnInit {
     this.employeeToDelete = null;
   }
 
-  // ✅ Buscador reactivo integrado por si quieres filtrar por nombre de usuario en tu tabla
   filteredEmployees(): Employee[] {
     if (!this.searchTerm.trim()) {
       return this.employees;

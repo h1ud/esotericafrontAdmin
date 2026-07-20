@@ -18,7 +18,7 @@ export class Login {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef, // 👈 2. INYECTAR EN EL CONSTRUCTOR
+    private cdr: ChangeDetectorRef,
   ) {}
 
   onLogin() {
@@ -31,9 +31,6 @@ export class Login {
       error: (err) => {
         this.errorMessage = 'Usuario o contraseña incorrectos';
         console.error('Login error:', err);
-
-        // 👈 3. FORZAR LA DETECCIÓN DE CAMBIOS AQUÍ
-        // Esto obliga a Angular a pintar el "errorMessage" en el HTML de golpe
         this.cdr.detectChanges();
       },
     });

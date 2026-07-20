@@ -39,7 +39,6 @@ export class Menu implements OnInit {
     isAvailable: true,
   };
 
-  // 2. Inyectado cdr en el constructor junto al servicio
   constructor(
     private menuService: MenuService,
     private cdr: ChangeDetectorRef,
@@ -55,12 +54,12 @@ export class Menu implements OnInit {
       next: (data) => {
         this.products = data;
         this.loading = false;
-        this.cdr.detectChanges(); // Fuerza el renderizado al traer la lista global
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = 'Error al cargar los productos del menú.';
         this.loading = false;
-        this.cdr.detectChanges(); // Asegura que se pinte el mensaje de error
+        this.cdr.detectChanges();
         console.error(err);
       },
     });
@@ -80,14 +79,14 @@ export class Menu implements OnInit {
       isAvailable: true,
     };
     this.showForm = true;
-    this.cdr.detectChanges(); // Fuerza apertura limpia del modal
+    this.cdr.detectChanges();
   }
 
   editProduct(product: ProductDTO): void {
     this.editingId = product.id || null;
     this.formData = { ...product };
     this.showForm = true;
-    this.cdr.detectChanges(); // Muestra el modal con los datos cargados para editar
+    this.cdr.detectChanges();
   }
 
   saveProduct(): void {
@@ -125,7 +124,7 @@ export class Menu implements OnInit {
   deleteProduct(id: number): void {
     this.productIdToDelete = id;
     this.showDeleteConfirm = true;
-    this.cdr.detectChanges(); // Fuerza que aparezca el modal de confirmación
+    this.cdr.detectChanges();
   }
 
   confirmDelete(): void {
@@ -146,13 +145,13 @@ export class Menu implements OnInit {
   cancelDelete(): void {
     this.showDeleteConfirm = false;
     this.productIdToDelete = null;
-    this.cdr.detectChanges(); // Cierra el modal de borrado de inmediato
+    this.cdr.detectChanges();
   }
 
   closeForm(): void {
     this.showForm = false;
     this.editingId = null;
     this.errorMessage = '';
-    this.cdr.detectChanges(); // Cierra el formulario limpiando el DOM
+    this.cdr.detectChanges();
   }
 }
