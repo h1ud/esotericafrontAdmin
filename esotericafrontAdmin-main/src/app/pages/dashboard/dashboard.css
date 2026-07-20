@@ -1,0 +1,344 @@
+/* =========================================================
+   ESOTERICA · Dashboard
+   Sistema: reutiliza variables de styles.css (--neutral-*, etc.)
+   ========================================================= */
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 36px 40px 56px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.dash-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.dash-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--primary-700);
+  margin: 0 0 10px;
+}
+
+.dash-title {
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--neutral-900);
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+.dash-title-accent {
+  color: var(--primary-700);
+  font-style: italic;
+}
+
+.dash-subtitle {
+  font-size: 15px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.dash-header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-ghost,
+.btn-primary {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background var(--dur-base) var(--ease-organic),
+              transform  var(--dur-base) var(--ease-organic),
+              box-shadow var(--dur-base) var(--ease-organic);
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-700);
+}
+.btn-ghost:hover {
+  background: var(--neutral-150);
+  border-color: var(--neutral-400);
+}
+.btn-primary {
+  background: var(--primary-700);
+  color: var(--neutral-50);
+  border: none;
+  box-shadow: 0 4px 12px rgba(140, 103, 103, 0.18);
+}
+.btn-primary:hover {
+  background: var(--primary-800);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(140, 103, 103, 0.28);
+}
+
+/* ============================================================
+   KPI GRID
+   ============================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.kpi-card {
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-card);
+  padding: 22px 22px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-base) var(--ease-organic),
+              box-shadow var(--dur-base) var(--ease-organic);
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.kpi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-button);
+  background: var(--primary-50);
+  color: var(--primary-700);
+}
+.kpi-icon svg { width: 20px; height: 20px; }
+
+.kpi-trend {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-fab);
+  letter-spacing: 0.02em;
+}
+.kpi-trend--up   { background: #DCEEE5; color: #587565; }
+.kpi-trend--down { background: #FDE2E2; color: #9A5E5E; }
+
+.kpi-label {
+  font-size: 13px;
+  color: var(--neutral-600);
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+.kpi-value {
+  font-family: var(--font-heading);
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--neutral-900);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   CHARTS GRID
+   ============================================================ */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+}
+
+.chart-card,
+.activity-card {
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-card);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+}
+.chart-header h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 4px;
+  color: var(--neutral-900);
+}
+.chart-header p {
+  font-size: 13px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.chart-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  background: var(--primary-50);
+  color: var(--primary-800);
+  border-radius: var(--radius-fab);
+  letter-spacing: 0.02em;
+}
+.chart-badge--soft {
+  background: var(--neutral-150);
+  color: var(--neutral-700);
+}
+
+/* ---------- Bar chart ---------- */
+.bar-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  align-items: end;
+  height: 220px;
+  padding-top: 8px;
+}
+.bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+.bar-track {
+  width: 100%;
+  max-width: 36px;
+  flex: 1;
+  background: var(--neutral-150);
+  border-radius: 8px 8px 4px 4px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  width: 100%;
+  height: 0;            /* GSAP lo anima al cargar */
+  background: linear-gradient(180deg, var(--primary-500), var(--primary-700));
+  border-radius: 8px 8px 4px 4px;
+  transition: filter var(--dur-base) var(--ease-organic);
+}
+.bar-track:hover .bar-fill { filter: brightness(1.06); }
+
+.bar-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+.bar-value {
+  font-size: 11px;
+  color: var(--neutral-500);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Line chart ---------- */
+.line-chart-wrap {
+  width: 100%;
+  height: 220px;
+}
+.line-chart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ============================================================
+   ACTIVIDAD RECIENTE
+   ============================================================ */
+.activity-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-700);
+  letter-spacing: 0.01em;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--neutral-200);
+  transition: background var(--dur-base) var(--ease-organic);
+}
+.activity-list .activity-item:last-child { border-bottom: none; }
+.activity-item:hover { background: var(--neutral-100); }
+
+.activity-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-button);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  flex-shrink: 0;
+}
+.activity-icon svg { width: 18px; height: 18px; }
+
+.activity-body { flex: 1; min-width: 0; }
+.activity-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin: 0 0 2px;
+}
+.activity-meta {
+  font-size: 12.5px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+.activity-amount {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--secondary-700);
+  background: #DCEEE5;
+  padding: 4px 10px;
+  border-radius: var(--radius-fab);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .dashboard-page { padding: 24px 18px 40px; }
+  .dash-title { font-size: 28px; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .kpi-value { font-size: 24px; }
+}

@@ -1,0 +1,122 @@
+/* =========================================================
+   ESOTERICA · Sistema de diseño global
+   Basado en la guía de estilo diseño.md
+   Paleta, tipografía, radios, sombras y animaciones reutilizables
+   ========================================================= */
+
+:root {
+  /* ---------- Paleta Primary (rosa antiguo / vino apagado) ---------- */
+  --primary-50:  #FBF3F3;
+  --primary-100: #F3E2E2;
+  --primary-200: #E8CCCC;
+  --primary-300: #D8B7B7;
+  --primary-400: #C8A2A2;
+  --primary-500: #B98D8D;  /* base */
+  --primary-600: #987274;
+  --primary-700: #8C6767;  /* botón principal */
+  --primary-800: #7C5A5B;
+  --primary-900: #603B3C;
+  --primary-950: #2B1112;
+
+  /* ---------- Paleta Secondary (verde salvia) ---------- */
+  --secondary-300: #C2D2CA;
+  --secondary-500: #8DA399;
+  --secondary-700: #6E8578;
+
+  /* ---------- Paleta Tertiary (lavanda) ---------- */
+  --tertiary-300: #CCBED5;
+  --tertiary-500: #A594B0;
+
+  /* ---------- Neutrales / Background ---------- */
+  --neutral-50:  #FFFFFF;
+  --neutral-100: #F9F5F0;  /* background principal */
+  --neutral-150: #F7F3EF;  /* inputs y cards secundarias */
+  --neutral-200: #ECE8E2;
+  --neutral-300: #D6CDC4;  /* bordes suaves */
+  --neutral-400: #B3B3B3;
+  --neutral-500: #949494;
+  --neutral-600: #737373;
+  --neutral-700: #565656;
+  --neutral-800: #3D3D3D;
+  --neutral-900: #252525;
+  --neutral-950: #111111;
+
+  /* ---------- Tipografía ---------- */
+  --font-heading: 'Noto Serif', 'Georgia', serif;
+  --font-body:    'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+
+  /* ---------- Radios ---------- */
+  --radius-input:  10px;
+  --radius-button: 10px;
+  --radius-card:   22px;
+  --radius-badge:  12px;
+  --radius-fab:    999px;
+
+  /* ---------- Sombras suaves (sin negros duros) ---------- */
+  --shadow-sm: 0 3px 12px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 3px 12px rgba(0, 0, 0, 0.04),
+               0 8px 30px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 30px rgba(43, 17, 18, 0.08),
+               0 4px 12px rgba(43, 17, 18, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(185, 141, 141, 0.18);
+
+  /* ---------- Curvas y duraciones ---------- */
+  --ease-organic: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:   180ms;
+  --dur-base:   220ms;
+  --dur-slow:   280ms;
+}
+
+/* ---------- Reset suave y base tipográfica ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--neutral-800);
+  background-color: var(--neutral-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--neutral-900);
+  margin: 0;
+}
+
+a {
+  color: var(--primary-700);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-organic);
+}
+a:hover {
+  color: var(--primary-800);
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+/* ---------- Utilidades globales ---------- */
+.app-page {
+  min-height: 100vh;
+  background: var(--neutral-100);
+}

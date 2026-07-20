@@ -1,0 +1,83 @@
+<!--
+  Sidebar · Esoterica
+  Estructura: brand → nav con indicador deslizante → footer con avatar + logout
+  Animaciones GSAP: stagger entrada + pulse logo + indicator slide
+-->
+
+<aside class="sidebar" aria-label="Navegación principal">
+  <!-- ============ Brand / Logo ============ -->
+  <div class="sidebar-brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Luna creciente estilizada dentro de un círculo -->
+        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M20 8a8 8 0 1 0 0 16 6 6 0 1 1 0-16z"
+              fill="currentColor" opacity="0.85"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1 class="brand-title">Esoterica</h1>
+      <p class="brand-tagline">Panel administrativo</p>
+    </div>
+  </div>
+
+  <!-- ============ Navegación ============ -->
+  <nav class="sidebar-nav" aria-label="Secciones">
+    <p class="nav-section-label">Menú principal</p>
+
+    <ul class="nav-list">
+      <!-- Indicador deslizante (pill) - vive dentro de la lista -->
+      <span class="nav-indicator" aria-hidden="true"></span>
+
+      @for (item of navItems(); track item.path) {
+        <li class="nav-item">
+          <a
+            #navLink
+            class="nav-link"
+            [routerLink]="item.path"
+            routerLinkActive="is-active"
+            (click)="onActiveChange()"
+            [attr.aria-label]="item.label">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path [attr.d]="item.iconPath"></path>
+              </svg>
+            </span>
+            <span class="nav-label">{{ item.label }}</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6"/>
+              </svg>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <!-- ============ Footer con usuario ============ -->
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar" aria-hidden="true">
+        <span>{{ user().initials }}</span>
+      </div>
+      <div class="user-info">
+        <p class="user-name">{{ user().name }}</p>
+        <p class="user-role">{{ user().role }}</p>
+      </div>
+      <button
+        class="btn-logout"
+        type="button"
+        (click)="onLogout()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</aside>

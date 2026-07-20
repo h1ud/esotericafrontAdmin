@@ -1,0 +1,312 @@
+/* =========================================================
+   ESOTERICA · Sidebar
+   Estructura: brand (top) + nav (centro) + footer (bottom)
+   Animaciones: indicador deslizante, hover icon shift, pulse logo
+   ========================================================= */
+
+:host {
+  display: block;
+  width: 260px;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--neutral-50);
+  border-right: 1px solid var(--neutral-200);
+  box-shadow: 1px 0 0 rgba(43, 17, 18, 0.02);
+  overflow: hidden;
+}
+
+/* ============================================================
+   BRAND
+   ============================================================ */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 22px 22px;
+  border-bottom: 1px solid var(--neutral-200);
+  transform-origin: left center;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-button);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+  color: var(--neutral-50);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(140, 103, 103, 0.22);
+}
+.brand-mark svg { width: 22px; height: 22px; }
+
+.brand-text { display: flex; flex-direction: column; min-width: 0; }
+.brand-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--neutral-900);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.brand-tagline {
+  font-size: 11px;
+  color: var(--neutral-500);
+  margin: 2px 0 0;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+.sidebar-nav {
+  flex: 1 1 auto;
+  position: relative;
+  padding: 20px 14px 16px;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--neutral-500);
+  margin: 0 0 12px 8px;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+/* Indicador deslizante (pill) */
+.nav-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 36px;
+  background: linear-gradient(180deg, var(--primary-500), var(--primary-700));
+  border-radius: 0 var(--radius-fab) var(--radius-fab) 0;
+  opacity: 0;
+  transform: translateY(0);
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(140, 103, 103, 0.25);
+  z-index: 0;
+}
+
+.nav-item { position: relative; }
+
+.nav-link {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-button);
+  color: var(--neutral-700);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.005em;
+  transition:
+    background var(--dur-base) var(--ease-organic),
+    color      var(--dur-base) var(--ease-organic),
+    transform  var(--dur-base) var(--ease-organic);
+}
+
+/* Hover: el icono se desplaza sutilmente + fondo lavanda */
+.nav-link:hover {
+  background: var(--primary-50);
+  color: var(--primary-800);
+}
+.nav-link:hover .nav-icon {
+  transform: translateX(2px);
+  color: var(--primary-700);
+}
+.nav-link:hover .nav-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Activo: estilo más fuerte */
+.nav-link.is-active {
+  background: var(--primary-50);
+  color: var(--primary-800);
+  font-weight: 600;
+}
+.nav-link.is-active .nav-icon {
+  color: var(--primary-700);
+}
+
+/* Icono */
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--neutral-500);
+  transition: transform var(--dur-base) var(--ease-organic),
+              color var(--dur-base) var(--ease-organic);
+  flex-shrink: 0;
+}
+.nav-icon svg { width: 20px; height: 20px; }
+
+/* Label */
+.nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Flecha que aparece al hover */
+.nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--primary-600);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--dur-base) var(--ease-organic),
+              transform var(--dur-base) var(--ease-organic);
+}
+.nav-arrow svg { width: 14px; height: 14px; }
+.nav-link.is-active .nav-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--primary-700);
+}
+
+/* ============================================================
+   FOOTER · Usuario
+   ============================================================ */
+.sidebar-footer {
+  border-top: 1px solid var(--neutral-200);
+  padding: 14px 14px 16px;
+  background: linear-gradient(180deg, transparent, var(--primary-50) 220%);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: var(--radius-button);
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  transition: border-color var(--dur-base) var(--ease-organic),
+              background var(--dur-base) var(--ease-organic);
+}
+.user-card:hover {
+  border-color: var(--primary-300);
+  background: var(--neutral-50);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-fab);
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-800));
+  color: var(--neutral-50);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(140, 103, 103, 0.22);
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-role {
+  font-size: 11px;
+  color: var(--neutral-500);
+  margin: 2px 0 0;
+  letter-spacing: 0.02em;
+}
+
+.btn-logout {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--neutral-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--dur-base) var(--ease-organic),
+              color var(--dur-base) var(--ease-organic),
+              transform var(--dur-base) var(--ease-organic);
+  flex-shrink: 0;
+}
+.btn-logout svg { width: 18px; height: 18px; }
+.btn-logout:hover {
+  background: #FDE2E2;
+  color: #9A5E5E;
+  transform: translateX(2px);
+}
+.btn-logout:active { transform: translateX(0) scale(0.95); }
+
+/* ============================================================
+   SCROLLBAR SUTIL
+   ============================================================ */
+.sidebar-nav::-webkit-scrollbar { width: 6px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: var(--radius-fab);
+}
+.sidebar-nav::-webkit-scrollbar-thumb:hover { background: var(--neutral-400); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  :host { width: 72px; }
+  .sidebar { align-items: center; }
+  .sidebar-brand { padding: 22px 14px 18px; justify-content: center; }
+  .brand-text { display: none; }
+  .sidebar-nav { padding: 16px 10px; }
+  .nav-section-label { display: none; }
+  .nav-link { justify-content: center; padding: 12px 8px; }
+  .nav-label, .nav-arrow { display: none; }
+  .nav-link:hover .nav-label { display: block; }
+  .sidebar-footer { padding: 10px 8px 14px; }
+  .user-card { flex-direction: column; padding: 8px 4px; gap: 6px; }
+  .user-info { display: none; }
+}

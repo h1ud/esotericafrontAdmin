@@ -1,0 +1,299 @@
+/* =========================================================
+   ESOTERICA · Login
+   Split layout: panel decorativo + tarjeta con formulario.
+   ========================================================= */
+
+/* ---------- Contenedor principal (full viewport) ---------- */
+.login-page {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  min-height: 100vh;
+  background: var(--neutral-100);
+  overflow: hidden;
+}
+
+/* ============================================================
+   PANEL DECORATIVO IZQUIERDO
+   ============================================================ */
+.login-decor {
+  position: relative;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(243, 226, 226, 0.18), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(165, 148, 176, 0.18), transparent 60%),
+    linear-gradient(160deg, var(--primary-700) 0%, var(--primary-800) 45%, var(--primary-950) 100%);
+  color: var(--neutral-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 56px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Pequeñas estrellas generadas con box-shadow */
+.decor-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  opacity: 0.6;
+}
+.decor-stars--small {
+  background-image: radial-gradient(1px 1px at 12% 24%, #fff 50%, transparent 51%);
+  background-size: 220px 220px;
+  opacity: 0.5;
+}
+.decor-stars--medium {
+  background-image: radial-gradient(1.4px 1.4px at 70% 40%, #F3E2E2 50%, transparent 51%);
+  background-size: 320px 320px;
+  opacity: 0.7;
+  animation: drift 18s linear infinite;
+}
+.decor-stars--large {
+  background-image: radial-gradient(2px 2px at 30% 80%, #fff 50%, transparent 51%);
+  background-size: 480px 480px;
+  opacity: 0.4;
+}
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-30px); }
+}
+
+/* Constelación */
+.decor-constellation {
+  position: absolute;
+  top: 8%;
+  right: 6%;
+  width: 320px;
+  height: 320px;
+  opacity: 0.85;
+  animation: float 9s ease-in-out infinite alternate;
+}
+
+/* Luna */
+.decor-moon {
+  position: absolute;
+  bottom: -60px;
+  left: -40px;
+  width: 260px;
+  height: 260px;
+  opacity: 0.85;
+  animation: float 12s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes float {
+  from { transform: translateY(0)   rotate(0deg); }
+  to   { transform: translateY(-14px) rotate(2deg); }
+}
+
+/* Texto del panel */
+.decor-content {
+  position: relative;
+  z-index: 2;
+  max-width: 380px;
+  text-align: left;
+  animation: fadeUp 900ms var(--ease-organic) both;
+}
+
+.decor-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--primary-200);
+  margin-bottom: 18px;
+  padding: 6px 14px;
+  border: 1px solid rgba(243, 226, 226, 0.35);
+  border-radius: var(--radius-badge);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.decor-title {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--neutral-50);
+  margin-bottom: 20px;
+}
+
+.decor-tagline {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--primary-200);
+  max-width: 320px;
+}
+
+/* ============================================================
+   PANEL DERECHO · FORMULARIO
+   ============================================================ */
+.login-form-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  background: var(--neutral-100);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--neutral-50);
+  border-radius: var(--radius-card);
+  padding: 44px 40px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--neutral-200);
+  animation: fadeUp 700ms 120ms var(--ease-organic) both;
+}
+
+.login-header {
+  margin-bottom: 28px;
+}
+.login-header h2 {
+  font-size: 30px;
+  margin-bottom: 8px;
+  color: var(--neutral-900);
+}
+.login-header p {
+  font-size: 15px;
+  color: var(--neutral-600);
+  margin: 0;
+}
+
+/* ---------- Error message ---------- */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FDE2E2;
+  color: #9A5E5E;
+  border: 1px solid rgba(154, 94, 94, 0.18);
+  padding: 12px 14px;
+  border-radius: var(--radius-input);
+  font-size: 14px;
+  margin-bottom: 20px;
+  animation: fadeIn 250ms var(--ease-organic);
+}
+.error-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-fab);
+  background: #9A5E5E;
+  flex-shrink: 0;
+}
+
+/* ---------- Form ---------- */
+.login-form { display: flex; flex-direction: column; }
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--neutral-700);
+}
+
+.form-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--neutral-150);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-input);
+  color: var(--neutral-900);
+  font-family: var(--font-body);
+  font-size: 15px;
+  transition: border-color var(--dur-base) var(--ease-organic),
+              box-shadow   var(--dur-base) var(--ease-organic),
+              background   var(--dur-base) var(--ease-organic);
+  outline: none;
+}
+.form-group input::placeholder {
+  color: #9B928B;
+}
+.form-group input:hover {
+  border-color: var(--primary-400);
+}
+.form-group input:focus {
+  border-color: var(--primary-500);
+  background: var(--neutral-50);
+  box-shadow: var(--shadow-focus);
+}
+
+/* ---------- Botón primary ---------- */
+.btn-login {
+  width: 100%;
+  height: 50px;
+  margin-top: 10px;
+  background: var(--primary-700);
+  color: var(--neutral-50);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-button);
+  transition: background var(--dur-base) var(--ease-organic),
+              transform var(--dur-base) var(--ease-organic),
+              box-shadow var(--dur-base) var(--ease-organic);
+  box-shadow: 0 4px 12px rgba(140, 103, 103, 0.18);
+}
+.btn-login:hover {
+  background: var(--primary-800);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 6px 18px rgba(140, 103, 103, 0.26);
+}
+.btn-login:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* ---------- Footer link ---------- */
+.login-footer {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+}
+.login-footer a {
+  color: var(--primary-700);
+  font-weight: 500;
+  position: relative;
+}
+.login-footer a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--primary-500);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-base) var(--ease-organic);
+}
+.login-footer a:hover::after { transform: scaleX(1); }
+
+/* ============================================================
+   ANIMACIONES
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .login-page { grid-template-columns: 1fr; }
+  .login-decor { display: none; }
+  .login-form-area { padding: 32px 20px; }
+  .login-card { padding: 32px 24px; }
+  .login-header h2 { font-size: 26px; }
+}
