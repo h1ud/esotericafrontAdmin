@@ -39,6 +39,11 @@ testem.log
 /typings
 __screenshots__/
 
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
 # System files
 .DS_Store
 Thumbs.db
