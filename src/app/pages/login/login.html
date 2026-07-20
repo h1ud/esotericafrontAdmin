@@ -1,0 +1,36 @@
+<div class="login-container">
+  <div class="login-box">
+    <h2>Esoterica</h2>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div class="form-group">
+      <label>Usuario</label>
+      <input
+        type="text"
+        [(ngModel)]="loginData.username"
+        name="username"
+        placeholder="Ingresa tu usuario"
+      >
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input
+        type="password"
+        [(ngModel)]="loginData.password"
+        name="password"
+        placeholder="Ingresa tu contraseña"
+      >
+    </div>
+
+    <button class="btn-login" (click)="onLogin()">Iniciar Sesión</button>
+    <div>
+      <a routerLink="/passwordReset">
+        Restablecer contraseña
+      </a>
+    </div>
+  </div>
+</div>

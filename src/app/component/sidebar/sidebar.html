@@ -1,0 +1,55 @@
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <h2>Esoterica</h2>
+  </div>
+
+  <ul>
+    <li>
+      <a routerLink="/admin/dashboard">
+        Dashboard
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/clients">
+        Clients
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/employees">
+        Employees
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/menu">
+        Menu
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/codes">
+        Codes
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/reports">
+        Reports
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/admin/password-reset-list">
+        Password Resets
+      </a>
+    </li>
+
+    <li class="logout-item">
+      <a routerLink="/admin/login" (click)="onLogout()">
+        Logout
+      </a>
+    </li>
+  </ul>
+</nav>
