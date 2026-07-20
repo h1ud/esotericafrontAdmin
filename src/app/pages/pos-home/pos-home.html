@@ -1,0 +1,110 @@
+<div class="pos-wrapper">
+
+  <div class="pos-panel-central">
+
+    <div class="columna-izquierda">
+      <div class="bloque-categorias">
+        <button
+          *ngFor="let cat of categories"
+          [class.active]="cat.id === selectedCategoryId"
+          (click)="selectCategory(cat.id)">
+          {{ cat.categoryName }}
+        </button>
+      </div>
+
+      <div class="bloque-productos">
+        <div *ngIf="products.length === 0" class="sin-datos">No hay productos disponibles.</div>
+
+        <div *ngFor="let prod of products" class="item-producto" (click)="addToCart(prod)">
+          <span class="prod-nombre">{{ prod.productName }}</span>
+          <span class="prod-precio">S/. {{ prod.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="columna-derecha">
+
+      <div *ngIf="!isCheckout" class="boleta-dinamica">
+        <div class="boleta-header">
+          <h3>Resumen de Venta</h3>
+        </div>
+
+        <div class="boleta-cuerpo">
+          <div *ngIf="cart.length === 0" class="sin-datos">Carrito vacío</div>
+
+          <div *ngFor="let item of cart" class="boleta-linea">
+            <div>
+              <strong>{{ item.product.productName }}</strong>
+              <small style="display: block; color: #666;">
+                S/. {{ item.product.price }} x {{ item.quantity }}
+              </small>
+            </div>
+            <span class="linea-subtotal">
+              S/. {{ (item.product.price * item.quantity) | number:'1.2-2' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="boleta-pie">
+          <div class="fila-total">
+            <span>TOTAL A PAGAR</span>
+            <strong>S/. {{ getTotal() | number:'1.2-2' }}</strong>
+          </div>
+
+          <button
+            class="btn-continuar"
+            [disabled]="cart.length === 0"
+            (click)="goToCheckout()">
+            CONTINUAR ➔
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="isCheckout" class="payment-screen">
+        <div class="boleta-header">
+          <h3>💵 Procesar Cobro</h3>
+        </div>
+
+        <div class="boleta-cuerpo">
+          <div class="total-monto" style="text-align: center; margin-bottom: 20px;">
+            <p>Monto Neto a Cobrar:</p>
+            <h2 style="font-size: 2rem; color: #2c3e50;">
+              {{ getTotal() | currency:'PEN':'S/.' }}
+            </h2>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Método de Pago:</label>
+            <select [(ngModel)]="paymentMethod" class="form-control" style="width: 100%; padding: 8px;">
+              <option value="EFECTIVO">💵 Efectivo</option>
+              <option value="TARJETA">💳 Tarjeta (POS)</option>
+              <option value="YAPE_PLIN">📱 Yape / Plin</option>
+            </select>
+          </div>
+
+          <div *ngIf="paymentMethod === 'EFECTIVO'" class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">¿Con cuánto paga el cliente?</label>
+            <input type="number" [(ngModel)]="amountPaid" class="form-control" style="width: 100%; padding: 8px;" placeholder="Ej: 50">
+
+            <div class="vuelto-box" *ngIf="amountPaid > 0" style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-radius: 4px;">
+              <p style="margin: 0;">Vuelto a entregar:</p>
+              <h3 class="text-success" style="margin: 5px 0 0 0; color: #2e7d32;">
+                {{ getChange() | currency:'PEN':'S/.' }}
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="boleta-pie">
+          <div class="payment-actions" style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn-regresar" (click)="cancelCheckout()" style="flex: 1; padding: 10px;">
+              ⬅️ Volver
+            </button>
+            <button class="btn-confirmar" (click)="confirmPayment()" style="flex: 2; padding: 10px; background: #2e7d32; color: white; border: none; font-weight: bold;">
+              ✔️ CONFIRMAR
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div> </div> </div>

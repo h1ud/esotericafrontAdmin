@@ -1,179 +1,332 @@
-<div>
-  <div class="page-header">
-    <div>
-      <h1>Clientes</h1>
-      <p>Gestión de clientes registrados</p>
+<div class="clients-container">
+  <h1>Gestión de Clientes</h1>
+  <p class="section-subtitle">Administra los clientes registrados en el sistema</p>
+
+  <!-- ============================================================ -->
+  <!-- TOASTS -->
+  <!-- ============================================================ -->
+  @if (toasts().length > 0) {
+    <div class="toasts-container">
+      @for (t of toasts(); track t.id) {
+        <div class="toast toast-{{ t.type }}">
+          <span>{{ t.message }}</span>
+          <button class="toast-dismiss" (click)="dismissToast(t.id)">✕</button>
+        </div>
+      }
     </div>
-    <button class="btn-primary" (click)="openForm()">
-      <svg class="mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-      Nuevo Cliente
-    </button>
-  </div>
+  }
 
-  <div *ngIf="errorMessage" class="msg-error">
-    {{ errorMessage }}
-  </div>
+  <!-- ============================================================ -->
+  <!-- ERROR -->
+  <!-- ============================================================ -->
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
 
-  <!-- Search & Controls -->
-  <div class="flex items-center gap-4 mb-6">
-    <div class="search-wrapper flex-1 max-w-sm">
-      <input
-        type="text"
-        class="input"
-        [(ngModel)]="searchTerm"
-        (input)="filteredClients()"
-        placeholder="Buscar por DNI..."
+  <!-- ============================================================ -->
+  <!-- LOADING -->
+  <!-- ============================================================ -->
+  @if (loading()) {
+    <div class="loading-indicator">
+      Cargando clientes…
+    </div>
+  } @else {
+    <!-- ============================================================ -->
+    <!-- BARRA SUPERIOR -->
+    <!-- ============================================================ -->
+    <div class="top-controls">
+      <button class="btn btn-primary" (click)="openForm()">
+        + Agregar Cliente
+      </button>
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          placeholder="Buscar por nombre, DNI o ID…"
+        />
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FILTROS AVANZADOS -->
+    <!-- ============================================================ -->
+    <div class="filters-bar">
+      <button
+        class="btn-filter-toggle"
+        (click)="showFilters.set(!showFilters())"
       >
-    </div>
-  </div>
+        <span class="filter-icon">{{ showFilters() ? '▼' : '▶' }}</span>
+        Filtros avanzados
+        @if (totalCount() < clients().length) {
+          <span class="filter-badge">{{ totalCount() }}</span>
+        }
+      </button>
 
-  <!-- Loading -->
-  <div *ngIf="loading" class="loading-spinner">Cargando clientes...</div>
+      @if (showFilters()) {
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label for="filter-date-from">Fecha creación desde</label>
+            <input
+              type="date"
+              id="filter-date-from"
+              class="filter-input"
+              [ngModel]="filterDateFrom()"
+              (ngModelChange)="filterDateFrom.set($event)"
+            />
+          </div>
 
-  <!-- Table -->
-  <div class="table-container" *ngIf="!loading">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>DNI</th>
-          <th>Fecha Nac.</th>
-          <th>Fecha Creación</th>
-          <th style="text-align: right;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let client of filteredClients()">
-          <td class="font-mono text-[#9B928B] text-[13px]">#{{ client.id }}</td>
-          <td class="font-medium">{{ client.name }}</td>
-          <td class="font-mono text-[13px]">{{ client.dni }}</td>
-          <td class="text-[#6F6A66]">{{ client.birthdayDate || '—' }}</td>
-          <td class="text-[#6F6A66]">{{ client.createDate || '—' }}</td>
-          <td style="text-align: right;">
-            <div class="flex gap-2 justify-end">
-              <button class="btn-ghost btn-sm" (click)="editClient(client)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-                Editar
-              </button>
-              <button class="btn-danger btn-sm" (click)="deleteClient(client.id!)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
-                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-                Eliminar
+          <div class="filter-group">
+            <label for="filter-date-to">Fecha creación hasta</label>
+            <input
+              type="date"
+              id="filter-date-to"
+              class="filter-input"
+              [ngModel]="filterDateTo()"
+              (ngModelChange)="filterDateTo.set($event)"
+            />
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-age-min">Edad mínima</label>
+            <input
+              type="number"
+              id="filter-age-min"
+              class="filter-input"
+              min="0"
+              max="120"
+              placeholder="Ej: 18"
+              [ngModel]="filterAgeMin()"
+              (ngModelChange)="setFilterAgeMin($event)"
+            />
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-age-max">Edad máxima</label>
+            <input
+              type="number"
+              id="filter-age-max"
+              class="filter-input"
+              min="0"
+              max="120"
+              placeholder="Ej: 60"
+              [ngModel]="filterAgeMax()"
+              (ngModelChange)="setFilterAgeMax($event)"
+            />
+          </div>
+
+          @if (filterDateFrom() || filterDateTo() || filterAgeMin() !== null || filterAgeMax() !== null) {
+            <div class="filter-group filter-actions">
+              <button class="btn-clear-filters" (click)="clearFilters()">
+                ✕ Limpiar filtros
               </button>
             </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TABLA REUTILIZABLE (table-base) -->
+    <!-- ============================================================ -->
+    <app-table-base
+      [data]="filteredClients()"
+      [columns]="clientColumns"
+      [loading]="loading()"
+      [pageSize]="10"
+      title="Lista de Clientes"
+      emptyMessage="No hay clientes registrados"
+      filteredMessage="Ningún cliente coincide con los filtros aplicados"
+    >
+      <ng-template #rowTemplate let-client>
+        <tr class="table-row-clickable" (click)="viewClient(client)">
+          <td>{{ client.id }}</td>
+          <td>
+            <div class="client-name-cell">
+              <span class="client-avatar">{{ getInitials(client.name) }}</span>
+              <span>{{ client.name }}</span>
+            </div>
+          </td>
+          <td>{{ client.dni }}</td>
+          <td>{{ client.birthdayDate ? (client.birthdayDate | date:'dd/MM/yyyy') : '—' }}</td>
+          <td>
+            @if (getAge(client.birthdayDate); as age) {
+              <span class="age-badge">{{ age }} años</span>
+            } @else {
+              <span class="age-unknown">—</span>
+            }
+          </td>
+          <td>{{ client.createDate ? (client.createDate | date:'dd/MM/yyyy') : '—' }}</td>
+          <td class="actions">
+            <button class="btn btn-ghost btn-xs" (click)="editClient(client); $event.stopPropagation()">Editar</button>
+            <button class="btn btn-danger btn-xs" (click)="deleteClient(client.id!); $event.stopPropagation()">Eliminar</button>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </ng-template>
+    </app-table-base>
+  }
 
-    <div *ngIf="clients.length === 0" class="empty-state">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-      </svg>
-      <p>No hay clientes registrados</p>
-    </div>
-  </div>
+  <!-- ============================================================ -->
+  <!-- FORMULARIO (Modal) — Reactive Forms -->
+  <!-- ============================================================ -->
+  @if (showForm()) {
+    <div class="form-section">
+      <div class="form-overlay" (click)="closeForm()"></div>
+      <div class="form-container">
+        <h2>{{ editingId() ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+        <p class="form-subtitle">
+          {{ editingId() ? 'Modifica los datos del cliente seleccionado' : 'Ingresa los datos del nuevo cliente' }}
+        </p>
 
-  <!-- Form Modal -->
-  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="flex items-center justify-between mb-6">
-        <h2 style="font-family: 'Noto Serif', serif; font-size: 20px; font-weight: 500; color: #121212; margin: 0;">
-          {{ editingId ? 'Editar Cliente' : 'Nuevo Cliente' }}
-        </h2>
-        <button (click)="closeForm()" class="btn-ghost" style="padding: 4px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B928B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
+        <form [formGroup]="clientForm" (ngSubmit)="saveClient()">
+          <div class="form-group">
+            <label for="name">Nombre completo</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              placeholder="Ej: María García"
+              [class.has-error]="clientForm.controls.name.invalid && (clientForm.controls.name.dirty || clientForm.controls.name.touched)"
+            />
+            @if (clientForm.controls.name.invalid && (clientForm.controls.name.dirty || clientForm.controls.name.touched)) {
+              <small class="field-error">
+                @if (clientForm.controls.name.errors?.['required']) {
+                  ⚠ El nombre es obligatorio
+                }
+              </small>
+            }
+          </div>
 
-      <form class="space-y-4">
-        <div>
-          <label class="label">Nombre</label>
-          <input
-            type="text"
-            class="input"
-            [(ngModel)]="formData.name"
-            name="name"
-            placeholder="Nombre del cliente"
-            required
-          >
-        </div>
+          <div class="form-group">
+            <label for="dni">DNI</label>
+            <input
+              type="text"
+              id="dni"
+              formControlName="dni"
+              placeholder="12345678"
+              maxlength="8"
+              [class.has-error]="clientForm.controls.dni.invalid && (clientForm.controls.dni.dirty || clientForm.controls.dni.touched)"
+            />
+            @if (clientForm.controls.dni.invalid && (clientForm.controls.dni.dirty || clientForm.controls.dni.touched)) {
+              <small class="field-error">
+                @if (clientForm.controls.dni.errors?.['required']) {
+                  ⚠ El DNI es obligatorio
+                }
+                @if (clientForm.controls.dni.errors?.['minlength'] || clientForm.controls.dni.errors?.['pattern']) {
+                  ⚠ Debe tener 8 dígitos numéricos
+                }
+              </small>
+            }
+          </div>
 
-        <div>
-          <label class="label">DNI</label>
-          <input
-            type="text"
-            class="input"
-            [(ngModel)]="formData.dni"
-            name="dni"
-            placeholder="12345678"
-            required
-            minlength="8"
-            maxlength="8"
-            pattern="[0-9]{8}"
-            #dniInput="ngModel"
-          >
-          <small *ngIf="dniInput.invalid && (dniInput.dirty || dniInput.touched)" class="text-[#9A5E5E] text-[12px] mt-1 block font-medium">
-            <span *ngIf="dniInput.errors?.['required']">El DNI es obligatorio</span>
-            <span *ngIf="dniInput.errors?.['minlength'] || dniInput.errors?.['pattern']">Se requieren 8 dígitos numéricos</span>
-          </small>
-        </div>
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              formControlName="password_hash"
+              [placeholder]="editingId() ? 'Dejar en blanco para mantener' : 'Contraseña del cliente'"
+              [class.has-error]="clientForm.controls.password_hash.invalid && (clientForm.controls.password_hash.dirty || clientForm.controls.password_hash.touched)"
+            />
+            @if (clientForm.controls.password_hash.invalid && (clientForm.controls.password_hash.dirty || clientForm.controls.password_hash.touched)) {
+              <small class="field-error">
+                @if (clientForm.controls.password_hash.errors?.['required']) {
+                  ⚠ La contraseña es obligatoria para nuevos clientes
+                }
+                @if (clientForm.controls.password_hash.errors?.['minlength']) {
+                  ⚠ Mínimo 6 caracteres
+                }
+              </small>
+            }
+            @if (!editingId()) {
+              <small class="field-hint">Mínimo 6 caracteres</small>
+            }
+          </div>
 
-        <div>
-          <label class="label">Contraseña</label>
-          <input
-            type="password"
-            class="input"
-            [(ngModel)]="formData.password_hash"
-            name="password_hash"
-            placeholder="Contraseña"
-            [required]="!editingId"
-          >
-        </div>
+          <div class="form-group">
+            <label for="birthday">Fecha de nacimiento</label>
+            <input
+              type="date"
+              id="birthday"
+              formControlName="birthdayDate"
+            />
+          </div>
 
-        <div>
-          <label class="label">Fecha de Nacimiento</label>
-          <input
-            type="date"
-            class="input"
-            [(ngModel)]="formData.birthdayDate"
-            name="birthday_date"
-          >
-        </div>
-
-        <div class="flex gap-3 pt-2">
-          <button type="button" class="btn-primary flex-1" (click)="saveClient()">
-            {{ editingId ? 'Actualizar' : 'Guardar' }}
-          </button>
-          <button type="button" class="btn-outline" (click)="closeForm()">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Delete Confirm Modal -->
-  <div *ngIf="showDeleteConfirm" class="modal-overlay" (click)="cancelDelete()">
-    <div class="modal-content-sm text-center" (click)="$event.stopPropagation()">
-      <div class="w-12 h-12 rounded-full bg-[#FDE2E2] flex items-center justify-center mx-auto mb-4">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A5E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-      </div>
-      <h2 style="font-family: 'Noto Serif', serif; font-size: 18px; font-weight: 500; color: #121212; margin: 0 0 8px;">¿Eliminar cliente?</h2>
-      <p style="font-size: 14px; color: #6F6A66; margin-bottom: 24px;">Esta acción no se puede deshacer.</p>
-      <div class="flex gap-3 justify-center">
-        <button class="btn-danger" (click)="confirmDelete()">Eliminar</button>
-        <button class="btn-ghost" (click)="cancelDelete()">Cancelar</button>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid && clientForm.dirty">
+              {{ editingId() ? 'Guardar cambios' : 'Crear cliente' }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  </div>
+  }
+
+  <!-- ============================================================ -->
+  <!-- DETALLE DE CLIENTE (Modal) -->
+  <!-- ============================================================ -->
+  @if (showDetail() && selectedClient(); as client) {
+    <div class="form-section">
+      <div class="form-overlay" (click)="closeDetail()"></div>
+      <div class="detail-container">
+        <div class="detail-header">
+          <span class="detail-avatar">{{ getInitials(client.name) }}</span>
+          <div class="detail-title-group">
+            <h2>{{ client.name }}</h2>
+            <span class="detail-id">ID #{{ client.id }}</span>
+          </div>
+          <button class="detail-close" (click)="closeDetail()" aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="detail-body">
+          <div class="detail-row">
+            <span class="detail-label">DNI</span>
+            <span class="detail-value">{{ client.dni }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Fecha de nacimiento</span>
+            <span class="detail-value">
+              {{ client.birthdayDate ? (client.birthdayDate | date:'dd/MM/yyyy') : '—' }}
+              @if (getAge(client.birthdayDate); as age) {
+                <span class="detail-age">({{ age }} años)</span>
+              }
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Registrado desde</span>
+            <span class="detail-value">
+              {{ client.createDate ? (client.createDate | date:'dd/MM/yyyy') : '—' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button class="btn btn-secondary" (click)="closeDetail()">Cerrar</button>
+          <button class="btn btn-outline" (click)="closeDetail(); editClient(client)">Editar</button>
+          <button class="btn btn-danger" (click)="closeDetail(); deleteClient(client.id!)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ============================================================ -->
+  <!-- CONFIRMAR ELIMINACIÓN (Modal) -->
+  <!-- ============================================================ -->
+  @if (showDeleteConfirm()) {
+    <div class="form-section">
+      <div class="form-overlay" (click)="cancelDelete()"></div>
+      <div class="confirm-container">
+        <h2>Eliminar Cliente</h2>
+        <p>¿Estás seguro de que deseas eliminar este cliente?<br>Esta acción no se puede deshacer.</p>
+        <div class="confirm-actions">
+          <button class="btn btn-secondary" (click)="cancelDelete()">Cancelar</button>
+          <button class="btn btn-danger" (click)="confirmDelete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

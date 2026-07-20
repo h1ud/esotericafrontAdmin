@@ -1,82 +1,165 @@
-<div>
-  <div class="page-header">
+<!--
+  Dashboard · Esoterica
+  Layout: header + KPIs + (gráfico de barras | gráfico de líneas) + actividad reciente
+  Sin emojis, iconos SVG outline monocromáticos.
+-->
+
+<div class="dashboard-page">
+  <!-- ============ Header ============ -->
+  <header class="dash-header">
     <div>
-      <h1>Dashboard</h1>
-      <p>Resumen del sistema</p>
+      <p class="dash-eyebrow">{{ formattedDate() }}</p>
+      <h1 class="dash-title">
+        {{ greeting() }}, <span class="dash-title-accent">{{ userName() }}</span>
+      </h1>
+      <p class="dash-subtitle">Esto es lo que ocurre en tu pastelería hoy.</p>
     </div>
-  </div>
+    <div class="dash-header-actions">
+      <button class="btn-ghost" type="button">Exportar</button>
+      <button class="btn-primary" type="button">+ Nuevo pedido</button>
+    </div>
+  </header>
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-    <div class="card" style="padding: 24px;">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 rounded-xl bg-[#F3E2E2] flex items-center justify-center flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8C6767" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-          </svg>
+  <!-- ============ KPIs ============ -->
+  <section class="kpi-grid" aria-label="Indicadores clave">
+    @for (kpi of kpis(); track kpi.label) {
+      <article #kpiCard class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="kpi.iconPath"></path>
+            </svg>
+          </span>
+          <span
+            class="kpi-trend"
+            [class.kpi-trend--up]="kpi.trend >= 0"
+            [class.kpi-trend--down]="kpi.trend < 0"
+          >
+            {{ kpi.trend >= 0 ? '↑' : '↓' }} {{ kpi.trend | number:'1.1-1' }}%
+          </span>
         </div>
+        <p class="kpi-label">{{ kpi.label }}</p>
+        <p #kpiNumber class="kpi-value">0</p>
+      </article>
+    }
+  </section>
+
+  <!-- ============ Gráficos ============ -->
+  <section class="charts-grid">
+    <!-- Gráfico de barras -->
+    <article class="chart-card">
+      <header class="chart-header">
         <div>
-          <p class="text-[13px] font-semibold text-[#9B928B] uppercase tracking-[0.04em]">Clientes</p>
-          <p class="text-[26px] font-semibold text-[#121212] mt-0.5" style="font-family: 'Noto Serif', serif;">—</p>
+          <h3>Ventas por día</h3>
+          <p>Resumen de la última semana</p>
         </div>
-      </div>
-    </div>
+        <span class="chart-badge">Esta semana</span>
+      </header>
 
-    <div class="card" style="padding: 24px;">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 rounded-xl bg-[#D9E6E0] flex items-center justify-center flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#48645A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-          </svg>
-        </div>
+      <div class="bar-chart">
+        @for (point of salesByDay(); track point.label; let i = $index) {
+          <div class="bar-col">
+            <div class="bar-track">
+              <div
+                #barFill
+                class="bar-fill"
+                [attr.aria-label]="point.label + ': ' + point.value">
+              </div>
+            </div>
+            <span class="bar-label">{{ point.label }}</span>
+            <span class="bar-value">{{ point.value }}</span>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- Gráfico de líneas SVG -->
+    <article class="chart-card">
+      <header class="chart-header">
         <div>
-          <p class="text-[13px] font-semibold text-[#9B928B] uppercase tracking-[0.04em]">Empleados</p>
-          <p class="text-[26px] font-semibold text-[#121212] mt-0.5" style="font-family: 'Noto Serif', serif;">—</p>
+          <h3>Actividad mensual</h3>
+          <p>Pedidos completados en los últimos 12 meses</p>
         </div>
-      </div>
-    </div>
+        <span class="chart-badge chart-badge--soft">12 meses</span>
+      </header>
 
-    <div class="card" style="padding: 24px;">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 rounded-xl bg-[#E3D9EA] flex items-center justify-center flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#645977" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-[13px] font-semibold text-[#9B928B] uppercase tracking-[0.04em]">Productos</p>
-          <p class="text-[26px] font-semibold text-[#121212] mt-0.5" style="font-family: 'Noto Serif', serif;">—</p>
-        </div>
-      </div>
-    </div>
+      <div class="line-chart-wrap">
+        <svg viewBox="0 0 600 200" preserveAspectRatio="none"
+             class="line-chart" aria-label="Tendencia de actividad">
+          <defs>
+            <linearGradient id="lineGradient" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%"  stop-color="rgba(185,141,141,0.35)"/>
+              <stop offset="100%" stop-color="rgba(185,141,141,0)"/>
+            </linearGradient>
+          </defs>
 
-    <div class="card" style="padding: 24px;">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 rounded-xl bg-[#FDE2E2] flex items-center justify-center flex-shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A5E5E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-[13px] font-semibold text-[#9B928B] uppercase tracking-[0.04em]">Promociones</p>
-          <p class="text-[26px] font-semibold text-[#121212] mt-0.5" style="font-family: 'Noto Serif', serif;">—</p>
-        </div>
-      </div>
-    </div>
-  </div>
+          <!-- Grid horizontal sutil -->
+          <g stroke="#ECE8E2" stroke-width="1">
+            <line x1="0" y1="40"  x2="600" y2="40" />
+            <line x1="0" y1="100" x2="600" y2="100" />
+            <line x1="0" y1="160" x2="600" y2="160" />
+          </g>
 
-  <!-- Welcome -->
-  <div class="card">
-    <div class="flex items-center gap-5">
-      <div class="w-16 h-16 rounded-2xl bg-[#8C6767] flex items-center justify-center flex-shrink-0">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12"/><path d="M12 6v6l4 2"/>
+          <!-- Área rellena bajo la línea -->
+          <polygon
+            [attr.points]="'0,200 ' + polylinePoints() + ' 600,200'"
+            fill="url(#lineGradient)" />
+
+          <!-- Línea -->
+          <path
+            #linePath
+            [attr.d]="linePathD()"
+            fill="none"
+            stroke="#8C6767"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+          </path>
+
+          <!-- Punto destacado al final -->
+          <circle
+            #lineDot
+            [attr.cx]="lastPoint().x"
+            [attr.cy]="lastPoint().y"
+            r="6"
+            fill="#fff"
+            stroke="#8C6767"
+            stroke-width="2.5">
+          </circle>
         </svg>
       </div>
+    </article>
+  </section>
+
+  <!-- ============ Actividad reciente ============ -->
+  <section class="activity-card">
+    <header class="chart-header">
       <div>
-        <h2 style="font-family: 'Noto Serif', serif; font-size: 22px; font-weight: 500; color: #121212; margin: 0;">Bienvenido al Panel de Administración</h2>
-        <p style="font-size: 14px; color: #9B928B; margin-top: 4px;">Gestiona tu negocio de manera eficiente y elegante.</p>
+        <h3>Actividad reciente</h3>
+        <p>Los últimos eventos del sistema</p>
       </div>
-    </div>
-  </div>
+      <a href="#" class="activity-link">Ver todo</a>
+    </header>
+
+    <ul class="activity-list">
+      @for (item of recentActivity(); track item.title) {
+        <li #activityItem class="activity-item">
+          <span class="activity-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="item.iconPath"></path>
+            </svg>
+          </span>
+          <div class="activity-body">
+            <p class="activity-title">{{ item.title }}</p>
+            <p class="activity-meta">{{ item.meta }}</p>
+          </div>
+          @if (item.amount) {
+            <span class="activity-amount">{{ item.amount }}</span>
+          }
+        </li>
+      }
+    </ul>
+  </section>
 </div>

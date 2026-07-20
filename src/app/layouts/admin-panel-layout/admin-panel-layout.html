@@ -1,11 +1,7 @@
-<div class="flex h-screen overflow-hidden bg-[#F9F5F0]">
-  <!-- Sidebar -->
-  <app-sidebar class="flex-shrink-0"></app-sidebar>
 
-  <!-- Main content -->
-  <main class="flex-1 min-w-0 overflow-y-auto">
-    <div class="p-8 lg:p-10 max-w-7xl mx-auto animate-[slideUp_300ms_ease-out]">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
+<div class="container">
+    <app-sidebar></app-sidebar>
+  <div class="content-panel">
+    <router-outlet></router-outlet>
+  </div>
 </div>

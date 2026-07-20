@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core'; // 👈 1. IMPORTAR ChangeDetectorRef
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -26,11 +26,21 @@ export class Login {
 
     this.authService.login(this.loginData).subscribe({
       next: () => {
-        this.router.navigate(['/admin/clients']);
+        const roles = this.authService.getRoles();
+        console.log('AHORA SÍ LLEGAN:', roles); // Debería salir: ["ADMIN"]
+
+        if (roles.includes('ADMIN')) {
+          // Si es ADMIN, directo a su panel
+          this.router.navigate(['/admin/dashboard']);
+        } else if (roles.includes('COLABORADOR') || roles.includes('BACKOFFICE')) {
+          // Si es trabajador, directo al POS
+          this.router.navigate(['/pos-home']);
+        } else {
+          this.router.navigate(['/pos-home']);
+        }
       },
       error: (err) => {
         this.errorMessage = 'Usuario o contraseña incorrectos';
-        console.error('Login error:', err);
         this.cdr.detectChanges();
       },
     });

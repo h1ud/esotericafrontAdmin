@@ -1,108 +1,83 @@
-<nav class="w-[240px] h-screen bg-[#F7F3EF] flex flex-col border-r border-[#ECE8E2] overflow-y-auto">
-  <!-- Brand -->
-  <div class="px-6 py-6 flex items-center gap-3 border-b border-[#ECE8E2]">
-    <div class="w-8 h-8 rounded-lg bg-[#8C6767] flex items-center justify-center flex-shrink-0">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12"/>
-        <path d="M12 6v6l4 2"/>
+<!--
+  Sidebar · Esoterica
+  Estructura: brand → nav con indicador deslizante → footer con avatar + logout
+  Animaciones GSAP: stagger entrada + pulse logo + indicator slide
+-->
+
+<aside class="sidebar" aria-label="Navegación principal">
+  <!-- ============ Brand / Logo ============ -->
+  <div class="sidebar-brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Luna creciente estilizada dentro de un círculo -->
+        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M20 8a8 8 0 1 0 0 16 6 6 0 1 1 0-16z"
+              fill="currentColor" opacity="0.85"/>
       </svg>
     </div>
-    <div>
-      <h2 style="font-family: 'Noto Serif', serif; font-size: 17px; font-weight: 500; color: #121212; margin: 0; line-height: 1.3;">Esotérica</h2>
-      <p style="font-size: 11px; color: #9B928B; margin: 0;">Admin Panel</p>
+    <div class="brand-text">
+      <h1 class="brand-title">Esoterica</h1>
+      <p class="brand-tagline">Panel administrativo</p>
     </div>
   </div>
 
-  <!-- Navigation -->
-  <div class="flex-1 py-4 px-3 space-y-1">
-    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9B928B] mb-2">Menú</p>
+  <!-- ============ Navegación ============ -->
+  <nav class="sidebar-nav" aria-label="Secciones">
+    <p class="nav-section-label">Menú principal</p>
 
-    <a routerLink="/admin/dashboard"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/dashboard')"
-       [class.text-[#6F6A66]]="!isActive('/admin/dashboard')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-      </svg>
-      Dashboard
-    </a>
+    <ul class="nav-list">
+      <!-- Indicador deslizante (pill) - vive dentro de la lista -->
+      <span class="nav-indicator" aria-hidden="true"></span>
 
-    <a routerLink="/admin/clients"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/clients')"
-       [class.text-[#6F6A66]]="!isActive('/admin/clients')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      Clientes
-    </a>
+      @for (item of navItems(); track item.path) {
+        <li class="nav-item">
+          <a
+            #navLink
+            class="nav-link"
+            [routerLink]="item.path"
+            routerLinkActive="is-active"
+            (click)="onActiveChange()"
+            [attr.aria-label]="item.label">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path [attr.d]="item.iconPath"></path>
+              </svg>
+            </span>
+            <span class="nav-label">{{ item.label }}</span>
+            <span class="nav-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6"/>
+              </svg>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
 
-    <a routerLink="/admin/employees"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/employees')"
-       [class.text-[#6F6A66]]="!isActive('/admin/employees')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      Empleados
-    </a>
-
-    <a routerLink="/admin/menu"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/menu')"
-       [class.text-[#6F6A66]]="!isActive('/admin/menu')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Z"/><path d="M21 15v4a2 2 0 0 1-2 2h-1"/>
-      </svg>
-      Menú
-    </a>
-
-    <a routerLink="/admin/codes"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/codes')"
-       [class.text-[#6F6A66]]="!isActive('/admin/codes')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
-      Promociones
-    </a>
-
-    <a routerLink="/admin/reports"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/reports')"
-       [class.text-[#6F6A66]]="!isActive('/admin/reports')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
-      </svg>
-      Reportes
-    </a>
-
-    <a routerLink="/admin/password-reset-list"
-       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-       [class.!bg-[#8C6767]!text-white]="isActive('/admin/password-reset-list')"
-       [class.text-[#6F6A66]]="!isActive('/admin/password-reset-list')"
-       class="hover-bg-soft">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      </svg>
-      Solicitudes
-    </a>
+  <!-- ============ Footer con usuario ============ -->
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar" aria-hidden="true">
+        <span>{{ user().initials }}</span>
+      </div>
+      <div class="user-info">
+        <p class="user-name">{{ user().name }}</p>
+        <p class="user-role">{{ user().role }}</p>
+      </div>
+      <button
+        class="btn-logout"
+        type="button"
+        (click)="onLogout()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+      </button>
+    </div>
   </div>
-
-  <!-- Logout -->
-  <div class="px-3 py-4 border-t border-[#ECE8E2]">
-    <button (click)="onLogout()"
-            class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#6F6A66] transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:bg-[#E8E3DD] active:scale-[0.98]">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
-      </svg>
-      Cerrar sesión
-    </button>
-  </div>
-</nav>
+</aside>

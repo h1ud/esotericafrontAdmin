@@ -33,7 +33,7 @@ export class PasswordResetList implements OnInit {
       next: (data: PasswordResetData[]) => {
         this.requests = data;
         this.loading = false;
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); // Asegura el renderizado en standalone
       },
       error: (err: any) => {
         this.errorMessage = 'Error al cargar las solicitudes de soporte.';
@@ -43,6 +43,7 @@ export class PasswordResetList implements OnInit {
     });
   }
 
+  // Filtrado rápido por usuario o email igual que implementaste en clientes
   filteredRequests(): PasswordResetData[] {
     if (!this.searchTerm.trim()) {
       return this.requests;

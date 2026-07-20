@@ -48,8 +48,11 @@ export const routes: Routes = [
   },
   {
     path: 'passwordReset',
-    loadComponent: () =>
-      import('./pages/password-reset/password-reset').then((m) => m.PasswordReset),
+    loadComponent: () => import('./pages/password-reset/password-reset').then((m) => m.PasswordReset),
+  },
+  {
+    path: 'pos-home',
+    loadComponent: () => import('./pages/pos-home/pos-home').then((m) => m.PosHome),
   },
   {
     path: '**',
