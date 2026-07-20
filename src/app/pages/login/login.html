@@ -1,36 +1,63 @@
-<div class="login-container">
-  <div class="login-box">
-    <h2>Esoterica</h2>
+<div class="min-h-screen flex items-center justify-center bg-[#F9F5F0] p-4" style="background-image: radial-gradient(circle at 10% 30%, rgba(185,141,141,0.06) 0%, transparent 50%), radial-gradient(circle at 90% 70%, rgba(141,163,153,0.05) 0%, transparent 50%);">
+  <div class="w-full max-w-[420px] card" style="padding: 40px;">
+    <!-- Logo / Brand -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#8C6767] mb-4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h1 style="font-family: 'Noto Serif', serif; font-size: 28px; font-weight: 500; color: #121212; margin: 0;">Esotérica</h1>
+      <p style="font-size: 14px; color: #9B928B; margin-top: 4px;">Panel Administrativo</p>
+    </div>
 
-    <div *ngIf="errorMessage" class="error-message">
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="msg-error">
       {{ errorMessage }}
     </div>
 
-    <div class="form-group">
-      <label>Usuario</label>
-      <input
-        type="text"
-        [(ngModel)]="loginData.username"
-        name="username"
-        placeholder="Ingresa tu usuario"
-      >
-    </div>
+    <!-- Form -->
+    <form (ngSubmit)="onLogin()" class="space-y-5">
+      <div>
+        <label class="label">Usuario</label>
+        <input
+          type="text"
+          class="input"
+          [(ngModel)]="loginData.username"
+          name="username"
+          placeholder="Ingresa tu usuario"
+          autocomplete="username"
+        >
+      </div>
 
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input
-        type="password"
-        [(ngModel)]="loginData.password"
-        name="password"
-        placeholder="Ingresa tu contraseña"
-      >
-    </div>
+      <div>
+        <label class="label">Contraseña</label>
+        <input
+          type="password"
+          class="input"
+          [(ngModel)]="loginData.password"
+          name="password"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+        >
+      </div>
 
-    <button class="btn-login" (click)="onLogin()">Iniciar Sesión</button>
-    <div>
-      <a routerLink="/passwordReset">
-        Restablecer contraseña
-      </a>
-    </div>
+      <button type="submit" class="btn-primary w-full" (click)="onLogin()">
+        Iniciar Sesión
+        <svg class="ml-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+
+      <div class="text-center pt-2">
+        <a routerLink="/passwordReset" class="inline-flex items-center gap-1.5 text-sm font-medium" style="color: #8C6767;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Restablecer contraseña
+        </a>
+      </div>
+    </form>
   </div>
 </div>

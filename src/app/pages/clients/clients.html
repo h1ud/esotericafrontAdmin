@@ -1,139 +1,178 @@
-<div class="clients-container">
-  <h1>Gestión de Clientes</h1>
+<div>
+  <div class="page-header">
+    <div>
+      <h1>Clientes</h1>
+      <p>Gestión de clientes registrados</p>
+    </div>
+    <button class="btn-primary" (click)="openForm()">
+      <svg class="mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nuevo Cliente
+    </button>
+  </div>
 
-  <div *ngIf="errorMessage" class="error-message">
+  <div *ngIf="errorMessage" class="msg-error">
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="loading" class="loading-indicator">
-    Cargando...
-  </div>
-
-  <div class="top-controls" *ngIf="!loading">
-    <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Cliente</button>
-    <div class="search-container">
+  <!-- Search & Controls -->
+  <div class="flex items-center gap-4 mb-6">
+    <div class="search-wrapper flex-1 max-w-sm">
       <input
         type="text"
-        class="search-input"
+        class="input"
         [(ngModel)]="searchTerm"
         (input)="filteredClients()"
-        placeholder="buscar por DNI..."
-      />
+        placeholder="Buscar por DNI..."
+      >
     </div>
   </div>
 
-  <div class="table-section" *ngIf="!loading">
-    <h2>Lista de Clientes</h2>
-    <table class="clients-table">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-spinner">Cargando clientes...</div>
+
+  <!-- Table -->
+  <div class="table-container" *ngIf="!loading">
+    <table>
       <thead>
         <tr>
           <th>ID</th>
           <th>Nombre</th>
           <th>DNI</th>
-          <th>Fecha de Nacimiento</th>
-          <th>Fecha de Creación</th>
-          <th>Acciones</th>
+          <th>Fecha Nac.</th>
+          <th>Fecha Creación</th>
+          <th style="text-align: right;">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let client of filteredClients()">
-          <td>{{ client.id }}</td>
-          <td>{{ client.name }}</td>
-          <td>{{ client.dni }}</td>
-          <td>{{ client.birthdayDate }}</td>
-          <td>{{ client.createDate }}</td>
-          <td class="actions">
-            <button class="btn btn-edit" (click)="editClient(client)">Editar</button>
-            <button class="btn btn-delete" (click)="deleteClient(client.id!)">Eliminar</button>
+          <td class="font-mono text-[#9B928B] text-[13px]">#{{ client.id }}</td>
+          <td class="font-medium">{{ client.name }}</td>
+          <td class="font-mono text-[13px]">{{ client.dni }}</td>
+          <td class="text-[#6F6A66]">{{ client.birthdayDate || '—' }}</td>
+          <td class="text-[#6F6A66]">{{ client.createDate || '—' }}</td>
+          <td style="text-align: right;">
+            <div class="flex gap-2 justify-end">
+              <button class="btn-ghost btn-sm" (click)="editClient(client)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Editar
+              </button>
+              <button class="btn-danger btn-sm" (click)="deleteClient(client.id!)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                Eliminar
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div *ngIf="clients.length === 0" class="no-data">
-      No hay clientes registrados
+    <div *ngIf="clients.length === 0" class="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+      </svg>
+      <p>No hay clientes registrados</p>
     </div>
   </div>
 
-  <div *ngIf="showForm" class="form-section">
-    <div class="form-overlay"></div>
-    <div class="form-container">
-      <h2>{{ editingId ? 'Editar Cliente' : 'Agregar Nuevo Cliente' }}</h2>
+  <!-- Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between mb-6">
+        <h2 style="font-family: 'Noto Serif', serif; font-size: 20px; font-weight: 500; color: #121212; margin: 0;">
+          {{ editingId ? 'Editar Cliente' : 'Nuevo Cliente' }}
+        </h2>
+        <button (click)="closeForm()" class="btn-ghost" style="padding: 4px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B928B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
 
-      <form>
-        <div class="form-group">
-          <label for="name">Nombre:</label>
+      <form class="space-y-4">
+        <div>
+          <label class="label">Nombre</label>
           <input
             type="text"
-            id="name"
+            class="input"
             [(ngModel)]="formData.name"
             name="name"
             placeholder="Nombre del cliente"
             required
-          />
+          >
         </div>
 
-        <div class="form-group">
-          <label for="dni">DNI:</label>
+        <div>
+          <label class="label">DNI</label>
           <input
             type="text"
-            id="dni"
+            class="input"
             [(ngModel)]="formData.dni"
             name="dni"
-            placeholder="DNI"
+            placeholder="12345678"
             required
             minlength="8"
             maxlength="8"
             pattern="[0-9]{8}"
             #dniInput="ngModel"
-          />
-
-          <small *ngIf="dniInput.invalid && (dniInput.dirty || dniInput.touched)" style="color: red; display: block; margin-top: 5px;">
-            <span *ngIf="dniInput.errors?.['required']">el dni es obligatorio</span>
-            <span *ngIf="dniInput.errors?.['minlength'] || dniInput.errors?.['pattern']">se requiere 8 caracteres numericos</span>
+          >
+          <small *ngIf="dniInput.invalid && (dniInput.dirty || dniInput.touched)" class="text-[#9A5E5E] text-[12px] mt-1 block font-medium">
+            <span *ngIf="dniInput.errors?.['required']">El DNI es obligatorio</span>
+            <span *ngIf="dniInput.errors?.['minlength'] || dniInput.errors?.['pattern']">Se requieren 8 dígitos numéricos</span>
           </small>
         </div>
 
-        <div class="form-group">
-          <label for="password">Contraseña:</label>
+        <div>
+          <label class="label">Contraseña</label>
           <input
             type="password"
-            id="password"
+            class="input"
             [(ngModel)]="formData.password_hash"
             name="password_hash"
             placeholder="Contraseña"
             [required]="!editingId"
-          />
+          >
         </div>
 
-        <div class="form-group">
-          <label for="birthday">Fecha de Nacimiento:</label>
+        <div>
+          <label class="label">Fecha de Nacimiento</label>
           <input
             type="date"
-            id="birthday"
+            class="input"
             [(ngModel)]="formData.birthdayDate"
             name="birthday_date"
-          />
+          >
         </div>
 
-        <div class="form-actions">
-          <button type="button" class="btn btn-save" (click)="saveClient()">
+        <div class="flex gap-3 pt-2">
+          <button type="button" class="btn-primary flex-1" (click)="saveClient()">
             {{ editingId ? 'Actualizar' : 'Guardar' }}
           </button>
-          <button type="button" class="btn btn-cancel" (click)="closeForm()">Cancelar</button>
+          <button type="button" class="btn-outline" (click)="closeForm()">Cancelar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div *ngIf="showDeleteConfirm" class="form-section">
-    <div class="form-overlay"></div>
-    <div class="confirm-container">
-      <h2>Confirmar eliminación</h2>
-      <p>¿Está seguro que desea eliminar este cliente?</p>
-      <div class="confirm-actions">
-        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
-        <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>
+  <!-- Delete Confirm Modal -->
+  <div *ngIf="showDeleteConfirm" class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal-content-sm text-center" (click)="$event.stopPropagation()">
+      <div class="w-12 h-12 rounded-full bg-[#FDE2E2] flex items-center justify-center mx-auto mb-4">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A5E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h2 style="font-family: 'Noto Serif', serif; font-size: 18px; font-weight: 500; color: #121212; margin: 0 0 8px;">¿Eliminar cliente?</h2>
+      <p style="font-size: 14px; color: #6F6A66; margin-bottom: 24px;">Esta acción no se puede deshacer.</p>
+      <div class="flex gap-3 justify-center">
+        <button class="btn-danger" (click)="confirmDelete()">Eliminar</button>
+        <button class="btn-ghost" (click)="cancelDelete()">Cancelar</button>
       </div>
     </div>
   </div>

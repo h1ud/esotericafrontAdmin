@@ -1,55 +1,108 @@
-<nav class="sidebar">
-  <div class="sidebar-header">
-    <h2>Esoterica</h2>
+<nav class="w-[240px] h-screen bg-[#F7F3EF] flex flex-col border-r border-[#ECE8E2] overflow-y-auto">
+  <!-- Brand -->
+  <div class="px-6 py-6 flex items-center gap-3 border-b border-[#ECE8E2]">
+    <div class="w-8 h-8 rounded-lg bg-[#8C6767] flex items-center justify-center flex-shrink-0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12"/>
+        <path d="M12 6v6l4 2"/>
+      </svg>
+    </div>
+    <div>
+      <h2 style="font-family: 'Noto Serif', serif; font-size: 17px; font-weight: 500; color: #121212; margin: 0; line-height: 1.3;">Esotérica</h2>
+      <p style="font-size: 11px; color: #9B928B; margin: 0;">Admin Panel</p>
+    </div>
   </div>
 
-  <ul>
-    <li>
-      <a routerLink="/admin/dashboard">
-        Dashboard
-      </a>
-    </li>
+  <!-- Navigation -->
+  <div class="flex-1 py-4 px-3 space-y-1">
+    <p class="px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9B928B] mb-2">Menú</p>
 
-    <li>
-      <a routerLink="/admin/clients">
-        Clients
-      </a>
-    </li>
+    <a routerLink="/admin/dashboard"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/dashboard')"
+       [class.text-[#6F6A66]]="!isActive('/admin/dashboard')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Dashboard
+    </a>
 
-    <li>
-      <a routerLink="/admin/employees">
-        Employees
-      </a>
-    </li>
+    <a routerLink="/admin/clients"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/clients')"
+       [class.text-[#6F6A66]]="!isActive('/admin/clients')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Clientes
+    </a>
 
-    <li>
-      <a routerLink="/admin/menu">
-        Menu
-      </a>
-    </li>
+    <a routerLink="/admin/employees"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/employees')"
+       [class.text-[#6F6A66]]="!isActive('/admin/employees')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Empleados
+    </a>
 
-    <li>
-      <a routerLink="/admin/codes">
-        Codes
-      </a>
-    </li>
+    <a routerLink="/admin/menu"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/menu')"
+       [class.text-[#6F6A66]]="!isActive('/admin/menu')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Z"/><path d="M21 15v4a2 2 0 0 1-2 2h-1"/>
+      </svg>
+      Menú
+    </a>
 
-    <li>
-      <a routerLink="/admin/reports">
-        Reports
-      </a>
-    </li>
+    <a routerLink="/admin/codes"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/codes')"
+       [class.text-[#6F6A66]]="!isActive('/admin/codes')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      Promociones
+    </a>
 
-    <li>
-      <a routerLink="/admin/password-reset-list">
-        Password Resets
-      </a>
-    </li>
+    <a routerLink="/admin/reports"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/reports')"
+       [class.text-[#6F6A66]]="!isActive('/admin/reports')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+      </svg>
+      Reportes
+    </a>
 
-    <li class="logout-item">
-      <a routerLink="/admin/login" (click)="onLogout()">
-        Logout
-      </a>
-    </li>
-  </ul>
+    <a routerLink="/admin/password-reset-list"
+       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+       [class.!bg-[#8C6767]!text-white]="isActive('/admin/password-reset-list')"
+       [class.text-[#6F6A66]]="!isActive('/admin/password-reset-list')"
+       class="hover-bg-soft">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      Solicitudes
+    </a>
+  </div>
+
+  <!-- Logout -->
+  <div class="px-3 py-4 border-t border-[#ECE8E2]">
+    <button (click)="onLogout()"
+            class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#6F6A66] transition-all duration-180 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:bg-[#E8E3DD] active:scale-[0.98]">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+      </svg>
+      Cerrar sesión
+    </button>
+  </div>
 </nav>

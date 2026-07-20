@@ -1,150 +1,154 @@
-<div class="employees-container">
-  <h1>Gestión de Empleados</h1>
-
-  <!-- msg error -->
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+<div>
+  <div class="page-header">
+    <div>
+      <h1>Empleados</h1>
+      <p>Gestión del personal</p>
+    </div>
+    <button class="btn-primary" (click)="openForm()">
+      <svg class="mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nuevo Empleado
+    </button>
   </div>
 
-  <!-- btn add employee-->
-  <div class="top-controls" *ngIf="!loading">
-    <button class="btn btn-add" (click)="openForm()">Agregar Nuevo Empleado</button>
-    <div class="search-container">
+  <div *ngIf="errorMessage" class="msg-error">{{ errorMessage }}</div>
+
+  <div class="flex items-center gap-4 mb-6">
+    <div class="search-wrapper flex-1 max-w-sm">
       <input
         type="text"
-        class="search-input"
+        class="input"
         [(ngModel)]="searchTerm"
         (input)="filteredEmployees()"
-        placeholder="buscar por username..."
-      />
+        placeholder="Buscar por username..."
+      >
     </div>
   </div>
 
-  <!-- table -->
-  <div class="table-section" *ngIf="!loading">
-    <h2>Lista de Empleados</h2>
-    <table class="employees-table">
+  <div *ngIf="loading" class="loading-spinner">Cargando empleados...</div>
+
+  <div class="table-container" *ngIf="!loading">
+    <table>
       <thead>
-      <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Rol</th>
-        <th>Fecha de Creación</th>
-        <th>Acciones</th>
-      </tr>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Rol</th>
+          <th>Fecha Creación</th>
+          <th style="text-align: right;">Acciones</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let employee of filteredEmployees()">
-        <td>{{ employee.id }}</td>
-        <td>{{ employee.username }}</td>
-        <td>{{ employee.name }}</td>
-        <td>{{ employee.lastName }}</td>
-        <td>{{ employee.roleName }}</td>
-        <td>{{ employee.createDate | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="actions">
-          <button class="btn btn-edit" (click)="editEmployee(employee)">Editar</button>
-          <button class="btn btn-delete" (click)="deleteEmployee(employee.id!)">Eliminar</button>
-        </td>
-      </tr>
+        <tr *ngFor="let employee of filteredEmployees()">
+          <td class="font-mono text-[#9B928B] text-[13px]">#{{ employee.id }}</td>
+          <td class="font-medium">{{ employee.username }}</td>
+          <td>{{ employee.name }}</td>
+          <td>{{ employee.lastName }}</td>
+          <td>
+            <span class="badge-info">{{ employee.roleName }}</span>
+          </td>
+          <td class="text-[#6F6A66]">{{ employee.createDate | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td style="text-align: right;">
+            <div class="flex gap-2 justify-end">
+              <button class="btn-ghost btn-sm" (click)="editEmployee(employee)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Editar
+              </button>
+              <button class="btn-danger btn-sm" (click)="deleteEmployee(employee.id!)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
-    <div *ngIf="employees.length === 0" class="no-data">
-      No hay empleados registrados
+    <div *ngIf="employees.length === 0" class="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+      </svg>
+      <p>No hay empleados registrados</p>
     </div>
   </div>
 
-  <!-- Form -->
-  <div *ngIf="showForm" class="form-section">
-    <div class="form-overlay"></div>
-    <div class="form-container">
-      <h2>{{ editingId ? 'Editar Empleado' : 'Agregar Nuevo Empleado' }}</h2>
+  <!-- Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between mb-6">
+        <h2 style="font-family: 'Noto Serif', serif; font-size: 20px; font-weight: 500; color: #121212; margin: 0;">
+          {{ editingId ? 'Editar Empleado' : 'Nuevo Empleado' }}
+        </h2>
+        <button (click)="closeForm()" class="btn-ghost" style="padding: 4px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B928B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
 
-      <form>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              [(ngModel)]="formData.username"
-              name="username"
-              placeholder="Nombre de usuario"
-              required
-            />
+      <form class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label">Username</label>
+            <input type="text" class="input" [(ngModel)]="formData.username" name="username" placeholder="Usuario" required>
           </div>
-
-          <div class="form-group">
-            <label for="name">Nombre:</label>
-            <input
-              type="text"
-              id="name"
-              [(ngModel)]="formData.name"
-              name="name"
-              placeholder="Nombre del empleado"
-              required
-            />
+          <div>
+            <label class="label">Nombre</label>
+            <input type="text" class="input" [(ngModel)]="formData.name" name="name" placeholder="Nombre" required>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="lastName">Apellido:</label>
-            <input
-              type="text"
-              id="lastName"
-              [(ngModel)]="formData.lastName"
-              name="lastName"
-              placeholder="Apellido del empleado"
-              required
-            />
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="label">Apellido</label>
+            <input type="text" class="input" [(ngModel)]="formData.lastName" name="lastName" placeholder="Apellido" required>
           </div>
-
-          <div class="form-group">
-            <label for="password">Contraseña:</label>
-            <input
-              type="password"
-              id="password"
-              [(ngModel)]="formData.password"
-              name="password"
-              placeholder="Contraseña"
-              [required]="!editingId"
-            />
-            <small *ngIf="editingId" class="hint-text">
-              Dejar en blanco para mantener la contraseña actual
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="idRole">Rol:</label>
-            <select id="idRole" [(ngModel)]="formData.idRole" name="idRole" required>
-              <option value="" disabled selected>Seleccionar rol</option> <option *ngFor="let role of roles" [value]="role.id">
-              {{ role.roleName }}
-            </option>
-            </select>
+          <div>
+            <label class="label">Contraseña</label>
+            <input type="password" class="input" [(ngModel)]="formData.password" name="password" placeholder="••••••••" [required]="!editingId">
+            <small *ngIf="editingId" class="text-[#9B928B] text-[12px] mt-1 block">Dejar vacío para mantener la actual</small>
           </div>
         </div>
 
+        <div>
+          <label class="label">Rol</label>
+          <select class="input" [(ngModel)]="formData.idRole" name="idRole" required>
+            <option value="" disabled selected>Seleccionar rol</option>
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.roleName }}</option>
+          </select>
+        </div>
 
-        <div class="form-actions">
-          <button type="button" class="btn btn-save" (click)="saveEmployee()">
+        <div class="flex gap-3 pt-2">
+          <button type="button" class="btn-primary flex-1" (click)="saveEmployee()">
             {{ editingId ? 'Actualizar' : 'Guardar' }}
           </button>
-          <button type="button" class="btn btn-cancel" (click)="closeForm()">Cancelar</button>
+          <button type="button" class="btn-outline" (click)="closeForm()">Cancelar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div *ngIf="showDeleteConfirm" class="form-section">
-    <div class="form-overlay"></div>
-    <div class="confirm-container">
-      <h2>Confirmar eliminación</h2>
-      <p>Está seguro que desea eliminar este empleado?</p>
-      <div class="confirm-actions">
-        <button class="btn btn-delete" (click)="confirmDelete()">Eliminar</button>
-        <button class="btn btn-cancel" (click)="cancelDelete()">Cancelar</button>
+  <!-- Delete Confirm -->
+  <div *ngIf="showDeleteConfirm" class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal-content-sm text-center" (click)="$event.stopPropagation()">
+      <div class="w-12 h-12 rounded-full bg-[#FDE2E2] flex items-center justify-center mx-auto mb-4">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9A5E5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h2 style="font-family: 'Noto Serif', serif; font-size: 18px; font-weight: 500; color: #121212; margin: 0 0 8px;">¿Eliminar empleado?</h2>
+      <p style="font-size: 14px; color: #6F6A66; margin-bottom: 24px;">Esta acción no se puede deshacer.</p>
+      <div class="flex gap-3 justify-center">
+        <button class="btn-danger" (click)="confirmDelete()">Eliminar</button>
+        <button class="btn-ghost" (click)="cancelDelete()">Cancelar</button>
       </div>
     </div>
   </div>
