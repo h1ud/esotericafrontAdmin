@@ -1,0 +1,168 @@
+<div class="sales-page">
+
+  <!-- Header -->
+  <header class="sales-header">
+    <div>
+      <h1>Ventas</h1>
+      <p class="sales-subtitle">Historial completo de transacciones</p>
+    </div>
+    <div class="sales-header-stats">
+      <span class="sales-stat-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        {{ totalElements }} transacciones
+      </span>
+      <span class="sales-stat-badge sales-stat-badge--total">
+        Total S/ {{ totalFormatted }}
+      </span>
+    </div>
+  </header>
+
+  <!-- Error -->
+  @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="sales-loading">
+      <div class="loading-spinner"></div>
+      <p>Cargando ventas...</p>
+    </div>
+  }
+
+  <!-- Sales list -->
+  @if (!loading && sales.length > 0) {
+    <div class="sales-table-wrap">
+      <table class="sales-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Metodo</th>
+            <th>Estado</th>
+            <th>Items</th>
+            <th class="col-total">Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sale of sales; track sale.id) {
+            <tr class="sale-row" [class.sale-row--expanded]="expandedSaleId === sale.id">
+              <td class="sale-id">#{{ sale.id }}</td>
+              <td class="sale-date">{{ formatDate(sale.issueDate) }}</td>
+              <td class="sale-user">{{ sale.userName }}</td>
+              <td>
+                <span class="method-badge">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getPaymentStatusClass(sale.paymentStatus)">
+                  {{ sale.paymentStatus }}
+                </span>
+              </td>
+              <td>{{ sale.items?.length || 0 }}</td>
+              <td class="sale-total">S/ {{ sale.total | number:'1.2-2' }}</td>
+              <td>
+                <button class="btn-expand" (click)="toggleDetail(sale.id)" title="Ver detalle">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    [class.rotated]="expandedSaleId === sale.id">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            @if (expandedSaleId === sale.id && sale.items) {
+              <tr class="sale-detail-row">
+                <td colspan="8">
+                  <div class="sale-detail-content">
+                    <div class="sale-detail-info">
+                      <div class="detail-field">
+                        <span class="detail-label">Metodo de pago</span>
+                        <span class="detail-value">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+                      </div>
+                      <div class="detail-field">
+                        <span class="detail-label">Estado</span>
+                        <span class="detail-value">{{ sale.paymentStatus }}</span>
+                      </div>
+                      <div class="detail-field">
+                        <span class="detail-label">Subtotal</span>
+                        <span class="detail-value">S/ {{ sale.subtotal | number:'1.2-2' }}</span>
+                      </div>
+                    </div>
+                    <h4 class="detail-items-title">Productos</h4>
+                    <table class="detail-items-table">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th>Cantidad</th>
+                          <th>Precio unit.</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of sale.items; track item.id) {
+                          <tr>
+                            <td>{{ item.productName }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>S/ {{ item.unitPrice | number:'1.2-2' }}</td>
+                            <td>S/ {{ item.subtotal | number:'1.2-2' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button class="page-btn" (click)="goToPage(0)" [disabled]="currentPage === 0" title="Primera">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>
+          </svg>
+        </button>
+        <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0" title="Anterior">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+        @for (p of pageNumbers; track p) {
+          <button class="page-btn" [class.page-btn--active]="p === currentPage" (click)="goToPage(p)">
+            {{ p + 1 }}
+          </button>
+        }
+        <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage >= totalPages - 1" title="Siguiente">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+        <button class="page-btn" (click)="goToPage(totalPages - 1)" [disabled]="currentPage >= totalPages - 1" title="Ultima">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>
+          </svg>
+        </button>
+        <span class="page-info">Pagina {{ currentPage + 1 }} de {{ totalPages }}</span>
+      </div>
+    }
+  }
+
+  <!-- Empty state -->
+  @if (!loading && sales.length === 0 && !errorMessage) {
+    <div class="sales-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <p>No hay ventas registradas aun.</p>
+    </div>
+  }
+
+</div>

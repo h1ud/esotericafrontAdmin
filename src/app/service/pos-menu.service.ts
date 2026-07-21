@@ -23,9 +23,9 @@ export interface ProductDTO {
   providedIn: 'root',
 })
 export class PosMenuService {
-  private baseUrl = 'http://localhost:8080/api/pos/menu';
+  private baseUrl = '/api/pos/menu';
 
-  private categoriesUrl = 'http://localhost:8080/api/pos/menu/categories';
+  private categoriesUrl = '/api/pos/menu/categories';
 
   constructor(private http: HttpClient) {}
 

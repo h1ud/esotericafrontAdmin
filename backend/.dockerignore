@@ -1,0 +1,12 @@
+.git
+.gitignore
+*.md
+build/
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+.idea/
+*.iml
+.vscode/
+node_modules

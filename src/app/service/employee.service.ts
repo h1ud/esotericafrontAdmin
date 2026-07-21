@@ -19,7 +19,7 @@ export interface Role {
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:8080/api/admin/users';
+  private apiUrl = '/api/admin/users';
 
   constructor(private http: HttpClient) {}
 
@@ -42,6 +42,6 @@ export class EmployeeService {
 
   // 🔄 Tipado con la interfaz Role para mayor control en tu HTML
   listRoles(): Observable<Role[]> {
-    return this.http.get<Role[]>('http://localhost:8080/api/admin/roles');
+    return this.http.get<Role[]>('/api/admin/roles');
   }
 }

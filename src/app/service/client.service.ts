@@ -13,7 +13,7 @@ export interface Client {
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
-  private apiUrl = 'http://localhost:8080/api/admin/clients';
+  private apiUrl = '/api/admin/clients';
 
   constructor(private http: HttpClient) {}
 

@@ -1,165 +1,184 @@
-<!--
-  Dashboard · Esoterica
-  Layout: header + KPIs + (gráfico de barras | gráfico de líneas) + actividad reciente
-  Sin emojis, iconos SVG outline monocromáticos.
--->
-
 <div class="dashboard-page">
-  <!-- ============ Header ============ -->
-  <header class="dash-header">
-    <div>
-      <p class="dash-eyebrow">{{ formattedDate() }}</p>
-      <h1 class="dash-title">
-        {{ greeting() }}, <span class="dash-title-accent">{{ userName() }}</span>
-      </h1>
-      <p class="dash-subtitle">Esto es lo que ocurre en tu pastelería hoy.</p>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="dash-loading">
+      <div class="loading-spinner"></div>
+      <p>Cargando estadísticas...</p>
     </div>
-    <div class="dash-header-actions">
-      <button class="btn-ghost" type="button">Exportar</button>
-      <button class="btn-primary" type="button">+ Nuevo pedido</button>
-    </div>
-  </header>
+  }
 
-  <!-- ============ KPIs ============ -->
-  <section class="kpi-grid" aria-label="Indicadores clave">
-    @for (kpi of kpis(); track kpi.label) {
-      <article #kpiCard class="kpi-card">
-        <div class="kpi-head">
-          <span class="kpi-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path [attr.d]="kpi.iconPath"></path>
-            </svg>
-          </span>
-          <span
-            class="kpi-trend"
-            [class.kpi-trend--up]="kpi.trend >= 0"
-            [class.kpi-trend--down]="kpi.trend < 0"
-          >
-            {{ kpi.trend >= 0 ? '↑' : '↓' }} {{ kpi.trend | number:'1.1-1' }}%
-          </span>
-        </div>
-        <p class="kpi-label">{{ kpi.label }}</p>
-        <p #kpiNumber class="kpi-value">0</p>
-      </article>
-    }
-  </section>
+  <!-- Error -->
+  @if (error()) {
+    <div class="dash-error">{{ error() }}</div>
+  }
 
-  <!-- ============ Gráficos ============ -->
-  <section class="charts-grid">
-    <!-- Gráfico de barras -->
-    <article class="chart-card">
-      <header class="chart-header">
-        <div>
-          <h3>Ventas por día</h3>
-          <p>Resumen de la última semana</p>
-        </div>
-        <span class="chart-badge">Esta semana</span>
-      </header>
-
-      <div class="bar-chart">
-        @for (point of salesByDay(); track point.label; let i = $index) {
-          <div class="bar-col">
-            <div class="bar-track">
-              <div
-                #barFill
-                class="bar-fill"
-                [attr.aria-label]="point.label + ': ' + point.value">
-              </div>
-            </div>
-            <span class="bar-label">{{ point.label }}</span>
-            <span class="bar-value">{{ point.value }}</span>
-          </div>
-        }
-      </div>
-    </article>
-
-    <!-- Gráfico de líneas SVG -->
-    <article class="chart-card">
-      <header class="chart-header">
-        <div>
-          <h3>Actividad mensual</h3>
-          <p>Pedidos completados en los últimos 12 meses</p>
-        </div>
-        <span class="chart-badge chart-badge--soft">12 meses</span>
-      </header>
-
-      <div class="line-chart-wrap">
-        <svg viewBox="0 0 600 200" preserveAspectRatio="none"
-             class="line-chart" aria-label="Tendencia de actividad">
-          <defs>
-            <linearGradient id="lineGradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%"  stop-color="rgba(185,141,141,0.35)"/>
-              <stop offset="100%" stop-color="rgba(185,141,141,0)"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Grid horizontal sutil -->
-          <g stroke="#ECE8E2" stroke-width="1">
-            <line x1="0" y1="40"  x2="600" y2="40" />
-            <line x1="0" y1="100" x2="600" y2="100" />
-            <line x1="0" y1="160" x2="600" y2="160" />
-          </g>
-
-          <!-- Área rellena bajo la línea -->
-          <polygon
-            [attr.points]="'0,200 ' + polylinePoints() + ' 600,200'"
-            fill="url(#lineGradient)" />
-
-          <!-- Línea -->
-          <path
-            #linePath
-            [attr.d]="linePathD()"
-            fill="none"
-            stroke="#8C6767"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round">
-          </path>
-
-          <!-- Punto destacado al final -->
-          <circle
-            #lineDot
-            [attr.cx]="lastPoint().x"
-            [attr.cy]="lastPoint().y"
-            r="6"
-            fill="#fff"
-            stroke="#8C6767"
-            stroke-width="2.5">
-          </circle>
-        </svg>
-      </div>
-    </article>
-  </section>
-
-  <!-- ============ Actividad reciente ============ -->
-  <section class="activity-card">
-    <header class="chart-header">
+  @if (!loading() && !error()) {
+    <!-- Header -->
+    <header class="dash-header">
       <div>
-        <h3>Actividad reciente</h3>
-        <p>Los últimos eventos del sistema</p>
+        <p class="dash-eyebrow">{{ formattedDate() }}</p>
+        <h1 class="dash-title">{{ greeting() }}, administrador</h1>
+        <p class="dash-subtitle">Resumen del rendimiento de la tienda en tiempo real.</p>
       </div>
-      <a href="#" class="activity-link">Ver todo</a>
+      <div class="dash-header-actions">
+        <button class="btn-ghost" type="button" (click)="goToSales()">Ver ventas</button>
+        <button class="btn-primary" type="button" (click)="navigateTo('/pos-home')">Ir al POS</button>
+      </div>
     </header>
 
-    <ul class="activity-list">
-      @for (item of recentActivity(); track item.title) {
-        <li #activityItem class="activity-item">
-          <span class="activity-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path [attr.d]="item.iconPath"></path>
-            </svg>
-          </span>
-          <div class="activity-body">
-            <p class="activity-title">{{ item.title }}</p>
-            <p class="activity-meta">{{ item.meta }}</p>
+    <!-- KPIs -->
+    <section class="kpi-grid" aria-label="Indicadores clave">
+      @for (kpi of kpis(); track kpi.label) {
+        <article #kpiCard class="kpi-card">
+          <div class="kpi-head">
+            <span class="kpi-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path [attr.d]="kpi.iconPath"></path>
+              </svg>
+            </span>
           </div>
-          @if (item.amount) {
-            <span class="activity-amount">{{ item.amount }}</span>
-          }
-        </li>
+          <p class="kpi-label">{{ kpi.label }}</p>
+          <p #kpiNumber class="kpi-value">0</p>
+        </article>
       }
-    </ul>
-  </section>
+    </section>
+
+    <!-- Charts -->
+    <section class="charts-grid">
+      <!-- Bar chart: weekly sales -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <div>
+            <h3>Ventas por dia</h3>
+            <p>Monto en soles de los ultimos 7 dias</p>
+          </div>
+          <span class="chart-badge">7 dias</span>
+        </header>
+        <div class="bar-chart">
+          @for (point of salesByDay(); track point.label; let i = $index) {
+            <div class="bar-col">
+              <div class="bar-track">
+                <div #barFill class="bar-fill" [attr.aria-label]="point.label + ': ' + point.value"></div>
+              </div>
+              <span class="bar-label">{{ point.label }}</span>
+              <span class="bar-value">S/ {{ point.value | number:'1.0-0' }}</span>
+            </div>
+          }
+        </div>
+      </article>
+
+      <!-- Right panel: month summary + payment breakdown -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <div>
+            <h3>Resumen del mes</h3>
+            <p>Ventas y metodos de pago</p>
+          </div>
+          <span class="chart-badge">Mes actual</span>
+        </header>
+
+        @if (monthData(); as m) {
+          <div class="month-summary">
+            <div class="month-total">
+              <span class="month-total-label">Total ventas del mes</span>
+              <span class="month-total-value">S/ {{ m.totalAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="month-stat">
+              <span class="month-stat-label">Transacciones</span>
+              <span class="month-stat-value">{{ m.transactionCount }}</span>
+            </div>
+          </div>
+
+          <div class="payment-donut">
+            <div class="donut-segment" style="flex: {{ monthEfectivoPct() }}">
+              <div class="donut-bar donut-efectivo"></div>
+              <span class="donut-label">Efectivo: S/ {{ m.efectivoAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="donut-segment" style="flex: {{ monthYapePct() }}">
+              <div class="donut-bar donut-yape"></div>
+              <span class="donut-label">Yape/Plin: S/ {{ m.yapePlinAmount | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Today's breakdown -->
+        @if (todayData(); as t) {
+          <div class="today-summary">
+            <div class="today-row">
+              <span class="today-label">Ventas de hoy</span>
+              <span class="today-value">S/ {{ t.totalAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="today-row">
+              <span class="today-label">Transacciones hoy</span>
+              <span class="today-value">{{ t.transactionCount }}</span>
+            </div>
+          </div>
+        }
+      </article>
+    </section>
+
+    <!-- Activity + Caja -->
+    <section class="charts-grid">
+      <!-- Actividad reciente -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <div>
+            <h3>Actividad reciente</h3>
+            <p>Ultimas transacciones del sistema</p>
+          </div>
+        </header>
+        <ul class="activity-list">
+          @for (item of recentActivity(); track item.title) {
+            <li #activityItem class="activity-item">
+              <span class="activity-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path [attr.d]="item.iconPath"></path>
+                </svg>
+              </span>
+              <div class="activity-body">
+                <p class="activity-title">{{ item.title }}</p>
+                <p class="activity-meta">{{ item.meta }}</p>
+              </div>
+            </li>
+          }
+        </ul>
+      </article>
+
+      <!-- Cierres de caja -->
+      <article class="chart-card">
+        <header class="chart-header">
+          <div>
+            <h3>Cierres de Caja</h3>
+            <p>Resumen de turnos registrados</p>
+          </div>
+          <button class="btn-link" (click)="navigateTo('/admin/reports')">Ver todo</button>
+        </header>
+        <div class="quick-actions">
+          <button class="quick-action-btn" (click)="navigateTo('/pos-home')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <span>Ir al POS</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateTo('/admin/sales')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span>Ver Ventas</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateTo('/admin/menu')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7h18l-2 13H5L3 7zM8 7V5a4 4 0 0 1 8 0v2"/>
+            </svg>
+            <span>Gestionar Menu</span>
+          </button>
+        </div>
+      </article>
+    </section>
+  }
+
 </div>

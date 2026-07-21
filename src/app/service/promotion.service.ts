@@ -20,7 +20,7 @@ export interface PromotionDTO {
 
 @Injectable({ providedIn: 'root' })
 export class PromotionService {
-  private apiUrl = 'http://localhost:8080/api/admin/promotions';
+  private apiUrl = '/api/admin/promotions';
 
   constructor(private http: HttpClient) {}
 

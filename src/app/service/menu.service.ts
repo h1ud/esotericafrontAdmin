@@ -14,7 +14,7 @@ export interface ProductDTO {
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  private apiUrl = 'http://localhost:8080/api/admin/menu'; // Ajusta el puerto si tu Spring corre en otro
+  private apiUrl = '/api/admin/products';
 
   constructor(private http: HttpClient) {}
 

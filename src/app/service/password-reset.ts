@@ -13,7 +13,7 @@ export interface PasswordResetData {
 
 @Injectable({ providedIn: 'root' })
 export class PasswordResetService {
-  private apiUrl = 'http://localhost:8080/api/password-resets';
+  private apiUrl = '/api/password-resets';
 
   constructor(private http: HttpClient) {}
 

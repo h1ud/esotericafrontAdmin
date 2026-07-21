@@ -1,0 +1,63 @@
+# ===============================================================
+#   ESOTÉRICA · Backend Docker Compose
+#   Spring Boot + PostgreSQL + pgAdmin (opcional)
+# ===============================================================
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: esoterica-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dbesoterica
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - ESOTERICA_JWT_SECRET=secure-jwt-secret-change-in-production
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - esoterica-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: esoterica-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dbesoterica
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dbesoterica"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - esoterica-network
+
+  # Opcional: Interfaz gráfica para la DB
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: esoterica-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@esoterica.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - db
+    networks:
+      - esoterica-network
+
+volumes:
+  pgdata:
+
+networks:
+  esoterica-network:
+    driver: bridge

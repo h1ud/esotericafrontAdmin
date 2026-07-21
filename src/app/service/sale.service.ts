@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class SaleService {
   // Asegúrate de que esta URL coincida con tu backend
-  private apiUrl = 'http://localhost:8080/api/pos/sales';
+  private apiUrl = '/api/pos/sales';
 
   constructor(private http: HttpClient) {}
 

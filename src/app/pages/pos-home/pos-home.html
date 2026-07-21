@@ -1,110 +1,727 @@
-<div class="pos-wrapper">
+<div class="pos-container">
 
-  <div class="pos-panel-central">
+  <!-- TOASTS -->
+  @if (toasts.length > 0) {
+    <div class="toast-container">
+      @for (toast of toasts; track toast.id) {
+        <div class="toast" [class.toast-success]="toast.type === 'success'" [class.toast-error]="toast.type === 'error'" [class.toast-info]="toast.type === 'info'">
+          <span class="toast-icon">
+            @if (toast.type === 'success') { &#10003; }
+            @if (toast.type === 'error') { &#10007; }
+            @if (toast.type === 'info') { &#8505; }
+          </span>
+          <span class="toast-message">{{ toast.message }}</span>
+          <button class="toast-close" (click)="dismissToast(toast.id)">&times;</button>
+        </div>
+      }
+    </div>
+  }
 
-    <div class="columna-izquierda">
-      <div class="bloque-categorias">
-        <button
-          *ngFor="let cat of categories"
-          [class.active]="cat.id === selectedCategoryId"
-          (click)="selectCategory(cat.id)">
-          {{ cat.categoryName }}
+  <!-- ========================================================== -->
+  <!-- HEADER: Cash status + User info + Logout                    -->
+  <!-- ========================================================== -->
+  <div class="pos-header">
+    <div>
+      <h1>Punto de Venta</h1>
+      <p class="section-subtitle">Seleccione productos y procese el cobro al instante</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-logout" (click)="logout()" title="Cerrar sesion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- CASH REGISTER STATUS BAR                                   -->
+  <!-- ========================================================== -->
+  <div class="cash-status-bar" [class.cash-open]="cashStatus.isOpen" [class.cash-closed]="!cashStatus.isOpen">
+    <div class="cash-status-left">
+      <span class="cash-status-indicator" [class.dot-green]="cashStatus.isOpen" [class.dot-red]="!cashStatus.isOpen"></span>
+      <span class="cash-status-text">
+        @if (cashLoading) {
+          Cargando estado de caja...
+        } @else if (cashStatus.isOpen) {
+          Caja abierta por {{ cashStatus.openedByName }} desde {{ formatDate(cashStatus.openedAt) }}
+          &middot; Ventas: S/ {{ cashStatus.totalSales | number:'1.2-2' }}
+          &middot; Transacciones: {{ cashStatus.transactionCount }}
+        } @else {
+          Caja cerrada
+        }
+      </span>
+    </div>
+    <div class="cash-status-right">
+      @if (!cashStatus.isOpen && !cashLoading) {
+        <button class="btn btn-cash-open" (click)="openOpenCashModal()">
+          Abrir Caja
         </button>
+      }
+      @if (cashStatus.isOpen) {
+        <button class="btn btn-cash-close" (click)="openCloseCashModal()">
+          Cerrar Caja
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- TOP ACTIONS BAR                                            -->
+  <!-- ========================================================== -->
+  <div class="top-actions">
+    <button class="btn btn-secondary btn-sm" (click)="toggleRecentSales()">
+      {{ showRecentSales ? 'Ocultar ventas' : 'Ventas recientes' }}
+    </button>
+    @if (savedCarts.length > 0) {
+      <button class="btn btn-secondary btn-sm" (click)="openLoadCartModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Cargar Carrito
+      </button>
+    }
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- RECENT SALES SECTION                                       -->
+  <!-- ========================================================== -->
+  @if (showRecentSales) {
+    <div class="pos-card recent-sales-card">
+      <div class="pos-card-header">
+        <h3>Ventas Recientes</h3>
+      </div>
+      <div class="pos-card-body">
+        @if (loadingSales) {
+          <div class="loading-indicator loading-compact">Cargando ventas...</div>
+        } @else if (recentSales.length === 0) {
+          <div class="no-data">No hay ventas registradas aun.</div>
+        } @else {
+          <div class="sales-list">
+            @for (sale of recentSales; track sale.id) {
+              <div class="sale-item">
+                <div class="sale-header">
+                  <span class="sale-id">#{{ sale.id }}</span>
+                  <span class="sale-status" [ngClass]="getPaymentStatusClass(sale.paymentStatus)">{{ sale.paymentStatus }}</span>
+                  <span class="sale-method">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+                  <span class="sale-user">{{ sale.userName }}</span>
+                  <span class="sale-date">{{ formatDate(sale.issueDate) }}</span>
+                  <span class="sale-total">S/ {{ sale.total | number:'1.2-2' }}</span>
+                </div>
+                @if (sale.items && sale.items.length > 0) {
+                  <details class="sale-details">
+                    <summary>Ver items ({{ sale.items.length }})</summary>
+                    <ul>
+                      @for (item of sale.items; track item.id) {
+                        <li>
+                          <span>{{ item.productName }} x {{ item.quantity }}</span>
+                          <span>S/ {{ item.subtotal | number:'1.2-2' }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </details>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ERROR MESSAGE -->
+  @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  <!-- MAIN LAYOUT -->
+  <div class="pos-layout">
+
+    <!-- ======================================================== -->
+    <!-- LEFT COLUMN: Category + Products                          -->
+    <!-- ======================================================== -->
+    <div class="pos-left">
+
+      <!-- Categories -->
+      <div class="pos-card">
+        <div class="pos-card-header">
+          <h3>Categorias</h3>
+        </div>
+        <div class="pos-card-body">
+          <div class="categories-bar">
+            @for (cat of categories; track cat.id) {
+              <button
+                class="btn-category"
+                [class.active]="cat.id === selectedCategoryId"
+                (click)="selectCategory(cat.id)"
+              >
+                {{ cat.categoryName }}
+              </button>
+            } @empty {
+              <span class="no-data no-data-compact">No hay categorias disponibles</span>
+            }
+          </div>
+        </div>
       </div>
 
-      <div class="bloque-productos">
-        <div *ngIf="products.length === 0" class="sin-datos">No hay productos disponibles.</div>
+      <!-- Products with search -->
+      <div class="pos-card">
+        <div class="pos-card-header">
+          <h3>Productos</h3>
+          <div class="search-box">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Buscar producto..."
+              [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearch()"
+            />
+          </div>
+        </div>
+        <div class="pos-card-body">
+          @if (loading) {
+            <div class="loading-indicator loading-compact">Cargando productos...</div>
+          } @else {
+            <div class="products-grid">
+              @for (prod of filteredProducts; track prod.id) {
+                <div class="product-card" (click)="addToCart(prod)">
+                  <span class="product-name">{{ prod.productName }}</span>
+                  <span class="product-price">S/ {{ prod.price | number:'1.2-2' }}</span>
+                  <div class="product-actions">
+                    <span class="product-add-hint">Agregar</span>
+                    @if (cashStatus.isOpen) {
+                      <button class="product-quick-sell" (click)="$event.stopPropagation(); quickSell(prod)" title="Venta rapida">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </button>
+                    }
+                  </div>
+                </div>
+              } @empty {
+                <div class="no-data">
+                  {{ searchQuery ? 'No se encontraron productos para "' + searchQuery + '"' : 'No hay productos disponibles en esta categoria.' }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
 
-        <div *ngFor="let prod of products" class="item-producto" (click)="addToCart(prod)">
-          <span class="prod-nombre">{{ prod.productName }}</span>
-          <span class="prod-precio">S/. {{ prod.price | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- RIGHT COLUMN: Cart / Checkout / Receipt                   -->
+    <!-- ======================================================== -->
+    <div class="pos-right">
+
+      @if (showReceipt && receiptData) {
+        <!-- ==================================================== -->
+        <!-- RECEIPT VIEW (after successful payment)               -->
+        <!-- ==================================================== -->
+        <div class="pos-card">
+          <div class="receipt-container">
+            <div class="receipt-header">
+              <div class="receipt-checkmark">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <h3>Pago Confirmado</h3>
+              <p class="receipt-subtitle">Venta #{{ receiptData.saleId }}</p>
+            </div>
+
+            <div class="receipt-body">
+              <div class="receipt-info-row">
+                <span>Metodo de pago</span>
+                <span class="receipt-value">{{ getPaymentMethodLabel(receiptData.paymentMethod) }}</span>
+              </div>
+              <div class="receipt-info-row">
+                <span>Fecha</span>
+                <span class="receipt-value">{{ formatDate(receiptData.issueDate) }}</span>
+              </div>
+
+              <div class="receipt-divider"></div>
+
+              @for (item of receiptData.items; track $index) {
+                <div class="receipt-item-row">
+                  <span class="receipt-item-name">{{ item.name }} x{{ item.qty }}</span>
+                  <span class="receipt-item-price">S/ {{ (item.price * item.qty) | number:'1.2-2' }}</span>
+                </div>
+              }
+
+              <div class="receipt-divider"></div>
+
+              <div class="receipt-total-row">
+                <span class="receipt-total-label">TOTAL</span>
+                <span class="receipt-total-value">S/ {{ receiptData.total | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <div class="receipt-actions">
+              <button class="btn btn-primary btn-full" (click)="dismissReceipt()">
+                Nueva Venta
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (!isCheckout && !showReceipt) {
+        <!-- ==================================================== -->
+        <!-- CART VIEW                                              -->
+        <!-- ==================================================== -->
+        <div class="pos-card">
+          <div class="pos-card-header">
+            <h3>Resumen de Venta</h3>
+            @if (cart.length > 0) {
+              <span class="cart-badge">{{ getItemCount() }} items</span>
+            }
+          </div>
+
+          <div class="pos-card-body cart-body-no-pad">
+            @if (cart.length === 0) {
+              <div class="cart-empty">
+                <span class="cart-empty-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                </span>
+                <p>Carrito vacio</p>
+                <span class="cart-empty-sub">Seleccione productos para comenzar</span>
+              </div>
+            } @else {
+              <div class="cart-items-wrapper">
+                <ul class="cart-items">
+                  @for (item of cart; track item.product.id) {
+                    <li class="cart-item">
+                      <div class="cart-item-info">
+                        <p class="cart-item-name">{{ item.product.productName }}</p>
+                        <div class="cart-item-controls">
+                          <button class="qty-btn qty-minus" (click)="decrementQuantity(item)" title="Disminuir">-</button>
+                          <span class="qty-value">{{ item.quantity }}</span>
+                          <button class="qty-btn qty-plus" (click)="incrementQuantity(item)" title="Aumentar">+</button>
+                          <span class="cart-item-price">S/ {{ item.product.price | number:'1.2-2' }} c/u</span>
+                        </div>
+                      </div>
+                      <div class="cart-item-right">
+                        <span class="cart-item-subtotal">S/ {{ (item.product.price * item.quantity) | number:'1.2-2' }}</span>
+                        <button class="btn-remove" (click)="removeFromCart(item)" title="Eliminar">&times;</button>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+          @if (cart.length > 0) {
+            <div class="cart-footer">
+              <div class="cart-total-row">
+                <span class="cart-total-label">TOTAL A PAGAR</span>
+                <span class="cart-total-value">S/ {{ getTotal() | number:'1.2-2' }}</span>
+              </div>
+
+              <div class="cart-actions">
+                <button class="btn btn-secondary btn-sm" (click)="clearCart()">Vaciar</button>
+                <button class="btn btn-secondary btn-sm" (click)="openSaveCartModal()" title="Guardar carrito para despues">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  Guardar
+                </button>
+                <button
+                  class="btn btn-primary"
+                  (click)="goToCheckout()"
+                  [disabled]="!cashStatus.isOpen"
+                >
+                  Ir a Cobrar
+                </button>
+              </div>
+              @if (!cashStatus.isOpen) {
+                <p class="cart-hint">Debe abrir la caja para poder cobrar</p>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (isCheckout && !showReceipt) {
+        <!-- ==================================================== -->
+        <!-- CHECKOUT VIEW                                          -->
+        <!-- ==================================================== -->
+        <div class="pos-card">
+          <div class="pos-card-header">
+            <h3>Procesar Cobro</h3>
+          </div>
+
+          <div class="pos-card-body">
+            <!-- Total display -->
+            <div class="checkout-total-display">
+              <p>Monto a Cobrar</p>
+              <h2>S/ {{ getTotal() | number:'1.2-2' }}</h2>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="checkout-payment-methods">
+              <div class="payment-method-card" [class.active]="paymentMethod === 'efectivo'" (click)="selectPaymentMethod('efectivo')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+                <span>Efectivo</span>
+              </div>
+              <div class="payment-method-card" [class.active]="paymentMethod === 'yape_plin'" (click)="selectPaymentMethod('yape_plin')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12" y2="18"/>
+                </svg>
+                <span>Yape / Plin</span>
+              </div>
+            </div>
+
+            <!-- Cash Payment -->
+            @if (paymentMethod === 'efectivo') {
+              <div class="checkout-cash-section">
+                <div class="amount-display">
+                  <label>Monto recibido</label>
+                  <div class="amount-input-display">S/ {{ amountPaid | number:'1.2-2' }}</div>
+                </div>
+
+                <!-- Numeric keypad -->
+                <div class="numeric-keypad">
+                  <button class="keypad-btn" (click)="appendDigit('1')">1</button>
+                  <button class="keypad-btn" (click)="appendDigit('2')">2</button>
+                  <button class="keypad-btn" (click)="appendDigit('3')">3</button>
+                  <button class="keypad-btn" (click)="appendDigit('4')">4</button>
+                  <button class="keypad-btn" (click)="appendDigit('5')">5</button>
+                  <button class="keypad-btn" (click)="appendDigit('6')">6</button>
+                  <button class="keypad-btn" (click)="appendDigit('7')">7</button>
+                  <button class="keypad-btn" (click)="appendDigit('8')">8</button>
+                  <button class="keypad-btn" (click)="appendDigit('9')">9</button>
+                  <button class="keypad-btn keypad-clear" (click)="clearAmount()">C</button>
+                  <button class="keypad-btn" (click)="appendDigit('0')">0</button>
+                  <button class="keypad-btn" (click)="appendDigit('.')">.</button>
+                  <button class="keypad-btn keypad-backspace" (click)="backspaceAmount()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                      <line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/>
+                    </svg>
+                  </button>
+                </div>
+
+                @if (amountPaid >= getTotal() && amountPaid > 0) {
+                  <div class="change-box">
+                    <p>Vuelto a entregar</p>
+                    <h3>S/ {{ getChange() | number:'1.2-2' }}</h3>
+                  </div>
+                }
+                @if (amountPaid > 0 && amountPaid < getTotal()) {
+                  <div class="change-box change-insufficient">
+                    <p>Falta S/ {{ (getTotal() - amountPaid) | number:'1.2-2' }}</p>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Yape/Plin Payment -->
+            @if (paymentMethod === 'yape_plin') {
+              <div class="checkout-yape-section">
+                <div class="yape-info-card">
+                  <div class="yape-label">Monto a transferir</div>
+                  <div class="yape-amount-display">S/ {{ getTotal() | number:'1.2-2' }}</div>
+                  <div class="yape-description">Escane el codigo QR o transfiera al numero de la empresa</div>
+                  <div class="yape-qr-placeholder">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="2" width="8" height="8"/>
+                      <rect x="2" y="14" width="8" height="8"/>
+                      <rect x="14" y="2" width="8" height="8"/>
+                      <rect x="14" y="14" width="4" height="4"/>
+                      <rect x="18" y="18" width="4" height="4"/>
+                    </svg>
+                  </div>
+                  <div class="yape-confirm">
+                    <label class="yape-checkbox">
+                      <input type="checkbox" [(ngModel)]="yapeConfirmed" /> He recibido la transferencia
+                    </label>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Order summary -->
+            <details class="checkout-summary">
+              <summary>Ver detalle del pedido ({{ getItemCount() }} items)</summary>
+              <ul>
+                @for (item of cart; track item.product.id) {
+                  <li>
+                    <span>{{ item.product.productName }} x {{ item.quantity }}</span>
+                    <span>S/ {{ (item.product.price * item.quantity) | number:'1.2-2' }}</span>
+                  </li>
+                }
+              </ul>
+            </details>
+          </div>
+
+          <!-- Actions -->
+          <div class="checkout-actions">
+            <button class="btn btn-secondary" (click)="cancelCheckout()" [disabled]="processingPayment">
+              Volver
+            </button>
+            <button
+              class="btn btn-success"
+              (click)="confirmPayment()"
+              [disabled]="processingPayment || (paymentMethod === 'efectivo' && amountPaid < getTotal()) || (paymentMethod === 'yape_plin' && !yapeConfirmed)"
+            >
+              @if (processingPayment) {
+                Procesando...
+              } @else {
+                CONFIRMAR PAGO
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+    </div>
+
+  </div>  <!-- ========================================================== -->
+  <!-- MODAL: Save Cart                                           -->
+  <!-- ========================================================== -->
+  @if (showSaveCartModal) {
+    <div class="modal-overlay" (click)="cancelSaveCart()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Guardar Carrito</h3>
+          <button class="modal-close" (click)="cancelSaveCart()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="cartName">Nombre del carrito</label>
+            <input id="cartName" type="text" class="form-input" placeholder="Ej: Cliente frecuente" [(ngModel)]="savedCartName" />
+          </div>
+          <div class="cart-info">
+            Se guardaran {{ getItemCount() }} items (S/ {{ getTotal() | number:'1.2-2' }}) para recuperarlos despues.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelSaveCart()">Cancelar</button>
+          <button class="btn btn-primary" (click)="confirmSaveCart()">Guardar Carrito</button>
         </div>
       </div>
     </div>
+  }
 
-    <div class="columna-derecha">
-
-      <div *ngIf="!isCheckout" class="boleta-dinamica">
-        <div class="boleta-header">
-          <h3>Resumen de Venta</h3>
+  <!-- ========================================================== -->
+  <!-- MODAL: Load Cart                                           -->
+  <!-- ========================================================== -->
+  @if (showLoadCartModal) {
+    <div class="modal-overlay" (click)="cancelLoadCart()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Carritos Guardados</h3>
+          <button class="modal-close" (click)="cancelLoadCart()">&times;</button>
         </div>
-
-        <div class="boleta-cuerpo">
-          <div *ngIf="cart.length === 0" class="sin-datos">Carrito vacío</div>
-
-          <div *ngFor="let item of cart" class="boleta-linea">
-            <div>
-              <strong>{{ item.product.productName }}</strong>
-              <small style="display: block; color: #666;">
-                S/. {{ item.product.price }} x {{ item.quantity }}
-              </small>
-            </div>
-            <span class="linea-subtotal">
-              S/. {{ (item.product.price * item.quantity) | number:'1.2-2' }}
-            </span>
+        <div class="modal-body">
+          @if (savedCarts.length === 0) {
+            <div class="no-data">No hay carritos guardados.</div>
+          }
+          <div class="saved-carts-list">
+            @for (cart of savedCarts; track $index) {
+              <div class="saved-cart-item">
+                <div class="saved-cart-info">
+                  <span class="saved-cart-name">{{ cart.name }}</span>
+                  <span class="saved-cart-meta">{{ cart.items.length }} items</span>
+                </div>
+                <div class="saved-cart-actions">
+                  <button class="btn btn-sm btn-primary" (click)="loadCart(cart)">Cargar</button>
+                  <button class="btn btn-sm btn-secondary" (click)="deleteSavedCart($index)">Eliminar</button>
+                </div>
+              </div>
+            }
           </div>
         </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelLoadCart()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
 
-        <div class="boleta-pie">
-          <div class="fila-total">
-            <span>TOTAL A PAGAR</span>
-            <strong>S/. {{ getTotal() | number:'1.2-2' }}</strong>
+  <!-- ========================================================== -->
+  <!-- MODAL: Open Cash Register                                  -->
+  <!-- ========================================================== -->
+  @if (showOpenCashModal) {
+    <div class="modal-overlay" (click)="cancelOpenCash()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Abrir Caja</h3>
+          <button class="modal-close" (click)="cancelOpenCash()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="initialAmount">Monto inicial en caja (S/)</label>
+            <input
+              id="initialAmount"
+              type="number"
+              class="form-input"
+              placeholder="0.00"
+              [(ngModel)]="cashInitialAmount"
+              min="0"
+              step="0.01"
+            />
           </div>
-
-          <button
-            class="btn-continuar"
-            [disabled]="cart.length === 0"
-            (click)="goToCheckout()">
-            CONTINUAR ➔
+          <div class="cash-info">
+            Al abrir la caja, registre el monto inicial con el que cuenta. Esto permitira llevar un control preciso de los ingresos del dia.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelOpenCash()">Cancelar</button>
+          <button class="btn btn-primary" (click)="confirmOpenCash()" [disabled]="cashInitialAmount <= 0">
+            Abrir Caja
           </button>
         </div>
       </div>
+    </div>
+  }
 
-      <div *ngIf="isCheckout" class="payment-screen">
-        <div class="boleta-header">
-          <h3>💵 Procesar Cobro</h3>
+  <!-- ========================================================== -->
+  <!-- MODAL: Close Cash Register                                  -->
+  <!-- ========================================================== -->
+  @if (showCloseCashModal) {
+    <div class="modal-overlay" (click)="cancelCloseCash()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Cerrar Caja</h3>
+          <button class="modal-close" (click)="cancelCloseCash()">&times;</button>
         </div>
-
-        <div class="boleta-cuerpo">
-          <div class="total-monto" style="text-align: center; margin-bottom: 20px;">
-            <p>Monto Neto a Cobrar:</p>
-            <h2 style="font-size: 2rem; color: #2c3e50;">
-              {{ getTotal() | currency:'PEN':'S/.' }}
-            </h2>
-          </div>
-
-          <div class="form-group" style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Método de Pago:</label>
-            <select [(ngModel)]="paymentMethod" class="form-control" style="width: 100%; padding: 8px;">
-              <option value="EFECTIVO">💵 Efectivo</option>
-              <option value="TARJETA">💳 Tarjeta (POS)</option>
-              <option value="YAPE_PLIN">📱 Yape / Plin</option>
-            </select>
-          </div>
-
-          <div *ngIf="paymentMethod === 'EFECTIVO'" class="form-group" style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-weight: bold;">¿Con cuánto paga el cliente?</label>
-            <input type="number" [(ngModel)]="amountPaid" class="form-control" style="width: 100%; padding: 8px;" placeholder="Ej: 50">
-
-            <div class="vuelto-box" *ngIf="amountPaid > 0" style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-radius: 4px;">
-              <p style="margin: 0;">Vuelto a entregar:</p>
-              <h3 class="text-success" style="margin: 5px 0 0 0; color: #2e7d32;">
-                {{ getChange() | currency:'PEN':'S/.' }}
-              </h3>
+        <div class="modal-body">
+          <div class="close-cash-preview">
+            <div class="preview-stat">
+              <span class="preview-label">Ventas en efectivo</span>
+              <span class="preview-value">S/ {{ cashStatus.totalEfectivo | number:'1.2-2' }}</span>
+            </div>
+            <div class="preview-stat">
+              <span class="preview-label">Ventas Yape/Plin</span>
+              <span class="preview-value">S/ {{ cashStatus.totalYapePlin | number:'1.2-2' }}</span>
+            </div>
+            <div class="preview-stat preview-total">
+              <span class="preview-label">Total ventas</span>
+              <span class="preview-value">S/ {{ cashStatus.totalSales | number:'1.2-2' }}</span>
+            </div>
+            <div class="preview-stat">
+              <span class="preview-label">Transacciones realizadas</span>
+              <span class="preview-value">{{ cashStatus.transactionCount }}</span>
             </div>
           </div>
-        </div>
-
-        <div class="boleta-pie">
-          <div class="payment-actions" style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn-regresar" (click)="cancelCheckout()" style="flex: 1; padding: 10px;">
-              ⬅️ Volver
-            </button>
-            <button class="btn-confirmar" (click)="confirmPayment()" style="flex: 2; padding: 10px; background: #2e7d32; color: white; border: none; font-weight: bold;">
-              ✔️ CONFIRMAR
-            </button>
+          <div class="form-group">
+            <label for="closeNotes">Notas (opcional)</label>
+            <textarea
+              id="closeNotes"
+              class="form-input form-textarea"
+              placeholder="Observaciones al cierre..."
+              [(ngModel)]="cashCloseNotes"
+              rows="2"
+            ></textarea>
           </div>
         </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelCloseCash()">Cancelar</button>
+          <button class="btn btn-cash-close" (click)="confirmCloseCash()" [disabled]="cashLoading">
+            Cerrar Caja y Generar Resumen
+          </button>
+        </div>
       </div>
+    </div>
+  }
 
-    </div> </div> </div>
+  <!-- ========================================================== -->
+  <!-- MODAL: Cash Closing Summary                                 -->
+  <!-- ========================================================== -->
+  @if (showCashSummary && cashCloseSummary) {
+    <div class="modal-overlay" (click)="dismissCashSummary()">
+      <div class="modal-content modal-wide" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Resumen de Cierre de Caja</h3>
+          <button class="modal-close" (click)="dismissCashSummary()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="summary-meta">
+            <div class="summary-meta-row">
+              <span>Abierto por</span>
+              <span class="summary-meta-value">{{ cashCloseSummary.openedByName }}</span>
+            </div>
+            <div class="summary-meta-row">
+              <span>Apertura</span>
+              <span class="summary-meta-value">{{ formatDate(cashCloseSummary.openedAt) }}</span>
+            </div>
+            <div class="summary-meta-row">
+              <span>Cierre</span>
+              <span class="summary-meta-value">{{ formatDate(cashCloseSummary.closedAt) }}</span>
+            </div>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-stats-grid">
+            <div class="summary-stat-card">
+              <span class="stat-label">Monto inicial</span>
+              <span class="stat-value">S/ {{ cashCloseSummary.initialAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-stat-card stat-efectivo">
+              <span class="stat-label">Efectivo</span>
+              <span class="stat-value">S/ {{ cashCloseSummary.totalEfectivo | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-stat-card stat-yape">
+              <span class="stat-label">Yape / Plin</span>
+              <span class="stat-value">S/ {{ cashCloseSummary.totalYapePlin | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-stat-card stat-total">
+              <span class="stat-label">Total ventas</span>
+              <span class="stat-value">S/ {{ cashCloseSummary.totalSales | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-stat-card">
+              <span class="stat-label">Transacciones</span>
+              <span class="stat-value">{{ cashCloseSummary.totalTransactions }}</span>
+            </div>
+            <div class="summary-stat-card stat-expected">
+              <span class="stat-label">Efectivo esperado en caja</span>
+              <span class="stat-value">S/ {{ cashCloseSummary.expectedCash | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          @if (cashCloseSummary.sales && cashCloseSummary.sales.length > 0) {
+            <div class="summary-divider"></div>
+            <h4 class="summary-section-title">Detalle de ventas</h4>
+            <div class="summary-sales-list">
+              @for (sale of cashCloseSummary.sales; track sale.saleId) {
+                <div class="summary-sale-row">
+                  <span class="sale-id">#{{ sale.saleId }}</span>
+                  <span class="sale-method">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+                  <span class="sale-count">{{ sale.itemCount }} items</span>
+                  <span class="sale-time">{{ formatDate(sale.issueDate) }}</span>
+                  <span class="sale-total">S/ {{ sale.total | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary btn-full" (click)="dismissCashSummary()">Cerrar Resumen</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

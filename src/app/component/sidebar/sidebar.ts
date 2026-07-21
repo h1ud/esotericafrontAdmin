@@ -41,6 +41,7 @@ export class Sidebar implements AfterViewInit {
   // Lista de navegación
   readonly navItems = signal<NavItem[]>([
     { label: 'Dashboard',    path: '/admin/dashboard',         iconPath: 'M3 12 12 3l9 9M5 10v10h14V10' },
+    { label: 'Ventas',       path: '/admin/sales',              iconPath: 'M22 12h-4l-3 9L9 3l-3 9H2' },
     { label: 'Clientes',     path: '/admin/clients',           iconPath: 'M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM4 21a8 8 0 0 1 16 0' },
     { label: 'Empleados',    path: '/admin/employees',         iconPath: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0M20 8v6M23 11h-6' },
     { label: 'Menú',         path: '/admin/menu',              iconPath: 'M3 7h18l-2 13H5L3 7zM8 7V5a4 4 0 0 1 8 0v2' },

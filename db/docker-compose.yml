@@ -1,0 +1,25 @@
+# ===============================================================
+#   ESOTÉRICA · PostgreSQL Database
+#   Solo la base de datos para desarrollo local
+# ===============================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: esoterica-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dbesoterica
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dbesoterica"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
