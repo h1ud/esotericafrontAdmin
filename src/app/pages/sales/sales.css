@@ -169,6 +169,47 @@
   color: var(--neutral-900);
 }
 
+.col-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.btn-delete-pending {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--primary-200);
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #C62828;
+  transition: all var(--dur-fast) var(--ease-organic);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.btn-delete-pending:hover {
+  background: #FFEBEE;
+  border-color: #EF9A9A;
+}
+
+.btn-delete-pending:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deleting-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #EF9A9A;
+  border-top-color: #C62828;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
 .btn-expand {
   display: inline-flex;
   align-items: center;
@@ -181,6 +222,7 @@
   cursor: pointer;
   color: var(--neutral-400);
   transition: all var(--dur-fast) var(--ease-organic);
+  vertical-align: middle;
 }
 
 .btn-expand:hover {

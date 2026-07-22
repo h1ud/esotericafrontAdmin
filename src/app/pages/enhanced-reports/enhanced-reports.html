@@ -1,0 +1,254 @@
+<div class="er-container">
+  <header class="er-header">
+    <div>
+      <h1>Reportes Analíticos</h1>
+      <p class="er-subtitle">Indicadores clave y análisis detallado del negocio</p>
+    </div>
+    <div class="er-header-actions">
+      @if (data()) {
+        <button class="er-btn er-btn-outline" (click)="exportPDF()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          PDF
+        </button>
+        <button class="er-btn er-btn-primary" (click)="exportExcel()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Excel
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <div class="er-filters">
+    <div class="er-filter-group">
+      <label>Fecha Inicio</label>
+      <input type="date" [(ngModel)]="startDate" class="er-input" />
+    </div>
+    <div class="er-filter-group">
+      <label>Fecha Fin</label>
+      <input type="date" [(ngModel)]="endDate" class="er-input" />
+    </div>
+    <button class="er-btn er-btn-primary" (click)="cargarReporte()" [disabled]="isLoading()">
+      @if (isLoading()) {
+        <span class="er-spinner"></span> Cargando...
+      } @else {
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Generar Reporte
+      }
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="er-error">{{ errorMessage() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="er-loading"><div class="er-spinner er-spinner-lg"></div><p>Generando reporte analítico...</p></div>
+  }
+
+  @if (data(); as d) {
+    <!-- KPI Cards -->
+    <div class="er-kpis">
+      <div class="er-kpi-card">
+        <span class="er-kpi-icon" style="background:#EBE5F0;color:#5B4470">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+        <div class="er-kpi-info">
+          <span class="er-kpi-value">{{ d.totalTransactions }}</span>
+          <span class="er-kpi-label">Transacciones</span>
+        </div>
+      </div>
+      <div class="er-kpi-card">
+        <span class="er-kpi-icon" style="background:#DCEEE5;color:#2E7D32">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <div class="er-kpi-info">
+          <span class="er-kpi-value">{{ formatCurrency(d.totalSalesAmount) }}</span>
+          <span class="er-kpi-label">Ventas Totales</span>
+        </div>
+      </div>
+      <div class="er-kpi-card">
+        <span class="er-kpi-icon" style="background:#E3F2FD;color:#1565C0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+        </span>
+        <div class="er-kpi-info">
+          <span class="er-kpi-value">{{ formatCurrency(d.averageTicket) }}</span>
+          <span class="er-kpi-label">Ticket Promedio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="er-tabs">
+      @for (t of tabs; track t.key) {
+        <button class="er-tab" [class.er-tab-active]="activeTab() === t.key" (click)="setTab(t.key)">
+          {{ t.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Tab Content -->
+    @if (activeTab() === 'resumen') {
+      <div class="er-section">
+        <h2 class="er-section-title">Resumen General</h2>
+        <div class="er-table-wrap">
+          <table class="er-table">
+            <thead><tr><th>Métrica</th><th style="text-align:right">Valor</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Total de Transacciones</strong></td><td style="text-align:right;font-weight:700">{{ d.totalTransactions }}</td></tr>
+              <tr><td><strong>Total de Ventas</strong></td><td style="text-align:right;font-weight:700;color:var(--primary-700)">{{ formatCurrency(d.totalSalesAmount) }}</td></tr>
+              <tr><td><strong>Ticket Promedio</strong></td><td style="text-align:right;font-weight:700">{{ formatCurrency(d.averageTicket) }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        @if (d.lastCashClose) {
+          <div class="er-cash-card">
+            <h3>Último Cierre de Caja</h3>
+            <p><strong>{{ d.lastCashClose.openedByName }}</strong> &middot; {{ formatDate(d.lastCashClose.closedAt) }}</p>
+            <p>Efectivo: {{ formatCurrency(d.lastCashClose.totalEfectivo) }} &middot; Yape/Plin: {{ formatCurrency(d.lastCashClose.totalYapePlin) }} &middot; <strong>Total: {{ formatCurrency(d.lastCashClose.totalSales) }}</strong></p>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab() === 'categorias') {
+      <div class="er-section">
+        <h2 class="er-section-title">Ventas por Categoría</h2>
+        <div class="er-bar-chart">
+          @for (cat of d.categorySales; track cat.categoryName) {
+            <div class="er-bar-row">
+              <div class="er-bar-label">{{ cat.categoryName }} <small>({{ cat.totalQuantity }} uds)</small></div>
+              <div class="er-bar-track">
+                <div class="er-bar-fill" [style.width]="getBarWidth(cat.totalAmount, d.categorySales[0]?.totalAmount || 1)"></div>
+              </div>
+              <div class="er-bar-value">{{ formatCurrency(cat.totalAmount) }} <small>{{ cat.percentage }}%</small></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'horario') {
+      <div class="er-section">
+        <h2 class="er-section-title">Análisis por Horario</h2>
+        <div class="er-table-wrap">
+          <table class="er-table">
+            <thead><tr><th>Rango Horario</th><th style="text-align:right">Transacciones</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>
+              @for (h of d.hourlySales; track h.hour) {
+                <tr>
+                  <td><span class="er-badge">{{ h.rangeLabel }}</span></td>
+                  <td style="text-align:right">{{ h.transactionCount }}</td>
+                  <td style="text-align:right;font-weight:600">{{ formatCurrency(h.totalAmount) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'productos') {
+      <div class="er-section">
+        <h2 class="er-section-title">Top 10 Productos más Vendidos</h2>
+        <div class="er-table-wrap">
+          <table class="er-table">
+            <thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>
+              @for (p of d.topProducts; track p.productName) {
+                <tr>
+                  <td><span class="er-rank">#{{ $index + 1 }}</span></td>
+                  <td><strong>{{ p.productName }}</strong></td>
+                  <td><span class="er-badge">{{ p.categoryName }}</span></td>
+                  <td style="text-align:right">{{ p.totalQuantity }}</td>
+                  <td style="text-align:right;font-weight:600">{{ formatCurrency(p.totalAmount) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        @if (d.bottomProducts.length > 0) {
+          <h2 class="er-section-title" style="margin-top:24px">Menos Vendidos</h2>
+          <div class="er-table-wrap">
+            <table class="er-table">
+              <thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total</th></tr></thead>
+              <tbody>
+                @for (p of d.bottomProducts; track p.productName) {
+                  <tr>
+                    <td><span class="er-rank er-rank-bot">{{ $index + 1 }}</span></td>
+                    <td><strong>{{ p.productName }}</strong></td>
+                    <td><span class="er-badge">{{ p.categoryName }}</span></td>
+                    <td style="text-align:right">{{ p.totalQuantity }}</td>
+                    <td style="text-align:right;font-weight:600">{{ formatCurrency(p.totalAmount) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab() === 'turnos') {
+      <div class="er-section">
+        <h2 class="er-section-title">Ventas por Turno</h2>
+        <div class="er-bar-chart">
+          @for (t of d.turnSales; track t.turnName) {
+            <div class="er-bar-row">
+              <div class="er-bar-label">{{ t.turnName }}</div>
+              <div class="er-bar-track">
+                <div class="er-bar-fill er-bar-fill-turn" [style.width]="getBarWidth(t.totalAmount, d.turnSales[0]?.totalAmount || 1)"></div>
+              </div>
+              <div class="er-bar-value">{{ formatCurrency(t.totalAmount) }} <small>{{ t.transactionCount }} tx</small></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'pagos') {
+      <div class="er-section">
+        <h2 class="er-section-title">Métodos de Pago</h2>
+        <div class="er-bar-chart">
+          @for (p of d.paymentMethodBreakdown; track p.method) {
+            <div class="er-bar-row">
+              <div class="er-bar-label">{{ p.method }}</div>
+              <div class="er-bar-track">
+                <div class="er-bar-fill er-bar-fill-pay" [style.width.%]="p.percentage"></div>
+              </div>
+              <div class="er-bar-value">{{ formatCurrency(p.total) }} <small>{{ p.percentage }}% ({{ p.count }} tx)</small></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'descuentos') {
+      <div class="er-section">
+        <h2 class="er-section-title">Descuentos Aplicados</h2>
+        @if (d.discounts.length === 0) {
+          <p class="er-empty">No se aplicaron descuentos en este período.</p>
+        } @else {
+          <div class="er-table-wrap">
+            <table class="er-table">
+              <thead><tr><th>Venta</th><th>Colaborador</th><th style="text-align:right">Subtotal</th><th style="text-align:right">Descuento</th><th style="text-align:right">Total</th><th>Pago</th><th>Fecha</th></tr></thead>
+              <tbody>
+                @for (disc of d.discounts; track disc.saleId) {
+                  <tr>
+                    <td>#{{ disc.saleId }}</td>
+                    <td>{{ disc.colaborador }}</td>
+                    <td style="text-align:right">{{ formatCurrency(disc.subtotal) }}</td>
+                    <td style="text-align:right;color:#C62828">-{{ formatCurrency(disc.discountAmount) }}</td>
+                    <td style="text-align:right;font-weight:600">{{ formatCurrency(disc.total) }}</td>
+                    <td><span class="er-badge">{{ disc.paymentMethod }}</span></td>
+                    <td>{{ formatDate(disc.issueDate) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

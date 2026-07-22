@@ -290,6 +290,112 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+/* ============================================================
+   CASH PROMPT MODAL (full screen overlay)
+   ============================================================ */
+
+.cash-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 24px;
+  animation: fadeIn 300ms var(--ease-organic);
+}
+
+.cash-prompt-modal {
+  background: var(--neutral-50);
+  border-radius: 24px;
+  padding: 48px 40px 36px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 350ms var(--ease-organic);
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cash-prompt-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary-50);
+  color: var(--primary-700);
+  margin-bottom: 20px;
+}
+
+.cash-prompt-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--neutral-900);
+  margin: 0 0 8px;
+}
+
+.cash-prompt-desc {
+  font-size: 15px;
+  color: var(--neutral-600);
+  margin: 0 0 28px;
+  line-height: 1.5;
+  font-family: var(--font-body);
+}
+
+.cash-prompt-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cash-prompt-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-organic);
+}
+
+.cash-prompt-btn--yes {
+  background: var(--primary-700);
+  color: white;
+}
+.cash-prompt-btn--yes:hover {
+  background: var(--primary-800);
+  transform: scale(1.02);
+}
+.cash-prompt-btn--yes:active {
+  transform: scale(0.98);
+}
+
+.cash-prompt-btn--no {
+  background: var(--neutral-150);
+  color: #C62828;
+}
+.cash-prompt-btn--no:hover {
+  background: #FFEBEE;
+}
+.cash-prompt-btn--no:active {
+  transform: scale(0.98);
+}
+
 @media (max-width: 960px) {
   .login-page { grid-template-columns: 1fr; }
   .login-decor { display: none; }

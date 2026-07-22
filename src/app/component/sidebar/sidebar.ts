@@ -7,6 +7,7 @@ import {
   inject,
   PLATFORM_ID,
   signal,
+  OnInit,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -27,15 +28,15 @@ interface NavItem {
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar implements AfterViewInit {
+export class Sidebar implements AfterViewInit, OnInit {
   private platformId = inject(PLATFORM_ID);
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  // Estado del usuario (mock - reemplaza con tu servicio)
+  // Estado del usuario (desde JWT)
   readonly user = signal({
-    name: 'María González',
-    role: 'Administradora',
-    initials: 'MG',
+    name: '',
+    role: '',
+    initials: '',
   });
 
   // Lista de navegación
@@ -47,6 +48,7 @@ export class Sidebar implements AfterViewInit {
     { label: 'Menú',         path: '/admin/menu',              iconPath: 'M3 7h18l-2 13H5L3 7zM8 7V5a4 4 0 0 1 8 0v2' },
     { label: 'Códigos',      path: '/admin/codes',             iconPath: 'M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4' },
     { label: 'Reportes',     path: '/admin/reports',           iconPath: 'M3 3v18h18M7 16l4-4 4 4 6-6' },
+    { label: 'R. Analíticos', path: '/admin/enhanced-reports',  iconPath: 'M3 3v18h18M7 12l4-4 4 4 6-6' },
     { label: 'Reseteos',     path: '/admin/password-reset-list', iconPath: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 8v4M12 16h.01' },
   ]);
 
@@ -58,6 +60,25 @@ export class Sidebar implements AfterViewInit {
     private authService: AuthService,
     private router: Router,
   ) {}
+
+  ngOnInit(): void {
+    const fullName = this.authService.getUserFullName();
+    const roles = this.authService.getRoles();
+    const initials = fullName
+      .split(' ')
+      .filter(Boolean)
+      .map(w => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase() || 'U';
+
+    const roleLabel = roles.includes('ADMIN') ? 'Administrador'
+      : roles.includes('BACKOFFICE') ? 'Backoffice'
+      : roles.includes('COLABORADOR') ? 'Colaborador'
+      : '';
+
+    this.user.set({ name: fullName || 'Usuario', role: roleLabel, initials });
+  }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;

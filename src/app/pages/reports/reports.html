@@ -1,1 +1,157 @@
-<p>reports works!</p>
+<div class="reports-container">
+  <h1>Panel de Reportes del Negocio</h1>
+  <p class="section-subtitle">Visualiza y exporta reportes de ventas, productos y cierre de caja</p>
+
+  <!-- Mensaje de error -->
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label class="filter-label">Tipo de Reporte</label>
+        <select
+          [ngModel]="reportType()"
+          (ngModelChange)="onReportTypeChange($event)"
+          class="filter-select">
+          <option value="sales">Reporte de Ventas</option>
+          <option value="products">Reporte de Productos</option>
+          <option value="cash">Reporte Cierre de Caja</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Fecha Inicio</label>
+        <input type="date" [(ngModel)]="startDate" class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Fecha Fin</label>
+        <input type="date" [(ngModel)]="endDate" class="filter-input">
+      </div>
+
+      <div class="filter-group filter-actions">
+        <button class="btn btn-search" (click)="cargarReporte()" [disabled]="isLoading()">
+          @if (isLoading()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Cargando...
+          } @else {
+            Buscar
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  @if (isLoading()) {
+    <div class="loading-indicator">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p>Cargando reporte...</p>
+    </div>
+  }
+
+  <!-- Controles superiores -->
+  <div class="top-controls" *ngIf="!isLoading() && reportData().length > 0">
+    <h2>Resultados del Reporte</h2>
+    <button class="btn btn-export" (click)="exportarExcel()">Descargar Excel</button>
+  </div>
+
+  <!-- Contenido -->
+  <div class="table-section" *ngIf="!isLoading()">
+    <table class="reports-table">
+      <thead>
+        @if (reportType() === 'sales') {
+          <tr>
+            <th style="width: 180px;">Fecha y Hora</th>
+            <th>Colaborador</th>
+            <th style="width: 150px;">Método de Pago</th>
+            <th style="width: 120px;">Estado</th>
+            <th style="width: 120px;">Subtotal</th>
+            <th style="width: 120px;">Descuento</th>
+            <th style="width: 120px;">Total</th>
+          </tr>
+        }
+        @if (reportType() === 'products') {
+          <tr>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th style="width: 130px;">Categoría</th>
+            <th style="width: 120px;">Precio</th>
+            <th style="width: 140px;">Disponibilidad</th>
+          </tr>
+        }
+        @if (reportType() === 'cash') {
+          <tr>
+            <th style="width: 180px;">Fecha y Hora</th>
+            <th>Colaborador</th>
+            <th style="width: 120px;">Efectivo</th>
+            <th style="width: 120px;">Yape/Plin</th>
+            <th style="width: 120px;">Tarjeta</th>
+            <th style="width: 120px;">Total</th>
+            <th>Notas</th>
+          </tr>
+        }
+      </thead>
+      <tbody>
+        @for (item of reportData(); track $index) {
+          @if (reportType() === 'sales') {
+            <tr>
+              <td>{{ item.issueDate | date:'medium' }}</td>
+              <td style="font-weight: 500;">{{ item.colaborador }}</td>
+              <td>
+                <span class="badge-payment">{{ item.paymentMethod }}</span>
+              </td>
+              <td>
+                <span class="badge-status" [class.status-completed]="item.paymentStatus === 'COMPLETED'">
+                  {{ item.paymentStatus }}
+                </span>
+              </td>
+              <td class="text-right">S/. {{ item.subtotal | number:'1.2-2' }}</td>
+              <td class="text-right">S/. {{ item.discountAmount | number:'1.2-2' }}</td>
+              <td class="text-right"><strong>S/. {{ item.total | number:'1.2-2' }}</strong></td>
+            </tr>
+          }
+          @if (reportType() === 'products') {
+            <tr>
+              <td style="font-weight: 500;">{{ item.productName }}</td>
+              <td>{{ item.description }}</td>
+              <td>
+                <span class="badge-payment">{{ item.categoryName }}</span>
+              </td>
+              <td class="text-right">S/. {{ item.price | number:'1.2-2' }}</td>
+              <td>
+                <span class="badge-status" [class.status-completed]="item.availabilityStatus === 'Disponible'">
+                  {{ item.availabilityStatus }}
+                </span>
+              </td>
+            </tr>
+          }
+          @if (reportType() === 'cash') {
+            <tr>
+              <td>{{ item.emissionDate | date:'medium' }}</td>
+              <td style="font-weight: 500;">{{ item.colaborador }}</td>
+              <td class="text-right">S/. {{ item.totalEfectivo | number:'1.2-2' }}</td>
+              <td class="text-right">S/. {{ item.totalYapePlin | number:'1.2-2' }}</td>
+              <td class="text-right">S/. {{ item.totalTarjeta | number:'1.2-2' }}</td>
+              <td class="text-right"><strong>S/. {{ item.total | number:'1.2-2' }}</strong></td>
+              <td>{{ item.notes || '—' }}</td>
+            </tr>
+          }
+        } @empty {
+          <tr>
+            <td [attr.colspan]="colspanActual()" class="no-data">
+              No hay registros para mostrar en este rango. Presiona Buscar para consultar.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

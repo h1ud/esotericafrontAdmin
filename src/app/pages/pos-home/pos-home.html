@@ -18,16 +18,43 @@
   }
 
   <!-- ========================================================== -->
-  <!-- HEADER: Cash status + User info + Logout                    -->
+  <!-- HEADER: Compact POS header                                  -->
   <!-- ========================================================== -->
   <div class="pos-header">
-    <div>
-      <h1>Punto de Venta</h1>
-      <p class="section-subtitle">Seleccione productos y procese el cobro al instante</p>
+    <div class="pos-header-left">
+      <span class="pos-header-brand">Esoterica POS</span>
+      <div class="pos-header-cash-indicator" [class.cash-open]="cashStatus.isOpen" [class.cash-closed]="!cashStatus.isOpen">
+        <span class="cash-dot" [class.dot-green]="cashStatus.isOpen" [class.dot-red]="!cashStatus.isOpen"></span>
+        @if (cashLoading) {
+          <span>Cargando...</span>
+        } @else if (cashStatus.isOpen) {
+          <span>{{ cashStatus.openedByName }} &middot; S/ {{ cashStatus.totalSales | number:'1.2-2' }}</span>
+        } @else {
+          <span>Caja cerrada</span>
+        }
+      </div>
     </div>
-    <div class="header-actions">
-      <button class="btn btn-logout" (click)="logout()" title="Cerrar sesion">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="pos-header-right">
+      @if (cashStatus.isOpen) {
+        <button class="btn-header-cash-close" (click)="openCloseCashModal()" title="Cerrar caja">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          Cerrar
+        </button>
+      }
+      @if (!cashStatus.isOpen && !cashLoading) {
+        <button class="btn-header-open-cash" (click)="openOpenCashModal()" title="Abrir caja">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+          Abrir
+        </button>
+      }
+      <button class="btn-header-logout" (click)="logout()" title="Cerrar sesion">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
           <line x1="21" y1="12" x2="9" y2="12"/>
@@ -38,39 +65,7 @@
   </div>
 
   <!-- ========================================================== -->
-  <!-- CASH REGISTER STATUS BAR                                   -->
-  <!-- ========================================================== -->
-  <div class="cash-status-bar" [class.cash-open]="cashStatus.isOpen" [class.cash-closed]="!cashStatus.isOpen">
-    <div class="cash-status-left">
-      <span class="cash-status-indicator" [class.dot-green]="cashStatus.isOpen" [class.dot-red]="!cashStatus.isOpen"></span>
-      <span class="cash-status-text">
-        @if (cashLoading) {
-          Cargando estado de caja...
-        } @else if (cashStatus.isOpen) {
-          Caja abierta por {{ cashStatus.openedByName }} desde {{ formatDate(cashStatus.openedAt) }}
-          &middot; Ventas: S/ {{ cashStatus.totalSales | number:'1.2-2' }}
-          &middot; Transacciones: {{ cashStatus.transactionCount }}
-        } @else {
-          Caja cerrada
-        }
-      </span>
-    </div>
-    <div class="cash-status-right">
-      @if (!cashStatus.isOpen && !cashLoading) {
-        <button class="btn btn-cash-open" (click)="openOpenCashModal()">
-          Abrir Caja
-        </button>
-      }
-      @if (cashStatus.isOpen) {
-        <button class="btn btn-cash-close" (click)="openCloseCashModal()">
-          Cerrar Caja
-        </button>
-      }
-    </div>
-  </div>
-
-  <!-- ========================================================== -->
-  <!-- TOP ACTIONS BAR                                            -->
+  <!-- TOP ACTIONS BAR (simplified)                                -->
   <!-- ========================================================== -->
   <div class="top-actions">
     <button class="btn btn-secondary btn-sm" (click)="toggleRecentSales()">
@@ -139,90 +134,113 @@
     <div class="error-message">{{ errorMessage }}</div>
   }
 
-  <!-- MAIN LAYOUT -->
-  <div class="pos-layout">
-
+  <!-- ======================================================== -->
+    <!-- MAIN LAYOUT                                                -->
     <!-- ======================================================== -->
-    <!-- LEFT COLUMN: Category + Products                          -->
-    <!-- ======================================================== -->
-    <div class="pos-left">
+    <div class="pos-layout">
 
-      <!-- Categories -->
-      <div class="pos-card">
-        <div class="pos-card-header">
-          <h3>Categorias</h3>
-        </div>
-        <div class="pos-card-body">
-          <div class="categories-bar">
-            @for (cat of categories; track cat.id) {
-              <button
-                class="btn-category"
-                [class.active]="cat.id === selectedCategoryId"
-                (click)="selectCategory(cat.id)"
-              >
-                {{ cat.categoryName }}
+      <!-- ====================================================== -->
+      <!-- LEFT: Category grid OR Products                         -->
+      <!-- ====================================================== -->
+      <div class="pos-left">
+
+        @if (showCategoryGrid) {
+          <!-- ==================================================== -->
+          <!-- CATEGORY GRID VIEW (like a real POS)                  -->
+          <!-- ==================================================== -->
+          <div class="pos-card">
+            <div class="pos-card-header">
+              <h3>Categorías</h3>
+              <div class="search-box">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="Buscar producto..." [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" />
+              </div>
+            </div>
+            <div class="pos-card-body">
+              <div class="category-grid">
+                @for (cat of categories; track cat.id) {
+                  <button class="category-card" (click)="selectCategory(cat.id)">
+                    <span class="category-card-icon">
+                      @switch (cat.id) {
+                        @case (1) { <span>&#127789;</span> }
+                        @case (2) { <span>&#129385;</span> }
+                        @case (3) { <span>&#127798;</span> }
+                        @case (4) { <span>&#127860;</span> }
+                        @case (5) { <span>&#127858;</span> }
+                        @case (6) { <span>&#127839;</span> }
+                        @case (7) { <span>&#127848;</span> }
+                        @case (8) { <span>&#129346;</span> }
+                        @case (9) { <span>&#127881;</span> }
+                        @default { <span>&#128722;</span> }
+                      }
+                    </span>
+                    <span class="category-card-name">{{ cat.categoryName }}</span>
+                  </button>
+                } @empty {
+                  <span class="no-data">No hay categorías disponibles</span>
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- ==================================================== -->
+          <!-- PRODUCTS VIEW (category selected)                     -->
+          <!-- ==================================================== -->
+          <div class="pos-card">
+            <div class="pos-card-header">
+              <button class="btn-back-categories" (click)="goBackToCategories()" title="Volver a categorías">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                </svg>
               </button>
-            } @empty {
-              <span class="no-data no-data-compact">No hay categorias disponibles</span>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- Products with search -->
-      <div class="pos-card">
-        <div class="pos-card-header">
-          <h3>Productos</h3>
-          <div class="search-box">
-            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Buscar producto..."
-              [(ngModel)]="searchQuery"
-              (ngModelChange)="onSearch()"
-            />
-          </div>
-        </div>
-        <div class="pos-card-body">
-          @if (loading) {
-            <div class="loading-indicator loading-compact">Cargando productos...</div>
-          } @else {
-            <div class="products-grid">
-              @for (prod of filteredProducts; track prod.id) {
-                <div class="product-card" (click)="addToCart(prod)">
-                  <span class="product-name">{{ prod.productName }}</span>
-                  <span class="product-price">S/ {{ prod.price | number:'1.2-2' }}</span>
-                  <div class="product-actions">
-                    <span class="product-add-hint">Agregar</span>
-                    @if (cashStatus.isOpen) {
-                      <button class="product-quick-sell" (click)="$event.stopPropagation(); quickSell(prod)" title="Venta rapida">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                      </button>
-                    }
-                  </div>
-                </div>
-              } @empty {
-                <div class="no-data">
-                  {{ searchQuery ? 'No se encontraron productos para "' + searchQuery + '"' : 'No hay productos disponibles en esta categoria.' }}
+              <h3>{{ selectedCategory?.categoryName || 'Productos' }}</h3>
+              <div class="search-box">
+                <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="Buscar..." [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" />
+              </div>
+            </div>
+            <div class="pos-card-body">
+              @if (loading) {
+                <div class="loading-indicator loading-compact">Cargando productos...</div>
+              } @else {
+                <div class="products-grid">
+                  @for (prod of filteredProducts; track prod.id) {
+                    <div class="product-card" (click)="addToCart(prod)">
+                      <span class="product-name">{{ prod.productName }}</span>
+                      <span class="product-price">S/ {{ prod.price | number:'1.2-2' }}</span>
+                      <div class="product-actions">
+                        <span class="product-add-hint">Agregar</span>
+                        @if (cashStatus.isOpen) {
+                          <button class="product-quick-sell" (click)="$event.stopPropagation(); quickSell(prod)" title="Venta rápida">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  } @empty {
+                    <div class="no-data">
+                      {{ searchQuery ? 'No se encontraron productos para "' + searchQuery + '"' : 'No hay productos disponibles.' }}
+                    </div>
+                  }
                 </div>
               }
             </div>
-          }
-        </div>
+          </div>
+        }
       </div>
 
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- RIGHT COLUMN: Cart / Checkout / Receipt                   -->
-    <!-- ======================================================== -->
-    <div class="pos-right">
+      <!-- ====================================================== -->
+      <!-- RIGHT COLUMN: Cart / Checkout / Receipt                  -->
+      <!-- ====================================================== -->
+      <div class="pos-right">
 
       @if (showReceipt && receiptData) {
         <!-- ==================================================== -->

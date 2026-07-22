@@ -1,0 +1,4 @@
+- [No modificar backend](feedback_no-backend-modifications.md) — Restricción ABSOLUTA: solo lectura en backend, nada de editar
+- [Ubicacion del backend](reference_backend-location.md) — Ruta y estructura del proyecto Spring Boot backend
+- [Bug dashboard resuelto](project_dashboard-bug-fix.md) — ClassCastException arreglada en StatisticsService.java (2026-07-21)
+- [Repositorio reparado](project_repository-fix.md) — 19 errores de compilacion fix: metodos faltantes en SaleOperationRepository (2026-07-21)

@@ -51,6 +51,10 @@ export class PosHome implements OnInit {
   loading: boolean = false;
   errorMessage: string = '';
 
+  /** Category grid navigation */
+  showCategoryGrid: boolean = true;
+  selectedCategory: CategoryDTO | null = null;
+
   /** Cash register */
   cashStatus: CashStatus = {
     isOpen: false,
@@ -243,6 +247,8 @@ export class PosHome implements OnInit {
 
   selectCategory(id: number): void {
     this.selectedCategoryId = id;
+    this.selectedCategory = this.categories.find(c => c.id === id) || null;
+    this.showCategoryGrid = false;
     this.searchQuery = '';
     this.loading = true;
     this.errorMessage = '';
@@ -260,6 +266,15 @@ export class PosHome implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  goBackToCategories(): void {
+    this.showCategoryGrid = true;
+    this.selectedCategory = null;
+    this.selectedCategoryId = null;
+    this.products = [];
+    this.filteredProducts = [];
+    this.cdr.detectChanges();
   }
 
   onSearch(): void {

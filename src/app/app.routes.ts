@@ -43,7 +43,10 @@ export const routes: Routes = [
         path: 'reports',
         loadComponent: () => import('./pages/reports/reports').then((m) => m.Reports),
       },
-
+      {
+        path: 'enhanced-reports',
+        loadComponent: () => import('./pages/enhanced-reports/enhanced-reports').then((m) => m.EnhancedReports),
+      },
       {
         path: 'password-reset-list',
         loadComponent: () => import('./pages/password-reset-list/password-reset-list').then((m) => m.PasswordResetList),

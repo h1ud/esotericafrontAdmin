@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SaleListService, SaleResponse, SalesPageData } from '../../service/sale-list.service';
+import { SaleService } from '../../service/sale.service';
 
 @Component({
   selector: 'app-sales',
@@ -18,6 +19,7 @@ export class Sales implements OnInit {
   pageSize: number = 20;
 
   loading: boolean = false;
+  deletingSaleId: number | null = null;
   errorMessage: string = '';
   searchTerm: string = '';
   paymentFilter: string = '';
@@ -27,6 +29,7 @@ export class Sales implements OnInit {
 
   constructor(
     private saleListService: SaleListService,
+    private saleService: SaleService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -106,5 +109,29 @@ export class Sales implements OnInit {
   get totalFormatted(): string {
     const total = this.sales.reduce((sum, s) => sum + s.total, 0);
     return total.toLocaleString('es-PE', { minimumFractionDigits: 2 });
+  }
+
+  confirmDeleteSale(saleId: number): void {
+    if (confirm('¿Estás seguro de eliminar esta venta pendiente?')) {
+      this.deleteSale(saleId);
+    }
+  }
+
+  deleteSale(saleId: number): void {
+    this.deletingSaleId = saleId;
+    this.saleService.deleteSale(saleId).subscribe({
+      next: () => {
+        this.sales = this.sales.filter(s => s.id !== saleId);
+        this.totalElements--;
+        this.deletingSaleId = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.error || 'Error al eliminar la venta';
+        this.deletingSaleId = null;
+        this.cdr.detectChanges();
+        setTimeout(() => this.errorMessage = '', 3000);
+      }
+    });
   }
 }

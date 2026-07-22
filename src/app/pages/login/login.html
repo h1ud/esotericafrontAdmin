@@ -96,3 +96,35 @@
     </div>
   </main>
 </div>
+
+<!-- ========================================================== -->
+<!-- CASH OPEN PROMPT MODAL                                       -->
+<!-- ========================================================== -->
+@if (showCashPrompt) {
+  <div class="cash-prompt-overlay">
+    <div class="cash-prompt-modal">
+      <div class="cash-prompt-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+      </div>
+      <h2 class="cash-prompt-title">Abrir Caja</h2>
+      <p class="cash-prompt-desc">¿Deseas abrir la caja registradora para iniciar operaciones?</p>
+      <div class="cash-prompt-actions">
+        <button class="cash-prompt-btn cash-prompt-btn--no" (click)="rejectCashOpen()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          No, salir
+        </button>
+        <button class="cash-prompt-btn cash-prompt-btn--yes" (click)="acceptCashOpen()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Sí, abrir caja
+        </button>
+      </div>
+    </div>
+  </div>
+}

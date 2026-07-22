@@ -14,6 +14,8 @@ import { AuthService } from '../../service/Auth/auth.service';
 export class Login {
   loginData = { username: '', password: '' };
   errorMessage: string = '';
+  showCashPrompt: boolean = false;
+  isLoggingIn: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -23,26 +25,39 @@ export class Login {
 
   onLogin() {
     this.errorMessage = '';
+    this.isLoggingIn = true;
 
     this.authService.login(this.loginData).subscribe({
       next: () => {
+        this.isLoggingIn = false;
         const roles = this.authService.getRoles();
-        console.log('AHORA SÍ LLEGAN:', roles); // Debería salir: ["ADMIN"]
 
         if (roles.includes('ADMIN')) {
-          // Si es ADMIN, directo a su panel
           this.router.navigate(['/admin/dashboard']);
         } else if (roles.includes('COLABORADOR') || roles.includes('BACKOFFICE')) {
-          // Si es trabajador, directo al POS
-          this.router.navigate(['/pos-home']);
+          this.showCashPrompt = true;
+          this.cdr.detectChanges();
         } else {
           this.router.navigate(['/pos-home']);
         }
       },
       error: (err) => {
+        this.isLoggingIn = false;
         this.errorMessage = 'Usuario o contraseña incorrectos';
         this.cdr.detectChanges();
       },
     });
+  }
+
+  acceptCashOpen(): void {
+    this.showCashPrompt = false;
+    this.cdr.detectChanges();
+    this.router.navigate(['/pos-home']);
+  }
+
+  rejectCashOpen(): void {
+    this.showCashPrompt = false;
+    this.authService.logout();
+    this.cdr.detectChanges();
   }
 }

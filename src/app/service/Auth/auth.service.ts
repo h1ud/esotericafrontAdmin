@@ -31,17 +31,39 @@ export class AuthService {
     try {
       const payloadBase64 = token.split('.')[1];
       const decodedPayload = JSON.parse(atob(payloadBase64));
-
-      // 🟢 CAPTURAMOS LA PROPIEDAD REAL: 'role' en singular
       const singleRole = decodedPayload.role;
-
-      // Como tu token manda un String plano (ej: "ADMIN"),
-      // lo metemos dentro de un arreglo [] para que tu login siga funcionando con .includes()
       return singleRole ? [singleRole] : [];
-
     } catch (e) {
       console.error('Error al decodificar el token JWT:', e);
       return [];
+    }
+  }
+
+  /** Obtiene el nombre completo del usuario desde el JWT */
+  getUserFullName(): string {
+    const token = localStorage.getItem('token');
+    if (!token) return '';
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      const name = decodedPayload.name || '';
+      const lastName = decodedPayload.lastName || '';
+      return (name + ' ' + lastName).trim() || decodedPayload.sub || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /** Obtiene el username desde el JWT */
+  getUsername(): string {
+    const token = localStorage.getItem('token');
+    if (!token) return '';
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payloadBase64));
+      return decodedPayload.sub || '';
+    } catch (e) {
+      return '';
     }
   }
 }

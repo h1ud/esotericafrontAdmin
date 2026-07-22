@@ -6,13 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SaleService {
-  // Asegúrate de que esta URL coincida con tu backend
   private apiUrl = '/api/pos/sales';
 
   constructor(private http: HttpClient) {}
 
-  // Este método recibe el objeto que preparaste en tu componente
   createSale(saleData: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, saleData);
+  }
+
+  deleteSale(saleId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${saleId}`);
   }
 }
