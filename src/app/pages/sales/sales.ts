@@ -24,7 +24,7 @@ export class Sales implements OnInit {
   searchTerm: string = '';
   paymentFilter: string = '';
   
-  /** For sale detail expand */
+  
   expandedSaleId: number | null = null;
 
   constructor(

@@ -10,6 +10,7 @@ export interface ProductDTO {
   isAvailable: boolean;
   categoryId: number;
   categoryName?: string;
+  imageUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })

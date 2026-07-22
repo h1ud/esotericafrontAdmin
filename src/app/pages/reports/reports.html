@@ -2,14 +2,14 @@
   <h1>Panel de Reportes del Negocio</h1>
   <p class="section-subtitle">Visualiza y exporta reportes de ventas, productos y cierre de caja</p>
 
-  <!-- Mensaje de error -->
+  
   @if (errorMessage()) {
     <div class="error-message">
       {{ errorMessage() }}
     </div>
   }
 
-  <!-- Filtros -->
+  
   <div class="filters-section">
     <div class="filters-grid">
       <div class="filter-group">
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <!-- Loading Indicator -->
+  
   @if (isLoading()) {
     <div class="loading-indicator">
       <div class="spinner-border text-primary" role="status">
@@ -57,13 +57,13 @@
     </div>
   }
 
-  <!-- Controles superiores -->
+  
   <div class="top-controls" *ngIf="!isLoading() && reportData().length > 0">
     <h2>Resultados del Reporte</h2>
     <button class="btn btn-export" (click)="exportarExcel()">Descargar Excel</button>
   </div>
 
-  <!-- Contenido -->
+  
   <div class="table-section" *ngIf="!isLoading()">
     <table class="reports-table">
       <thead>

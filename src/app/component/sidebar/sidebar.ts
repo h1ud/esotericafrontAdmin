@@ -17,7 +17,7 @@ import gsap from 'gsap';
 interface NavItem {
   label: string;
   path: string;
-  iconPath: string;     // SVG path d
+  iconPath: string;     
   isLogout?: boolean;
 }
 
@@ -32,14 +32,14 @@ export class Sidebar implements AfterViewInit, OnInit {
   private platformId = inject(PLATFORM_ID);
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  // Estado del usuario (desde JWT)
+  
   readonly user = signal({
     name: '',
     role: '',
     initials: '',
   });
 
-  // Lista de navegación
+  
   readonly navItems = signal<NavItem[]>([
     { label: 'Dashboard',    path: '/admin/dashboard',         iconPath: 'M3 12 12 3l9 9M5 10v10h14V10' },
     { label: 'Ventas',       path: '/admin/sales',              iconPath: 'M22 12h-4l-3 9L9 3l-3 9H2' },
@@ -52,7 +52,7 @@ export class Sidebar implements AfterViewInit, OnInit {
     { label: 'Reseteos',     path: '/admin/password-reset-list', iconPath: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 8v4M12 16h.01' },
   ]);
 
-  // El indicador de item activo
+  
   @ViewChildren('navLink') navLinks!: QueryList<ElementRef<HTMLAnchorElement>>;
   private indicator: HTMLElement | null = null;
 
@@ -86,13 +86,13 @@ export class Sidebar implements AfterViewInit, OnInit {
   }
 
   private runAnimations(): void {
-    // Capturar indicador desde el DOM
+    
     this.indicator = this.host.nativeElement.querySelector('.nav-indicator');
 
     const links = this.navLinks.map(l => l.nativeElement);
     if (!links.length) return;
 
-    // 1) Entrada escalonada de los items
+    
     gsap.from(links, {
       x: -16,
       opacity: 0,
@@ -102,7 +102,7 @@ export class Sidebar implements AfterViewInit, OnInit {
       delay: 0.1,
     });
 
-    // 2) Avatar del usuario aparece desde abajo
+    
     const avatar = this.host.nativeElement.querySelector('.sidebar-footer');
     if (avatar) {
       gsap.from(avatar, {
@@ -114,7 +114,7 @@ export class Sidebar implements AfterViewInit, OnInit {
       });
     }
 
-    // 3) Logo: entrada + pulse sutil
+    
     const logo = this.host.nativeElement.querySelector('.sidebar-brand');
     if (logo) {
       gsap.from(logo, {
@@ -134,13 +134,13 @@ export class Sidebar implements AfterViewInit, OnInit {
       });
     }
 
-    // 4) Posicionar el indicador de item activo inicial
+    
     this.positionIndicator();
   }
 
-  /** Mueve el indicador al item activo cuando cambia la ruta */
+  
   onActiveChange(): void {
-    // Esperar al siguiente tick: routerLinkActive aplica la clase después del click
+    
     setTimeout(() => this.positionIndicator(), 0);
   }
 
@@ -171,4 +171,4 @@ export class Sidebar implements AfterViewInit, OnInit {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
-}
+}

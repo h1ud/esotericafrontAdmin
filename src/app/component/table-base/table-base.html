@@ -1,25 +1,25 @@
 <div class="table-base">
-  <!-- ============================================================ -->
-  <!-- HEADER -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (title) {
     <div class="table-base-header">
       <h2 class="table-base-title">{{ title }}</h2>
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- LOADING -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (loading) {
     <div class="table-base-loading">
       <div class="loading-spinner"></div>
       <span>Cargando…</span>
     </div>
   } @else {
-    <!-- ============================================================ -->
-    <!-- TABLA -->
-    <!-- ============================================================ -->
+    
+    
+    
     <div class="table-base-table-wrapper">
       <table class="table-base-table">
         <thead>
@@ -36,7 +36,7 @@
         </thead>
         <tbody>
           @if (rowTemplate) {
-            <!-- Render personalizado con template del padre -->
+            
             @for (item of paginatedData; track getValue(item, trackByKey)) {
               <ng-container
                 [ngTemplateOutlet]="rowTemplate"
@@ -54,7 +54,7 @@
               </tr>
             }
           } @else {
-            <!-- Render por defecto: texto plano -->
+            
             @for (item of paginatedData; track getValue(item, trackByKey)) {
               <tr>
                 @for (col of columns; track col.key) {
@@ -77,9 +77,9 @@
       </table>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- PAGINACIÓN -->
-    <!-- ============================================================ -->
+    
+    
+    
     @if (totalPages > 1) {
       <div class="table-base-pagination">
         <div class="page-info">
@@ -137,4 +137,4 @@
       </div>
     }
   }
-</div>
+</div>

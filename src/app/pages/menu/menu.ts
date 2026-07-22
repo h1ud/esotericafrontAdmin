@@ -37,6 +37,7 @@ export class Menu implements OnInit {
     price: 0,
     categoryId: 1,
     isAvailable: true,
+    imageUrl: '',
   };
 
   constructor(
@@ -85,6 +86,7 @@ export class Menu implements OnInit {
       price: 0,
       categoryId: categoryId,
       isAvailable: true,
+      imageUrl: '',
     };
     this.showForm = true;
     this.cdr.detectChanges();

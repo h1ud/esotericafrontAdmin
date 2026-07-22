@@ -14,8 +14,8 @@ export interface SaleReportDTO {
 
 @Injectable({ providedIn: 'root' })
 export class ReportService {
-  // La URL debe coincidir con la del backend
-  private apiUrl = 'http://localhost:8080/api/admin/reports';
+  
+  private apiUrl = 'http:
 
   constructor(private http: HttpClient) {}
 

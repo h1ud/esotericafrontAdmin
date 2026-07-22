@@ -28,7 +28,7 @@ export class Reports {
     this.errorMessage.set('');
   }
 
-  // Número de columnas según el tipo, para el colspan del "no hay datos"
+  
   colspanActual(): number {
     switch (this.reportType()) {
       case 'sales': return 7;

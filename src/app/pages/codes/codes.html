@@ -26,6 +26,7 @@
       <thead>
       <tr>
         <th>ID</th>
+        <th>Código</th>
         <th>Título</th>
         <th>Descuento</th>
         <th>Creador</th>
@@ -36,11 +37,12 @@
       <tbody>
       <tr *ngFor="let promo of filteredPromotions()">
         <td>{{ promo.id }}</td>
+        <td><code class="promo-code-badge">{{ promo.code }}</code></td>
         <td>
           <strong>{{ promo.title }}</strong>
           <small *ngIf="promo.description" class="description-text">{{ promo.description }}</small>
         </td>
-        <td>{{ promo.discount }}</td>
+        <td>{{ promo.discount }}%</td>
         <td>{{ promo.username }}</td>
         <td>
             <span class="status-badge" [ngClass]="promo.isActive ? 'status-active' : 'status-inactive'">
@@ -53,19 +55,25 @@
         </td>
       </tr>
       <tr *ngIf="filteredPromotions().length === 0">
-        <td colspan="6" class="no-data">No se encontraron promociones.</td>
+        <td colspan="7" class="no-data">No se encontraron promociones.</td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Formulario -->
+  
   <div *ngIf="showForm" class="form-section">
     <div class="form-overlay" (click)="closeForm()"></div>
     <div class="form-container">
       <h2>{{ editingId ? 'Editar Promoción' : 'Nueva Promoción' }}</h2>
 
       <form (submit)="$event.preventDefault()">
+        <div class="form-group">
+          <label>Código Promocional *</label>
+          <input type="text" [(ngModel)]="formData.code" name="code" placeholder="Ej: VERANO2024, PROMO20" />
+          <small class="form-help">Código único que los clientes ingresarán en el POS (se guardará en mayúsculas)</small>
+        </div>
+
         <div class="form-group">
           <label>Título *</label>
           <input type="text" [(ngModel)]="formData.title" name="title" placeholder="Ingresa el título" />
@@ -76,29 +84,33 @@
           <textarea [(ngModel)]="formData.description" name="description" placeholder="Descripción de la promoción"></textarea>
         </div>
 
-        <div class="form-group">
-          <label>Descuento *</label>
-          <input type="number" [(ngModel)]="formData.discount" name="discount" placeholder="0" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Descuento (%) *</label>
+            <input type="number" [(ngModel)]="formData.discount" name="discount" placeholder="15" min="0" max="100" />
+          </div>
+
+          <div class="form-group checkbox-group" style="display: flex; align-items: center; gap: 8px; margin-top: 28px;">
+            <input type="checkbox" [(ngModel)]="formData.isActive" id="isActive" name="isActive" />
+            <label for="isActive" style="margin: 0;">Activo</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha de Inicio *</label>
+            <input type="datetime-local" [(ngModel)]="formData.startDate" name="startDate" />
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Fin</label>
+            <input type="datetime-local" [(ngModel)]="formData.endDate" name="endDate" />
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Fecha de Inicio *</label>
-          <input type="datetime-local" [(ngModel)]="formData.startDate" name="startDate" />
-        </div>
-
-        <div class="form-group">
-          <label>Fecha de Fin</label>
-          <input type="datetime-local" [(ngModel)]="formData.endDate" name="endDate" />
-        </div>
-
-        <div class="form-group">
-          <label>URL Imagen</label>
+          <label>URL de Imagen</label>
           <input type="text" [(ngModel)]="formData.imageUrl" name="imageUrl" placeholder="https://ejemplo.com/imagen.jpg" />
-        </div>
-
-        <div class="form-group checkbox-group">
-          <input type="checkbox" [(ngModel)]="formData.isActive" id="isActive" name="isActive" />
-          <label for="isActive">Activo</label>
         </div>
 
         <div class="form-actions">
@@ -120,4 +132,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>

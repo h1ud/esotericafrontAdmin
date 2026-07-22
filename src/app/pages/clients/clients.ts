@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, F
 import { ClientService, Client } from '../../service/client.service';
 import { TableBaseComponent, TableColumn } from '../../component/table-base/table-base';
 
-/** Mock de clientes para cuando el backend no responde */
+
 const MOCK_CLIENTS: Client[] = [
   { id: 1, name: 'Lucía Rodríguez',  dni: '45678901', birthdayDate: '1995-03-12', createDate: '2024-11-02' },
   { id: 2, name: 'Carlos Mendoza',   dni: '12345678', birthdayDate: '1988-07-22', createDate: '2024-10-15' },
@@ -23,7 +23,7 @@ const MOCK_CLIENTS: Client[] = [
   { id: 8, name: 'Diego Ramírez',    dni: '96385274', birthdayDate: '1987-04-25', createDate: '2024-07-05' },
 ];
 
-/** Tipo del formulario reactivo de clientes */
+
 interface ClientForm {
   name: FormControl<string>;
   dni: FormControl<string>;
@@ -48,7 +48,7 @@ export
 class Clients implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
-  // Estado con signals
+  
   readonly clients = signal<Client[]>([]);
   readonly loading = signal<boolean>(false);
   readonly searchTerm = signal<string>('');
@@ -60,7 +60,7 @@ class Clients implements OnInit {
   readonly clientToDelete = signal<number | null>(null);
   readonly selectedClient = signal<Client | null>(null);
 
-  /** Formulario reactivo tipado */
+  
   clientForm: FormGroup<ClientForm>;
 
   readonly errorMessage = signal<string | null>(null);
@@ -68,20 +68,20 @@ class Clients implements OnInit {
   readonly toasts = signal<Toast[]>([]);
   private toastSeq = 0;
 
-  // ============================================================
-  // FILTROS AVANZADOS
-  // ============================================================
+  
+  
+  
   readonly filterDateFrom = signal<string>('');
   readonly filterDateTo = signal<string>('');
   readonly filterAgeMin = signal<number | null>(null);
   readonly filterAgeMax = signal<number | null>(null);
   readonly showFilters = signal<boolean>(false);
 
-  // ============================================================
-  // COMPUTED
-  // ============================================================
+  
+  
+  
 
-  /** Filtrado combinado: texto + rango de fechas + rango de edad */
+  
   readonly filteredClients = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     const dateFrom = this.filterDateFrom();
@@ -91,7 +91,7 @@ class Clients implements OnInit {
 
     let result = this.clients();
 
-    // Filtro por texto (nombre, DNI, ID)
+    
     if (term) {
       result = result.filter(c => {
         const name = c.name.toLowerCase();
@@ -101,7 +101,7 @@ class Clients implements OnInit {
       });
     }
 
-    // Filtro por rango de fecha de creación
+    
     if (dateFrom) {
       result = result.filter(c => !c.createDate || c.createDate >= dateFrom);
     }
@@ -109,7 +109,7 @@ class Clients implements OnInit {
       result = result.filter(c => !c.createDate || c.createDate <= dateTo);
     }
 
-    // Filtro por rango de edad
+    
     if (ageMin !== null || ageMax !== null) {
       result = result.filter(c => {
         const age = this.getAge(c.birthdayDate);
@@ -123,10 +123,10 @@ class Clients implements OnInit {
     return result;
   });
 
-  /** Total de clientes filtrados */
+  
   readonly totalCount = computed(() => this.filteredClients().length);
 
-  /** Columnas de la tabla */
+  
   readonly clientColumns: TableColumn[] = [
     { key: 'id', label: 'ID', width: '60px' },
     { key: 'name', label: 'Nombre' },
@@ -151,16 +151,16 @@ class Clients implements OnInit {
     });
   }
 
-  // ============================================================
-  // LIFECYCLE
-  // ============================================================
+  
+  
+  
   ngOnInit(): void {
     this.loadClients();
   }
 
-  // ============================================================
-  // DATA
-  // ============================================================
+  
+  
+  
   loadClients(): void {
     this.loading.set(true);
     this.errorMessage.set(null);
@@ -172,7 +172,7 @@ class Clients implements OnInit {
       },
       error: () => {
         this.errorMessage.set('Error al cargar clientes desde el servidor. Mostrando datos de respaldo.');
-        // Fallback a mock data para que la UI siempre luzca
+        
         this.clients.set(MOCK_CLIENTS);
         this.loading.set(false);
         this.cdr.detectChanges();
@@ -180,9 +180,9 @@ class Clients implements OnInit {
     });
   }
 
-  // ============================================================
-  // FORM: crear / editar
-  // ============================================================
+  
+  
+  
   openForm(client?: Client): void {
     if (client) {
       this.editingId.set(client.id ?? null);
@@ -192,12 +192,12 @@ class Clients implements OnInit {
         password_hash: '',
         birthdayDate: client.birthdayDate ?? '',
       });
-      // En edición, la contraseña es opcional
+      
       this.clientForm.controls.password_hash.setValidators([]);
     } else {
       this.editingId.set(null);
       this.clientForm.reset();
-      // En creación, la contraseña es obligatoria
+      
       this.clientForm.controls.password_hash.setValidators([Validators.required, Validators.minLength(6)]);
     }
     this.clientForm.controls.password_hash.updateValueAndValidity();
@@ -212,7 +212,7 @@ class Clients implements OnInit {
 
   saveClient(): void {
     if (this.clientForm.invalid) {
-      // Marcar todos los campos como touched para mostrar errores
+      
       Object.values(this.clientForm.controls).forEach(c => {
         c.markAsTouched();
         c.markAsDirty();
@@ -240,7 +240,7 @@ class Clients implements OnInit {
         this.closeForm();
       },
       error: () => {
-        // Simular éxito agregando al mock
+        
         if (isEdit) {
           this.clients.update(list => list.map(c =>
             c.id === this.editingId() ? { ...c, ...payload } : c,
@@ -264,9 +264,9 @@ class Clients implements OnInit {
     this.openForm(client);
   }
 
-  // ============================================================
-  // DETAIL
-  // ============================================================
+  
+  
+  
   viewClient(client: Client): void {
     this.selectedClient.set(client);
     this.showDetail.set(true);
@@ -277,9 +277,9 @@ class Clients implements OnInit {
     this.selectedClient.set(null);
   }
 
-  // ============================================================
-  // DELETE
-  // ============================================================
+  
+  
+  
   deleteClient(id: number): void {
     this.clientToDelete.set(id);
     this.showDeleteConfirm.set(true);
@@ -297,7 +297,7 @@ class Clients implements OnInit {
         this.cdr.detectChanges();
       },
       error: () => {
-        // Fallback: eliminar del mock
+        
         this.clients.update(list => list.filter(c => c.id !== id));
         this.pushToast('success', 'Cliente eliminado (mock)');
         this.cancelDelete();
@@ -311,9 +311,9 @@ class Clients implements OnInit {
     this.clientToDelete.set(null);
   }
 
-  // ============================================================
-  // TOASTS
-  // ============================================================
+  
+  
+  
   pushToast(type: Toast['type'], message: string): void {
     const id = ++this.toastSeq;
     this.toasts.update(t => [...t, { id, type, message }]);
@@ -324,9 +324,9 @@ class Clients implements OnInit {
     this.toasts.update(t => t.filter(x => x.id !== id));
   }
 
-  // ============================================================
-  // HELPERS
-  // ============================================================
+  
+  
+  
   getInitials(name: string): string {
     return name
       .split(' ')
@@ -356,9 +356,9 @@ class Clients implements OnInit {
 
 
 
-  // ============================================================
-  // FILTROS
-  // ============================================================
+  
+  
+  
   setFilterAgeMin(value: string): void {
     this.filterAgeMin.set(value ? parseInt(value, 10) : null);
   }
@@ -376,4 +376,4 @@ class Clients implements OnInit {
   }
 
 
-}
+}

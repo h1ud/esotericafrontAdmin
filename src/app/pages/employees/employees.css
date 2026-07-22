@@ -1,10 +1,3 @@
-/* ================================================================
-   EMPLEADOS — Diseño basado en la guía de estilo diseño.md
-   Mismo sistema visual que clients.css
-   ================================================================ */
-
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
-
 .employees-container {
   padding: 32px;
   max-width: 1280px;
@@ -27,7 +20,7 @@
   margin: 0 0 28px 0;
 }
 
-/* ---------- ERROR ---------- */
+
 
 .error-message {
   background: var(--primary-100);
@@ -40,7 +33,7 @@
   line-height: 1.5;
 }
 
-/* ---------- LOADING ---------- */
+
 
 .loading-indicator {
   padding: 48px 32px;
@@ -53,7 +46,7 @@
   margin: 24px 0;
 }
 
-/* ---------- BARRA SUPERIOR ---------- */
+
 
 .top-controls {
   margin-bottom: 20px;
@@ -105,9 +98,7 @@
   pointer-events: none;
 }
 
-/* ================================================================
-   SISTEMA DE BOTONES (mismo que clients.css)
-   ================================================================ */
+
 
 .btn {
   display: inline-flex;
@@ -190,9 +181,7 @@
   border-radius: 8px;
 }
 
-/* ================================================================
-   AVATAR / NOMBRE
-   ================================================================ */
+
 
 .employee-name-cell {
   display: flex;
@@ -230,17 +219,13 @@
   color: var(--neutral-400);
 }
 
-/* ================================================================
-   FILA CLICKEABLE
-   ================================================================ */
+
 
 .table-row-clickable {
   cursor: pointer;
 }
 
-/* ================================================================
-   TOASTS (idéntico a clients.css)
-   ================================================================ */
+
 
 .toasts-container {
   position: fixed;
@@ -315,9 +300,7 @@
   }
 }
 
-/* ================================================================
-   MODAL DETALLE
-   ================================================================ */
+
 
 .detail-container {
   position: relative;
@@ -441,9 +424,7 @@
   justify-content: flex-end;
 }
 
-/* ================================================================
-   MODAL FORMULARIOS + CONFIRMACIÓN (idéntico a clients.css)
-   ================================================================ */
+
 
 .form-section {
   position: fixed;
@@ -589,7 +570,7 @@ form {
   transform: none !important;
 }
 
-/* Confirmación */
+
 .confirm-container {
   position: relative;
   background: var(--neutral-50);
@@ -626,9 +607,7 @@ form {
   justify-content: center;
 }
 
-/* ================================================================
-   ANIMACIONES
-   ================================================================ */
+
 
 @keyframes empOverlayIn {
   from { opacity: 0; }
@@ -646,9 +625,7 @@ form {
   }
 }
 
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
+
 
 @media (max-width: 768px) {
   .employees-container {
@@ -682,4 +659,4 @@ form {
   .detail-container {
     width: 95%;
   }
-}
+}

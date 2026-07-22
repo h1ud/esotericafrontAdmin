@@ -1,18 +1,17 @@
-  <!-- menu.html -->
   <div class="employees-container">
     <h1>Gestión del Menú Administrativo</h1>
 
-    <!-- Mensaje de error -->
+    
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
 
-    <!-- Loading -->
+    
     <div *ngIf="loading" class="loading-indicator">
       Cargando productos del menú...
     </div>
 
-    <!-- Contenido del menú -->
+    
     <div *ngIf="!loading">
       <div *ngFor="let cat of categories" style="margin-bottom: 35px;">
 
@@ -54,7 +53,7 @@
       </div>
     </div>
 
-    <!-- Formulario -->
+    
     <div *ngIf="showForm" class="form-section">
       <div class="form-overlay" (click)="closeForm()"></div>
       <div class="form-container">
@@ -102,6 +101,25 @@
           </div>
 
           <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label for="imageUrl">URL de Imagen:</label>
+              <input
+                type="text"
+                id="imageUrl"
+                [(ngModel)]="formData.imageUrl"
+                name="imageUrl"
+                placeholder="https://ejemplo.com/imagen.jpg"
+              />
+              <small style="color: var(--neutral-500); font-size: 12px;">Opcional. URL pública de la imagen del producto.</small>
+            </div>
+            @if (formData.imageUrl) {
+              <div class="form-group" style="flex: 0 0 80px;">
+                <img [src]="formData.imageUrl" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--neutral-200);" />
+              </div>
+            }
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
               <label for="categoryId">Categoría Asignada:</label>
               <select id="categoryId" [(ngModel)]="formData.categoryId" name="categoryId" required>
@@ -122,7 +140,7 @@
       </div>
     </div>
 
-    <!-- Confirmación de eliminación -->
+    
     <div *ngIf="showDeleteConfirm" class="form-section">
       <div class="form-overlay" (click)="cancelDelete()"></div>
       <div class="confirm-container">
@@ -135,4 +153,4 @@
       </div>
     </div>
 
-  </div>
+  </div>

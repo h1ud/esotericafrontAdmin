@@ -1,15 +1,9 @@
-<!--
-  Sidebar · Esoterica
-  Estructura: brand → nav con indicador deslizante → footer con avatar + logout
-  Animaciones GSAP: stagger entrada + pulse logo + indicator slide
--->
-
 <aside class="sidebar" aria-label="Navegación principal">
-  <!-- ============ Brand / Logo ============ -->
+  
   <div class="sidebar-brand">
     <div class="brand-mark" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Luna creciente estilizada dentro de un círculo -->
+        
         <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.4"/>
         <path d="M20 8a8 8 0 1 0 0 16 6 6 0 1 1 0-16z"
               fill="currentColor" opacity="0.85"/>
@@ -21,12 +15,12 @@
     </div>
   </div>
 
-  <!-- ============ Navegación ============ -->
+  
   <nav class="sidebar-nav" aria-label="Secciones">
     <p class="nav-section-label">Menú principal</p>
 
     <ul class="nav-list">
-      <!-- Indicador deslizante (pill) - vive dentro de la lista -->
+      
       <span class="nav-indicator" aria-hidden="true"></span>
 
       @for (item of navItems(); track item.path) {
@@ -57,7 +51,7 @@
     </ul>
   </nav>
 
-  <!-- ============ Footer con usuario ============ -->
+  
   <div class="sidebar-footer">
     <div class="user-card">
       <div class="user-avatar" aria-hidden="true">
@@ -80,4 +74,4 @@
       </button>
     </div>
   </div>
-</aside>
+</aside>

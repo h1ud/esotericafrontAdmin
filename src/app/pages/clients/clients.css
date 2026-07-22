@@ -1,22 +1,14 @@
-/* ================================================================
-   CLIENTES — Diseño basado en la guía de estilo diseño.md
-   Paleta: Primary #B98D8D | Secondary #8DA399 | Tertiary #A594B0
-   Tipografía: Noto Serif (headings) + Plus Jakarta Sans (body)
-   ================================================================ */
-
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
-
 .clients-container {
   padding: 32px;
   max-width: 1280px;
   margin: 0 auto;
 }
 
-/* ---------- TÍTULOS ---------- */
+
 
 .clients-container h1 {
   font-family: var(--font-heading);
-  font-size: 34px; /* H2 en diseño.md */
+  font-size: 34px; 
   font-weight: 500;
   color: var(--neutral-900);
   margin: 0 0 8px 0;
@@ -32,13 +24,13 @@
 
 .clients-container h2 {
   font-family: var(--font-heading);
-  font-size: 22px; /* H4 */
+  font-size: 22px; 
   font-weight: 500;
   color: var(--neutral-900);
   margin: 0 0 16px 0;
 }
 
-/* ---------- ERROR ---------- */
+
 
 .error-message {
   background: var(--primary-100);
@@ -51,7 +43,7 @@
   line-height: 1.5;
 }
 
-/* ---------- LOADING ---------- */
+
 
 .loading-indicator {
   padding: 48px 32px;
@@ -64,7 +56,7 @@
   margin: 24px 0;
 }
 
-/* ---------- BARRA SUPERIOR ---------- */
+
 
 .top-controls {
   margin-bottom: 20px;
@@ -105,7 +97,7 @@
   background: var(--neutral-50);
 }
 
-/* Icono de búsqueda con pseudo-elemento */
+
 .search-container::before {
   content: '🔍';
   position: absolute;
@@ -117,9 +109,7 @@
   pointer-events: none;
 }
 
-/* ================================================================
-   SISTEMA DE BOTONES (basado en diseño.md)
-   ================================================================ */
+
 
 .btn {
   display: inline-flex;
@@ -138,7 +128,7 @@
   line-height: 1;
 }
 
-/* Primary — background #8C6767, hover #7A5757 */
+
 .btn-primary {
   background: var(--primary-700);
   color: white;
@@ -152,7 +142,7 @@
   transform: scale(0.98);
 }
 
-/* Secondary — background #F4F0EB, color #5D5552 */
+
 .btn-secondary {
   background: var(--neutral-150);
   color: #5D5552;
@@ -162,7 +152,7 @@
   background: var(--neutral-200);
 }
 
-/* Outline — borde 1px #8C7D72, color #6B635D */
+
 .btn-outline {
   background: transparent;
   border: 1px solid #8C7D72;
@@ -173,7 +163,7 @@
   background: rgba(140, 125, 114, 0.06);
 }
 
-/* Ghost — sin bordes, para acciones suaves */
+
 .btn-ghost {
   background: transparent;
   color: var(--neutral-600);
@@ -185,7 +175,7 @@
   color: var(--neutral-800);
 }
 
-/* Danger */
+
 .btn-danger {
   background: #FDE2E2;
   color: #9A5E5E;
@@ -196,7 +186,7 @@
   background: #fcd0d0;
 }
 
-/* Tamaños */
+
 .btn-sm {
   padding: 8px 14px;
   font-size: 13px;
@@ -208,9 +198,7 @@
   border-radius: 8px;
 }
 
-/* ================================================================
-   FILTROS AVANZADOS
-   ================================================================ */
+
 
 .filters-bar {
   margin-bottom: 20px;
@@ -326,9 +314,7 @@
   border-color: var(--primary-300);
 }
 
-/* ================================================================
-   TABLA — estilo editorial minimalista
-   ================================================================ */
+
 
 .table-section {
   background: var(--neutral-50);
@@ -346,7 +332,7 @@
   font-size: 14px;
 }
 
-/* Cabecera */
+
 .clients-table thead {
   border-bottom: 1px solid var(--neutral-200);
 }
@@ -362,7 +348,7 @@
   background: transparent;
 }
 
-/* Filas */
+
 .clients-table tbody tr {
   border-bottom: 1px solid var(--neutral-200);
   transition: background var(--dur-fast) var(--ease-organic);
@@ -382,13 +368,13 @@
   vertical-align: middle;
 }
 
-/* Acciones en tabla */
+
 .actions {
   display: flex;
   gap: 6px;
 }
 
-/* ---------- AVATAR + NOMBRE ---------- */
+
 
 .client-name-cell {
   display: flex;
@@ -412,7 +398,7 @@
   letter-spacing: 0.3px;
 }
 
-/* ---------- AGE BADGE ---------- */
+
 
 .age-badge {
   display: inline-block;
@@ -428,7 +414,7 @@
   color: var(--neutral-400);
 }
 
-/* ---------- NO DATA ---------- */
+
 
 .no-data {
   padding: 48px 24px;
@@ -439,9 +425,7 @@
   font-weight: 400;
 }
 
-/* ================================================================
-   PAGINACIÓN
-   ================================================================ */
+
 
 .pagination {
   display: flex;
@@ -541,9 +525,7 @@
   font-size: 14px;
 }
 
-/* ================================================================
-   TOASTS
-   ================================================================ */
+
 
 .toasts-container {
   position: fixed;
@@ -618,17 +600,13 @@
   }
 }
 
-/* ================================================================
-   FILA CLICKEABLE
-   ================================================================ */
+
 
 .table-row-clickable {
   cursor: pointer;
 }
 
-/* ================================================================
-   MODAL DETALLE DE CLIENTE
-   ================================================================ */
+
 
 .detail-container {
   position: relative;
@@ -760,9 +738,7 @@
   justify-content: flex-end;
 }
 
-/* ================================================================
-   MODAL FORMULARIOS (Card estilo diseño.md)
-   ================================================================ */
+
 
 .form-section {
   position: fixed;
@@ -815,7 +791,7 @@
   margin: 0 0 24px 0;
 }
 
-/* Formulario */
+
 form {
   display: flex;
   flex-direction: column;
@@ -860,7 +836,7 @@ form {
   background: var(--neutral-50);
 }
 
-/* Estado de error en inputs */
+
 .form-group input.has-error {
   border-color: #9A5E5E;
   background: #FDF5F5;
@@ -871,7 +847,7 @@ form {
   box-shadow: 0 0 0 3px rgba(154, 94, 94, 0.15);
 }
 
-/* Mensajes de error en formulario */
+
 .form-group .field-error {
   color: #9A5E5E;
   font-size: 12px;
@@ -881,14 +857,14 @@ form {
   gap: 4px;
 }
 
-/* Hint / ayuda */
+
 .form-group .field-hint {
   color: var(--neutral-400);
   font-size: 11px;
   margin-top: 4px;
 }
 
-/* Acciones del formulario */
+
 .form-actions {
   display: flex;
   gap: 12px;
@@ -902,9 +878,7 @@ form {
   transform: none !important;
 }
 
-/* ================================================================
-   MODAL CONFIRMACIÓN
-   ================================================================ */
+
 
 .confirm-container {
   position: relative;
@@ -942,9 +916,7 @@ form {
   justify-content: center;
 }
 
-/* ================================================================
-   ANIMACIONES GLOBALES
-   ================================================================ */
+
 
 @keyframes overlayIn {
   from { opacity: 0; }
@@ -962,9 +934,7 @@ form {
   }
 }
 
-/* ================================================================
-   RESPONSIVE
-   ================================================================ */
+
 
 @media (max-width: 768px) {
   .clients-container {
@@ -998,7 +968,7 @@ form {
   .clients-table td:nth-child(4),
   .clients-table th:nth-child(6),
   .clients-table td:nth-child(6) {
-    display: none; /* ocultar columnas menos relevantes en mobile */
+    display: none; 
   }
 
   .filters-grid {
@@ -1021,10 +991,10 @@ form {
 @media (max-width: 480px) {
   .clients-table th:nth-child(1),
   .clients-table td:nth-child(1) {
-    display: none; /* ocultar ID en pantallas muy pequeñas */
+    display: none; 
   }
 
   .filters-grid {
     grid-template-columns: 1fr;
   }
-}
+}

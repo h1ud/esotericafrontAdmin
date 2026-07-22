@@ -12,12 +12,12 @@ import { PasswordResetService, PasswordResetData } from '../../service/password-
   styleUrl: './password-reset.css',
 })
 export class PasswordReset {
-  // <-- Tu clase se llama exactamente como querías
+  
   loading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
 
-  // Usamos el tipo de la interfaz del servicio para el formulario
+  
   formData: Partial<PasswordResetData> = {
     name: '',
     lastName: '',
@@ -45,14 +45,14 @@ export class PasswordReset {
     this.loading = true;
     this.errorMessage = '';
 
-    // Convertimos los datos al tipo de la interfaz antes de enviarlos
+    
     const requestToSave = { ...this.formData } as PasswordResetData;
 
     this.resetService.createRequest(requestToSave).subscribe({
       next: () => {
         this.loading = false;
         this.successMessage = 'Solicitud de recuperación enviada con éxito.';
-        this.formData = { name: '', lastName: '', username: '', email: '' }; // Limpiar formulario
+        this.formData = { name: '', lastName: '', username: '', email: '' }; 
         this.cdr.detectChanges();
       },
       error: (err: any) => {
@@ -66,4 +66,4 @@ export class PasswordReset {
   goToLogin(): void {
     this.router.navigate(['/login']);
   }
-}
+}

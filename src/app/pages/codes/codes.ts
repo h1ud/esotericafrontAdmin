@@ -23,6 +23,7 @@ export class Codes implements OnInit {
 
   formData: Partial<PromotionDTO> = {
     userId: 1,
+    code: '',
     title: '',
     description: '',
     discount: 0,
@@ -66,6 +67,7 @@ export class Codes implements OnInit {
       this.editingId = null;
       this.formData = {
         userId: 1,
+        code: '',
         title: '',
         description: '',
         discount: 0,
@@ -84,8 +86,8 @@ export class Codes implements OnInit {
   }
 
   savePromotion(): void {
-    if (!this.formData.title || this.formData.discount === undefined || !this.formData.startDate) {
-      this.errorMessage = 'El título, el descuento y la fecha de inicio son obligatorios.';
+    if (!this.formData.code || !this.formData.title || this.formData.discount === undefined || !this.formData.startDate) {
+      this.errorMessage = 'El código, título, descuento y fecha de inicio son obligatorios.';
       return;
     }
 

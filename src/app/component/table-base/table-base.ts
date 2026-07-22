@@ -12,9 +12,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// ================================================================
-// Interfaces públicas
-// ================================================================
+
+
+
 
 export interface TableColumn {
   key: string;
@@ -25,7 +25,7 @@ export interface TableColumn {
 export interface TableAction {
   label: string;
   action: string;
-  class?: string; // ej: 'btn-ghost btn-xs' | 'btn-danger btn-xs'
+  class?: string; 
 }
 
 export interface TablePageEvent {
@@ -33,9 +33,9 @@ export interface TablePageEvent {
   pageSize: number;
 }
 
-// ================================================================
-// Componente
-// ================================================================
+
+
+
 
 @Component({
   selector: 'app-table-base',
@@ -45,49 +45,49 @@ export interface TablePageEvent {
   styleUrl: './table-base.css',
 })
 export class TableBaseComponent<T = any> implements OnChanges {
-  /** Arreglo completo de datos (el componente paginará internamente) */
+  
   @Input() data: T[] = [];
 
-  /** Configuración de columnas */
+  
   @Input() columns: TableColumn[] = [];
 
-  /** Título de la sección */
+  
   @Input() title = '';
 
-  /** Estado de carga */
+  
   @Input() loading = false;
 
-  /** Cantidad de filas por página */
+  
   @Input() pageSize = 10;
 
-  /** Opciones del selector de pageSize */
+  
   @Input() pageSizeOptions: number[] = [5, 10, 20, 50];
 
-  /** Mensaje cuando no hay datos */
+  
   @Input() emptyMessage = 'No hay datos';
 
-  /** Mensaje cuando hay datos pero no coinciden filtros */
+  
   @Input() filteredMessage = 'Ningún elemento coincide con los filtros';
 
-  /** Clave para trackBy en @for (propiedad del item) */
+  
   @Input() trackByKey = 'id';
 
-  /** Evento al cambiar de página o pageSize */
+  
   @Output() pageChange = new EventEmitter<TablePageEvent>();
 
-  /** Template personalizado para las filas */
+  
   @ContentChild('rowTemplate')
   rowTemplate?: TemplateRef<any>;
 
-  // Estado interno de paginación
+  
   currentPage = 1;
   totalPages = 1;
   paginatedData: T[] = [];
   pageInfo = { start: 0, end: 0, total: 0 };
 
-  // ============================================================
-  // LIFECYCLE
-  // ============================================================
+  
+  
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data'] || changes['pageSize']) {
@@ -95,9 +95,9 @@ export class TableBaseComponent<T = any> implements OnChanges {
     }
   }
 
-  // ============================================================
-  // PAGINACIÓN
-  // ============================================================
+  
+  
+  
 
   private updatePagination(): void {
     const total = this.data.length;
@@ -139,7 +139,7 @@ export class TableBaseComponent<T = any> implements OnChanges {
     this.pageChange.emit({ page: this.currentPage, pageSize: this.pageSize });
   }
 
-  /** Genera array de números de página con separadores (-1, -2) para elipsis */
+  
   getPageNumbers(): number[] {
     const total = this.totalPages;
     const current = this.currentPage;
@@ -155,20 +155,20 @@ export class TableBaseComponent<T = any> implements OnChanges {
       if (current <= 2) { start = 2; end = 3; }
       if (current >= total - 1) { start = total - 2; end = total - 1; }
 
-      if (start > 2) pages.push(-1); // elipsis izquierda
+      if (start > 2) pages.push(-1); 
       for (let i = start; i <= end; i++) pages.push(i);
-      if (end < total - 1) pages.push(-2); // elipsis derecha
+      if (end < total - 1) pages.push(-2); 
       pages.push(total);
     }
 
     return pages;
   }
 
-  // ============================================================
-  // HELPERS
-  // ============================================================
+  
+  
+  
 
-  /** Retorna el valor de una propiedad anidada ej: 'user.name' */
+  
   getValue(item: any, key: string): any {
     return key.split('.').reduce((obj, k) => obj?.[k], item);
   }
@@ -176,4 +176,4 @@ export class TableBaseComponent<T = any> implements OnChanges {
   trackByIndex(index: number): number {
     return index;
   }
-}
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Estructuras idénticas a tus DTOs de Spring Boot
+
 export interface CategoryDTO {
   id: number;
   categoryName: string;
@@ -17,6 +17,7 @@ export interface ProductDTO {
   isAvailable: boolean;
   categoryId: number;
   categoryName?: string;
+  imageUrl?: string;
 }
 
 @Injectable({
@@ -36,4 +37,4 @@ export class PosMenuService {
   getProductsByCategory(categoryId: number): Observable<ProductDTO[]> {
     return this.http.get<ProductDTO[]>(`${this.baseUrl}/category/${categoryId}`);
   }
-}
+}

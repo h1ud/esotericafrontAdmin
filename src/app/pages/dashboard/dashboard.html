@@ -1,6 +1,6 @@
 <div class="dashboard-page">
 
-  <!-- Loading -->
+  
   @if (loading()) {
     <div class="dash-loading">
       <div class="loading-spinner"></div>
@@ -8,13 +8,13 @@
     </div>
   }
 
-  <!-- Error -->
+  
   @if (error()) {
     <div class="dash-error">{{ error() }}</div>
   }
 
   @if (!loading() && !error()) {
-    <!-- Header -->
+    
     <header class="dash-header">
       <div>
         <p class="dash-eyebrow">{{ formattedDate() }}</p>
@@ -27,7 +27,7 @@
       </div>
     </header>
 
-    <!-- KPIs -->
+    
     <section class="kpi-grid" aria-label="Indicadores clave">
       @for (kpi of kpis(); track kpi.label) {
         <article #kpiCard class="kpi-card">
@@ -45,9 +45,9 @@
       }
     </section>
 
-    <!-- Charts -->
+    
     <section class="charts-grid">
-      <!-- Bar chart: weekly sales -->
+      
       <article class="chart-card">
         <header class="chart-header">
           <div>
@@ -69,7 +69,7 @@
         </div>
       </article>
 
-      <!-- Right panel: month summary + payment breakdown -->
+      
       <article class="chart-card">
         <header class="chart-header">
           <div>
@@ -103,7 +103,7 @@
           </div>
         }
 
-        <!-- Today's breakdown -->
+        
         @if (todayData(); as t) {
           <div class="today-summary">
             <div class="today-row">
@@ -119,9 +119,9 @@
       </article>
     </section>
 
-    <!-- Activity + Caja -->
+    
     <section class="charts-grid">
-      <!-- Actividad reciente -->
+      
       <article class="chart-card">
         <header class="chart-header">
           <div>
@@ -147,7 +147,7 @@
         </ul>
       </article>
 
-      <!-- Cierres de caja -->
+      
       <article class="chart-card">
         <header class="chart-header">
           <div>
@@ -181,4 +181,4 @@
     </section>
   }
 
-</div>
+</div>

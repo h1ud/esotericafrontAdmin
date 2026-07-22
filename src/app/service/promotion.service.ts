@@ -6,10 +6,10 @@ export interface PromotionDTO {
   id?: number;
   userId: number;
   username?: string;
+  code: string;
   title: string;
   description: string;
   discount: number;
-  discountType: string;
   visibility: 'GLOBAL' | 'PRIVATE';
   isActive: boolean;
   startDate: string;
@@ -38,5 +38,9 @@ export class PromotionService {
 
   deletePromotion(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getPromotionByCode(code: string): Observable<PromotionDTO> {
+    return this.http.get<PromotionDTO>(`/api/pos/promotions/code/${code}`);
   }
 }

@@ -1,6 +1,6 @@
 <div class="pos-container">
 
-  <!-- TOASTS -->
+  
   @if (toasts.length > 0) {
     <div class="toast-container">
       @for (toast of toasts; track toast.id) {
@@ -17,9 +17,9 @@
     </div>
   }
 
-  <!-- ========================================================== -->
-  <!-- HEADER: Compact POS header                                  -->
-  <!-- ========================================================== -->
+  
+  
+  
   <div class="pos-header">
     <div class="pos-header-left">
       <span class="pos-header-brand">Esoterica POS</span>
@@ -64,9 +64,9 @@
     </div>
   </div>
 
-  <!-- ========================================================== -->
-  <!-- TOP ACTIONS BAR (simplified)                                -->
-  <!-- ========================================================== -->
+  
+  
+  
   <div class="top-actions">
     <button class="btn btn-secondary btn-sm" (click)="toggleRecentSales()">
       {{ showRecentSales ? 'Ocultar ventas' : 'Ventas recientes' }}
@@ -83,9 +83,9 @@
     }
   </div>
 
-  <!-- ========================================================== -->
-  <!-- RECENT SALES SECTION                                       -->
-  <!-- ========================================================== -->
+  
+  
+  
   @if (showRecentSales) {
     <div class="pos-card recent-sales-card">
       <div class="pos-card-header">
@@ -129,25 +129,25 @@
     </div>
   }
 
-  <!-- ERROR MESSAGE -->
+  
   @if (errorMessage) {
     <div class="error-message">{{ errorMessage }}</div>
   }
 
-  <!-- ======================================================== -->
-    <!-- MAIN LAYOUT                                                -->
-    <!-- ======================================================== -->
+  
+    
+    
     <div class="pos-layout">
 
-      <!-- ====================================================== -->
-      <!-- LEFT: Category grid OR Products                         -->
-      <!-- ====================================================== -->
+      
+      
+      
       <div class="pos-left">
 
         @if (showCategoryGrid) {
-          <!-- ==================================================== -->
-          <!-- CATEGORY GRID VIEW (like a real POS)                  -->
-          <!-- ==================================================== -->
+          
+          
+          
           <div class="pos-card">
             <div class="pos-card-header">
               <h3>Categorías</h3>
@@ -165,16 +165,71 @@
                   <button class="category-card" (click)="selectCategory(cat.id)">
                     <span class="category-card-icon">
                       @switch (cat.id) {
-                        @case (1) { <span>&#127789;</span> }
-                        @case (2) { <span>&#129385;</span> }
-                        @case (3) { <span>&#127798;</span> }
-                        @case (4) { <span>&#127860;</span> }
-                        @case (5) { <span>&#127858;</span> }
-                        @case (6) { <span>&#127839;</span> }
-                        @case (7) { <span>&#127848;</span> }
-                        @case (8) { <span>&#129346;</span> }
-                        @case (9) { <span>&#127881;</span> }
-                        @default { <span>&#128722;</span> }
+                        @case (1) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 6L12 2L8 6"/><path d="M12 2v10"/><path d="M3 14l3 3 3-3"/>
+                            <path d="M21 14l-3 3-3-3"/><path d="M6 20h12"/><path d="M10 10h4"/>
+                            <path d="M16 21l-4-3-4 3"/>
+                          </svg>
+                        }
+                        @case (2) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                          </svg>
+                        }
+                        @case (3) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 15c-2 0-5-2-5-6s3-6 5-6c2 0 5 2 5 6s-3 6-5 6z"/>
+                            <path d="M3 20c3-2 6-3 9-3s6 1 9 3"/>
+                            <path d="M3 4v16"/>
+                          </svg>
+                        }
+                        @case (4) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                            <line x1="4" y1="22" x2="4" y2="15"/>
+                          </svg>
+                        }
+                        @case (5) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2C8 2 4 5 4 9c0 3 2 5 2 5s2 2 6 2 6-2 6-2 2-2 2-5c0-4-4-7-8-7z"/>
+                            <path d="M12 16v6"/><path d="M9 22h6"/>
+                          </svg>
+                        }
+                        @case (6) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                            <line x1="9" y1="9" x2="9.01" y2="9"/>
+                            <line x1="15" y1="9" x2="15.01" y2="9"/>
+                          </svg>
+                        }
+                        @case (7) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/>
+                            <line x1="8" y1="9" x2="8" y2="9.01"/>
+                            <line x1="16" y1="9" x2="16" y2="9.01"/>
+                          </svg>
+                        }
+                        @case (8) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a3 3 0 0 0-3 3v1H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-2V5a3 3 0 0 0-3-3z"/>
+                            <path d="M9 14h6"/><path d="M12 11v6"/>
+                          </svg>
+                        }
+                        @case (9) {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                        }
+                        @default {
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                          </svg>
+                        }
                       }
                     </span>
                     <span class="category-card-name">{{ cat.categoryName }}</span>
@@ -186,9 +241,9 @@
             </div>
           </div>
         } @else {
-          <!-- ==================================================== -->
-          <!-- PRODUCTS VIEW (category selected)                     -->
-          <!-- ==================================================== -->
+          
+          
+          
           <div class="pos-card">
             <div class="pos-card-header">
               <button class="btn-back-categories" (click)="goBackToCategories()" title="Volver a categorías">
@@ -212,6 +267,11 @@
                 <div class="products-grid">
                   @for (prod of filteredProducts; track prod.id) {
                     <div class="product-card" (click)="addToCart(prod)">
+                      @if (prod.imageUrl) {
+                        <div class="product-image-wrapper">
+                          <img [src]="prod.imageUrl" [alt]="prod.productName" class="product-image" />
+                        </div>
+                      }
                       <span class="product-name">{{ prod.productName }}</span>
                       <span class="product-price">S/ {{ prod.price | number:'1.2-2' }}</span>
                       <div class="product-actions">
@@ -237,68 +297,258 @@
         }
       </div>
 
-      <!-- ====================================================== -->
-      <!-- RIGHT COLUMN: Cart / Checkout / Receipt                  -->
-      <!-- ====================================================== -->
+      
+      
+      
       <div class="pos-right">
 
       @if (showReceipt && receiptData) {
-        <!-- ==================================================== -->
-        <!-- RECEIPT VIEW (after successful payment)               -->
-        <!-- ==================================================== -->
+        
+        
+        
         <div class="pos-card">
           <div class="receipt-container">
-            <div class="receipt-header">
-              <div class="receipt-checkmark">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-              </div>
-              <h3>Pago Confirmado</h3>
-              <p class="receipt-subtitle">Venta #{{ receiptData.saleId }}</p>
-            </div>
 
-            <div class="receipt-body">
-              <div class="receipt-info-row">
-                <span>Metodo de pago</span>
-                <span class="receipt-value">{{ getPaymentMethodLabel(receiptData.paymentMethod) }}</span>
-              </div>
-              <div class="receipt-info-row">
-                <span>Fecha</span>
-                <span class="receipt-value">{{ formatDate(receiptData.issueDate) }}</span>
-              </div>
-
-              <div class="receipt-divider"></div>
-
-              @for (item of receiptData.items; track $index) {
-                <div class="receipt-item-row">
-                  <span class="receipt-item-name">{{ item.name }} x{{ item.qty }}</span>
-                  <span class="receipt-item-price">S/ {{ (item.price * item.qty) | number:'1.2-2' }}</span>
+            
+            
+            
+            @if (receiptStep === 'document') {
+              <div class="receipt-step">
+                <div class="receipt-step-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
                 </div>
-              }
+                <h3>Datos del Comprobante</h3>
+                <p class="receipt-step-subtitle">Venta #{{ receiptData.saleId }} &middot; {{ getPaymentMethodLabel(receiptData.paymentMethod) }} &middot; S/ {{ receiptData.total | number:'1.2-2' }}</p>
 
-              <div class="receipt-divider"></div>
+                <div class="receipt-divider"></div>
 
-              <div class="receipt-total-row">
-                <span class="receipt-total-label">TOTAL</span>
-                <span class="receipt-total-value">S/ {{ receiptData.total | number:'1.2-2' }}</span>
+                
+                <div class="doc-type-section receipt-doc-section">
+                  <label class="doc-type-label">Tipo de Comprobante</label>
+                  <div class="doc-type-options doc-type-options-sm">
+                    <label class="doc-type-card doc-type-card-sm" [class.active]="documentType === 'boleta_simple'" (click)="selectDocumentType('boleta_simple')">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                      <span class="doc-type-title">Boleta Simple</span>
+                    </label>
+                    <label class="doc-type-card doc-type-card-sm" [class.active]="documentType === 'boleta_dni'" (click)="selectDocumentType('boleta_dni')">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                      <span class="doc-type-title">Boleta con DNI</span>
+                    </label>
+                    <label class="doc-type-card doc-type-card-sm" [class.active]="documentType === 'factura'" (click)="selectDocumentType('factura')">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                      <span class="doc-type-title">Factura</span>
+                    </label>
+                  </div>
+
+                  @if (documentType !== 'boleta_simple') {
+                    <div class="doc-client-section">
+                      <div class="doc-dni-row">
+                        <div class="doc-dni-input-group">
+                          <label>N° de Documento</label>
+                          <input type="text" class="form-input" placeholder="{{ documentType === 'factura' ? 'RUC (11 dígitos)' : 'DNI (8 dígitos)' }}" [(ngModel)]="clientDni" [attr.maxlength]="documentType === 'factura' ? 11 : 8" />
+                        </div>
+                        <button class="btn btn-sm btn-primary doc-lookup-btn" (click)="lookupClientByDni()" [disabled]="dniLoading || clientDni.length < (documentType === 'factura' ? 11 : 8)">
+                          @if (dniLoading) { <span class="doc-spinner"></span> }
+                          @else { Buscar }
+                        </button>
+                      </div>
+                      @if (dniError) { <p class="promo-error">{{ dniError }}</p> }
+
+                      @if (clientFound) {
+                        <div class="doc-client-found">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                          <span><strong>{{ clientFound.name }}</strong></span>
+                        </div>
+                      }
+
+                      @if (documentType === 'factura' && (clientFound || showNewClientForm)) {
+                        <div class="doc-factura-fields">
+                          <div class="form-group">
+                            <label>Razon Social</label>
+                            <input type="text" class="form-input" placeholder="Razon Social" [(ngModel)]="clientBusinessName" />
+                          </div>
+                          <div class="form-group">
+                            <label>Direccion Fiscal</label>
+                            <input type="text" class="form-input" placeholder="Direccion" [(ngModel)]="clientAddress" />
+                          </div>
+                        </div>
+                      }
+
+                      @if (showNewClientForm) {
+                        <div class="doc-new-client-form">
+                          <p class="doc-new-client-title" style="font-size:12px">Cliente no encontrado. Registre los datos:</p>
+                          <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" class="form-input" placeholder="Nombre" [(ngModel)]="clientName" />
+                          </div>
+                          @if (documentType === 'factura') {
+                            <div class="form-group">
+                              <label>Razon Social</label>
+                              <input type="text" class="form-input" placeholder="Razon Social" [(ngModel)]="clientBusinessName" />
+                            </div>
+                            <div class="form-group">
+                              <label>Direccion Fiscal</label>
+                              <input type="text" class="form-input" placeholder="Direccion" [(ngModel)]="clientAddress" />
+                            </div>
+                          }
+                          <button class="btn btn-primary btn-full" (click)="quickRegisterClient()" [disabled]="dniLoading || !clientName.trim()">
+                            Registrar Cliente
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div class="receipt-actions" style="margin-top:16px">
+                  <button class="btn btn-primary btn-full" (click)="goToBoletaPreview()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    Generar Boleta
+                  </button>
+                </div>
               </div>
-            </div>
+            }
 
-            <div class="receipt-actions">
-              <button class="btn btn-primary btn-full" (click)="dismissReceipt()">
-                Nueva Venta
-              </button>
-            </div>
+            
+            
+            
+            @if (receiptStep === 'preview') {
+              <div class="receipt-step">
+                <div class="receipt-step-icon" style="color:var(--primary-600)">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                </div>
+                <h3>Vista Previa - {{ getDocumentTypeLabel() }}</h3>
+                <p class="receipt-step-subtitle">Venta #{{ receiptData.saleId }}</p>
+
+                <div class="receipt-divider"></div>
+
+                
+                <div class="boleta-preview-mini">
+                  <div class="boleta-preview-header">
+                    <div class="boleta-razon-social">ESOTERICA E.I.R.L.</div>
+                    <div class="boleta-ruc">RUC: 20605074001</div>
+                  </div>
+                  <div class="boleta-divider"></div>
+                  @if (documentType !== 'boleta_simple' && clientDni) {
+                    <div style="font-size:10px;margin-bottom:6px">
+                      <div>DNI: {{ clientDni }}</div>
+                      @if (clientName) { <div>Cliente: {{ clientName }}</div> }
+                      @if (documentType === 'factura' && clientBusinessName) { <div>Razon Social: {{ clientBusinessName }}</div> }
+                      @if (documentType === 'factura' && clientAddress) { <div>Direccion: {{ clientAddress }}</div> }
+                    </div>
+                    <div class="boleta-divider"></div>
+                  }
+                  <table class="boleta-items-table" style="font-size:10px">
+                    <thead><tr><th>Cant</th><th>Descripcion</th><th>P.Unit</th><th>Importe</th></tr></thead>
+                    <tbody>
+                      @for (item of receiptData.items; track $index) {
+                        <tr>
+                          <td>{{ item.qty }}</td>
+                          <td>{{ item.name }}</td>
+                          <td>S/ {{ item.price | number:'1.2-2' }}</td>
+                          <td class="boleta-importe">S/ {{ (item.price * item.qty) | number:'1.2-2' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                  <div class="boleta-divider"></div>
+                  <div class="boleta-totales" style="font-size:10px">
+                    <div class="boleta-total-row"><span>OP. GRAVADAS</span><span>S/ {{ receiptData.subtotal | number:'1.2-2' }}</span></div>
+                    @if (receiptData.discountAmount > 0) {
+                      <div class="boleta-total-row boleta-desc-row"><span>DESCUENTO</span><span>- S/ {{ receiptData.discountAmount | number:'1.2-2' }}</span></div>
+                    }
+                    <div class="boleta-total-row boleta-total-final"><span>TOTAL</span><span>S/ {{ receiptData.total | number:'1.2-2' }}</span></div>
+                  </div>
+                </div>
+
+                <div class="receipt-actions" style="margin-top:12px">
+                  <button class="btn btn-secondary btn-full" (click)="goToDone()">
+                    Omitir y Finalizar
+                  </button>
+                  <button class="btn btn-primary btn-full" (click)="downloadBoletaPDF()" style="margin-top:8px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Descargar Boleta PDF
+                  </button>
+                </div>
+              </div>
+            }
+
+            
+            
+            
+            @if (receiptStep === 'done') {
+              <div class="receipt-step">
+                <div class="receipt-header">
+                  <div class="receipt-checkmark">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  </div>
+                  <h3>Pago Confirmado</h3>
+                  <p class="receipt-subtitle">Venta #{{ receiptData.saleId }} &middot; {{ getDocumentTypeLabel() }}</p>
+                </div>
+
+                <div class="receipt-body">
+                  <div class="receipt-info-row">
+                    <span>Metodo de pago</span>
+                    <span class="receipt-value">{{ getPaymentMethodLabel(receiptData.paymentMethod) }}</span>
+                  </div>
+                  @if (documentType !== 'boleta_simple' && clientDni) {
+                    <div class="receipt-info-row">
+                      <span>Cliente</span>
+                      <span class="receipt-value">{{ clientName || clientDni }}</span>
+                    </div>
+                  }
+                  <div class="receipt-info-row">
+                    <span>Fecha</span>
+                    <span class="receipt-value">{{ formatDate(receiptData.issueDate) }}</span>
+                  </div>
+
+                  <div class="receipt-divider"></div>
+
+                  @for (item of receiptData.items; track $index) {
+                    <div class="receipt-item-row">
+                      <span class="receipt-item-name">{{ item.name }} x{{ item.qty }}</span>
+                      <span class="receipt-item-price">S/ {{ (item.price * item.qty) | number:'1.2-2' }}</span>
+                    </div>
+                  }
+
+                  @if (receiptData.discountAmount > 0) {
+                    <div class="receipt-discount-row">
+                      <span>Descuento ({{ receiptData.discountLabel }})</span>
+                      <span class="receipt-discount-value">- S/ {{ receiptData.discountAmount | number:'1.2-2' }}</span>
+                    </div>
+                  }
+
+                  <div class="receipt-divider"></div>
+
+                  <div class="receipt-total-row">
+                    <span class="receipt-total-label">TOTAL</span>
+                    <span class="receipt-total-value">S/ {{ receiptData.total | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+
+                <div class="receipt-actions">
+                  <button class="btn btn-primary btn-full" (click)="dismissReceipt()">
+                    Nueva Venta
+                  </button>
+                </div>
+              </div>
+            }
+
           </div>
         </div>
       }
 
       @if (!isCheckout && !showReceipt) {
-        <!-- ==================================================== -->
-        <!-- CART VIEW                                              -->
-        <!-- ==================================================== -->
+        
+        
+        
         <div class="pos-card">
           <div class="pos-card-header">
             <h3>Resumen de Venta</h3>
@@ -346,7 +596,48 @@
 
           @if (cart.length > 0) {
             <div class="cart-footer">
+              
+              <div class="promo-code-section">
+                @if (!appliedPromotion) {
+                  <div class="promo-code-input-row">
+                    <input
+                      type="text"
+                      class="form-input promo-input"
+                      placeholder="Código promocional..."
+                      [(ngModel)]="promoCodeInput"
+                      (keyup.enter)="applyPromoCode()"
+                    />
+                    <button class="btn btn-sm btn-primary" (click)="applyPromoCode()" [disabled]="promoLoading">
+                      @if (promoLoading) { ... } @else { Aplicar }
+                    </button>
+                  </div>
+                  @if (promoError) {
+                    <p class="promo-error">{{ promoError }}</p>
+                  }
+                } @else {
+                  <div class="promo-applied">
+                    <div class="promo-applied-info">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #2e7d32;">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      <span><strong>{{ appliedPromotion.code }}</strong> - {{ appliedPromotion.discount }}% desc.</span>
+                    </div>
+                    <button class="promo-remove-btn" (click)="removePromoCode()" title="Quitar promoción">&times;</button>
+                  </div>
+                }
+              </div>
+
               <div class="cart-total-row">
+                <span class="cart-total-label">Subtotal</span>
+                <span class="cart-total-value">S/ {{ getSubtotal() | number:'1.2-2' }}</span>
+              </div>
+              @if (appliedPromotion) {
+                <div class="cart-total-row cart-discount-row">
+                  <span class="cart-total-label">Descuento ({{ appliedPromotion.discount }}%)</span>
+                  <span class="cart-total-value cart-discount-value">- S/ {{ getDiscountAmount() | number:'1.2-2' }}</span>
+                </div>
+              }
+              <div class="cart-total-row cart-grand-total">
                 <span class="cart-total-label">TOTAL A PAGAR</span>
                 <span class="cart-total-value">S/ {{ getTotal() | number:'1.2-2' }}</span>
               </div>
@@ -376,22 +667,28 @@
       }
 
       @if (isCheckout && !showReceipt) {
-        <!-- ==================================================== -->
-        <!-- CHECKOUT VIEW                                          -->
-        <!-- ==================================================== -->
+        
+        
+        
         <div class="pos-card">
           <div class="pos-card-header">
             <h3>Procesar Cobro</h3>
           </div>
 
           <div class="pos-card-body">
-            <!-- Total display -->
+            
             <div class="checkout-total-display">
               <p>Monto a Cobrar</p>
               <h2>S/ {{ getTotal() | number:'1.2-2' }}</h2>
+              @if (appliedPromotion) {
+                <div class="checkout-promo-info">
+                  <span>Subtotal: S/ {{ getSubtotal() | number:'1.2-2' }}</span>
+                  <span>Descuento ({{ appliedPromotion.code }}): - S/ {{ getDiscountAmount() | number:'1.2-2' }}</span>
+                </div>
+              }
             </div>
 
-            <!-- Payment Method -->
+            
             <div class="checkout-payment-methods">
               <div class="payment-method-card" [class.active]="paymentMethod === 'efectivo'" (click)="selectPaymentMethod('efectivo')">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -407,9 +704,10 @@
                 </svg>
                 <span>Yape / Plin</span>
               </div>
+
             </div>
 
-            <!-- Cash Payment -->
+            
             @if (paymentMethod === 'efectivo') {
               <div class="checkout-cash-section">
                 <div class="amount-display">
@@ -417,7 +715,7 @@
                   <div class="amount-input-display">S/ {{ amountPaid | number:'1.2-2' }}</div>
                 </div>
 
-                <!-- Numeric keypad -->
+                
                 <div class="numeric-keypad">
                   <button class="keypad-btn" (click)="appendDigit('1')">1</button>
                   <button class="keypad-btn" (click)="appendDigit('2')">2</button>
@@ -453,7 +751,7 @@
               </div>
             }
 
-            <!-- Yape/Plin Payment -->
+            
             @if (paymentMethod === 'yape_plin') {
               <div class="checkout-yape-section">
                 <div class="yape-info-card">
@@ -478,7 +776,7 @@
               </div>
             }
 
-            <!-- Order summary -->
+            
             <details class="checkout-summary">
               <summary>Ver detalle del pedido ({{ getItemCount() }} items)</summary>
               <ul>
@@ -492,7 +790,7 @@
             </details>
           </div>
 
-          <!-- Actions -->
+          
           <div class="checkout-actions">
             <button class="btn btn-secondary" (click)="cancelCheckout()" [disabled]="processingPayment">
               Volver
@@ -500,7 +798,7 @@
             <button
               class="btn btn-success"
               (click)="confirmPayment()"
-              [disabled]="processingPayment || (paymentMethod === 'efectivo' && amountPaid < getTotal()) || (paymentMethod === 'yape_plin' && !yapeConfirmed)"
+              [disabled]="processingPayment || (paymentMethod === 'efectivo' && amountPaid < getTotal()) || (paymentMethod === 'yape_plin' && !yapeConfirmed) || (documentType !== 'boleta_simple' && !clientFound)"
             >
               @if (processingPayment) {
                 Procesando...
@@ -514,9 +812,9 @@
 
     </div>
 
-  </div>  <!-- ========================================================== -->
-  <!-- MODAL: Save Cart                                           -->
-  <!-- ========================================================== -->
+  </div>  
+  
+  
   @if (showSaveCartModal) {
     <div class="modal-overlay" (click)="cancelSaveCart()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -541,9 +839,9 @@
     </div>
   }
 
-  <!-- ========================================================== -->
-  <!-- MODAL: Load Cart                                           -->
-  <!-- ========================================================== -->
+  
+  
+  
   @if (showLoadCartModal) {
     <div class="modal-overlay" (click)="cancelLoadCart()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -577,9 +875,9 @@
     </div>
   }
 
-  <!-- ========================================================== -->
-  <!-- MODAL: Open Cash Register                                  -->
-  <!-- ========================================================== -->
+  
+  
+  
   @if (showOpenCashModal) {
     <div class="modal-overlay" (click)="cancelOpenCash()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -614,9 +912,9 @@
     </div>
   }
 
-  <!-- ========================================================== -->
-  <!-- MODAL: Close Cash Register                                  -->
-  <!-- ========================================================== -->
+  
+  
+  
   @if (showCloseCashModal) {
     <div class="modal-overlay" (click)="cancelCloseCash()">
       <div class="modal-content" (click)="$event.stopPropagation()">
@@ -664,9 +962,9 @@
     </div>
   }
 
-  <!-- ========================================================== -->
-  <!-- MODAL: Cash Closing Summary                                 -->
-  <!-- ========================================================== -->
+  
+  
+  
   @if (showCashSummary && cashCloseSummary) {
     <div class="modal-overlay" (click)="dismissCashSummary()">
       <div class="modal-content modal-wide" (click)="$event.stopPropagation()">
@@ -742,4 +1040,4 @@
     </div>
   }
 
-</div>
+</div>

@@ -11,7 +11,7 @@ export class AuthService {
   login(credentials: any) {
     return this.http.post<{ token: string }>(this.apiUrl, credentials).pipe(
       tap((response) => {
-        localStorage.setItem('token', response.token); // se guarda el token localstorage
+        localStorage.setItem('token', response.token); 
       }),
     );
   }
@@ -39,7 +39,7 @@ export class AuthService {
     }
   }
 
-  /** Obtiene el nombre completo del usuario desde el JWT */
+  
   getUserFullName(): string {
     const token = localStorage.getItem('token');
     if (!token) return '';
@@ -54,7 +54,7 @@ export class AuthService {
     }
   }
 
-  /** Obtiene el username desde el JWT */
+  
   getUsername(): string {
     const token = localStorage.getItem('token');
     if (!token) return '';
@@ -66,4 +66,4 @@ export class AuthService {
       return '';
     }
   }
-}
+}

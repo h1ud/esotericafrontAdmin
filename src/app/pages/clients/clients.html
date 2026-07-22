@@ -2,9 +2,9 @@
   <h1>Gestión de Clientes</h1>
   <p class="section-subtitle">Administra los clientes registrados en el sistema</p>
 
-  <!-- ============================================================ -->
-  <!-- TOASTS -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (toasts().length > 0) {
     <div class="toasts-container">
       @for (t of toasts(); track t.id) {
@@ -16,26 +16,26 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- ERROR -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (errorMessage()) {
     <div class="error-message">
       {{ errorMessage() }}
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- LOADING -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (loading()) {
     <div class="loading-indicator">
       Cargando clientes…
     </div>
   } @else {
-    <!-- ============================================================ -->
-    <!-- BARRA SUPERIOR -->
-    <!-- ============================================================ -->
+    
+    
+    
     <div class="top-controls">
       <button class="btn btn-primary" (click)="openForm()">
         + Agregar Cliente
@@ -51,9 +51,9 @@
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- FILTROS AVANZADOS -->
-    <!-- ============================================================ -->
+    
+    
+    
     <div class="filters-bar">
       <button
         class="btn-filter-toggle"
@@ -129,9 +129,9 @@
       }
     </div>
 
-    <!-- ============================================================ -->
-    <!-- TABLA REUTILIZABLE (table-base) -->
-    <!-- ============================================================ -->
+    
+    
+    
     <app-table-base
       [data]="filteredClients()"
       [columns]="clientColumns"
@@ -169,9 +169,9 @@
     </app-table-base>
   }
 
-  <!-- ============================================================ -->
-  <!-- FORMULARIO (Modal) — Reactive Forms -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showForm()) {
     <div class="form-section">
       <div class="form-overlay" (click)="closeForm()"></div>
@@ -266,9 +266,9 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- DETALLE DE CLIENTE (Modal) -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showDetail() && selectedClient(); as client) {
     <div class="form-section">
       <div class="form-overlay" (click)="closeDetail()"></div>
@@ -313,9 +313,9 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- CONFIRMAR ELIMINACIÓN (Modal) -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showDeleteConfirm()) {
     <div class="form-section">
       <div class="form-overlay" (click)="cancelDelete()"></div>
@@ -329,4 +329,4 @@
       </div>
     </div>
   }
-</div>
+</div>

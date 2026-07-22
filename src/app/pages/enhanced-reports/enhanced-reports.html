@@ -2,7 +2,7 @@
   <header class="er-header">
     <div>
       <h1>Reportes Analíticos</h1>
-      <p class="er-subtitle">Indicadores clave y análisis detallado del negocio</p>
+      <p class="er-subtitle">Dashboard completo con indicadores clave y visualizaciones del negocio</p>
     </div>
     <div class="er-header-actions">
       @if (data()) {
@@ -18,7 +18,7 @@
     </div>
   </header>
 
-  <!-- Filters -->
+  
   <div class="er-filters">
     <div class="er-filter-group">
       <label>Fecha Inicio</label>
@@ -47,7 +47,7 @@
   }
 
   @if (data(); as d) {
-    <!-- KPI Cards -->
+    
     <div class="er-kpis">
       <div class="er-kpi-card">
         <span class="er-kpi-icon" style="background:#EBE5F0;color:#5B4470">
@@ -76,34 +76,110 @@
           <span class="er-kpi-label">Ticket Promedio</span>
         </div>
       </div>
+      <div class="er-kpi-card">
+        <span class="er-kpi-icon" style="background:#FFF3E0;color:#E65100">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        </span>
+        <div class="er-kpi-info">
+          <span class="er-kpi-value">{{ d.categorySales.length }}</span>
+          <span class="er-kpi-label">Categorías</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Tabs -->
+    
     <div class="er-tabs">
       @for (t of tabs; track t.key) {
         <button class="er-tab" [class.er-tab-active]="activeTab() === t.key" (click)="setTab(t.key)">
+          @switch (t.key) {
+            @case ('resumen') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            }
+            @case ('categorias') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v8"/><path d="M4 20h16"/></svg>
+            }
+            @case ('horario') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            }
+            @case ('productos') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            }
+            @case ('turnos') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3"/><polyline points="12 7 12 12 16 14"/></svg>
+            }
+            @case ('pagos') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            }
+            @case ('descuentos') {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            }
+          }
           {{ t.label }}
         </button>
       }
     </div>
 
-    <!-- Tab Content -->
+    
+    
+    
     @if (activeTab() === 'resumen') {
       <div class="er-section">
         <h2 class="er-section-title">Resumen General</h2>
-        <div class="er-table-wrap">
-          <table class="er-table">
-            <thead><tr><th>Métrica</th><th style="text-align:right">Valor</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Total de Transacciones</strong></td><td style="text-align:right;font-weight:700">{{ d.totalTransactions }}</td></tr>
-              <tr><td><strong>Total de Ventas</strong></td><td style="text-align:right;font-weight:700;color:var(--primary-700)">{{ formatCurrency(d.totalSalesAmount) }}</td></tr>
-              <tr><td><strong>Ticket Promedio</strong></td><td style="text-align:right;font-weight:700">{{ formatCurrency(d.averageTicket) }}</td></tr>
-            </tbody>
-          </table>
+
+        
+        <div class="er-chart-grid-2">
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Ticket Promedio vs Total Ventas</h4>
+            <div class="er-grouped-bar">
+              <div class="er-gbar-col">
+                <div class="er-gbar-group">
+                  <div class="er-gbar gbar-primary" style="height:80%"></div>
+                  <div class="er-gbar gbar-accent" style="height:45%"></div>
+                </div>
+                <span class="er-gbar-label">Período</span>
+              </div>
+              @if (d.lastCashClose) {
+                <div class="er-gbar-col">
+                  <div class="er-gbar-group">
+                    <div class="er-gbar gbar-primary" style="height:60%"></div>
+                    <div class="er-gbar gbar-accent" style="height:35%"></div>
+                  </div>
+                  <span class="er-gbar-label">Cierre</span>
+                </div>
+              }
+            </div>
+            <div class="er-legend">
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:var(--primary-500)"></span> Total Ventas</span>
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:#4CAF50"></span> Ticket Promedio</span>
+            </div>
+          </div>
+
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Cuadro de Mando</h4>
+            <div class="er-metric-grid">
+              <div class="er-metric-item">
+                <span class="er-metric-label">Total Transacciones</span>
+                <span class="er-metric-value">{{ d.totalTransactions }}</span>
+              </div>
+              <div class="er-metric-item">
+                <span class="er-metric-label">Total Ventas</span>
+                <span class="er-metric-value">{{ formatCurrency(d.totalSalesAmount) }}</span>
+              </div>
+              <div class="er-metric-item">
+                <span class="er-metric-label">Ticket Promedio</span>
+                <span class="er-metric-value">{{ formatCurrency(d.averageTicket) }}</span>
+              </div>
+              <div class="er-metric-item">
+                <span class="er-metric-label">Top Categoría</span>
+                <span class="er-metric-value">{{ d.categorySales[0]?.categoryName || '-' }}</span>
+              </div>
+            </div>
+          </div>
         </div>
+
         @if (d.lastCashClose) {
           <div class="er-cash-card">
-            <h3>Último Cierre de Caja</h3>
+            <h3>Ultimo Cierre de Caja</h3>
             <p><strong>{{ d.lastCashClose.openedByName }}</strong> &middot; {{ formatDate(d.lastCashClose.closedAt) }}</p>
             <p>Efectivo: {{ formatCurrency(d.lastCashClose.totalEfectivo) }} &middot; Yape/Plin: {{ formatCurrency(d.lastCashClose.totalYapePlin) }} &middot; <strong>Total: {{ formatCurrency(d.lastCashClose.totalSales) }}</strong></p>
           </div>
@@ -111,35 +187,133 @@
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'categorias') {
       <div class="er-section">
-        <h2 class="er-section-title">Ventas por Categoría</h2>
-        <div class="er-bar-chart">
-          @for (cat of d.categorySales; track cat.categoryName) {
-            <div class="er-bar-row">
-              <div class="er-bar-label">{{ cat.categoryName }} <small>({{ cat.totalQuantity }} uds)</small></div>
-              <div class="er-bar-track">
-                <div class="er-bar-fill" [style.width]="getBarWidth(cat.totalAmount, d.categorySales[0]?.totalAmount || 1)"></div>
+        <h2 class="er-section-title">Ventas por Categoria</h2>
+
+        <div class="er-chart-grid-2">
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Participación por Categoría</h4>
+            <div class="er-donut-wrapper">
+              <svg class="er-donut" viewBox="0 0 100 100">
+                @for (cat of d.categorySales; track cat.categoryName; let i = $index) {
+                  <circle class="er-donut-segment" cx="50" cy="50" r="40"
+                    [attr.stroke-dasharray]="getDonutDash(cat.percentage, d.categorySales)"
+                    [attr.stroke-dashoffset]="getDonutOffset(i, d.categorySales)"
+                    [attr.stroke]="getChartColor(i)" stroke-width="16" fill="none" />
+                }
+                <text x="50" y="48" text-anchor="middle" class="er-donut-text-main">{{ formatCurrency(d.totalSalesAmount) }}</text>
+                <text x="50" y="58" text-anchor="middle" class="er-donut-text-sub">Total</text>
+              </svg>
+              <div class="er-donut-legend">
+                @for (cat of d.categorySales; track cat.categoryName; let i = $index) {
+                  <div class="er-donut-legend-item">
+                    <span class="er-donut-dot" [style.background]="getChartColor(i)"></span>
+                    <span>{{ cat.categoryName }}</span>
+                    <span class="er-donut-pct">{{ cat.percentage }}%</span>
+                  </div>
+                }
               </div>
-              <div class="er-bar-value">{{ formatCurrency(cat.totalAmount) }} <small>{{ cat.percentage }}%</small></div>
             </div>
-          }
+          </div>
+
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Unidades vs Ingresos por Categoría</h4>
+            <div class="er-grouped-bar-v">
+              @for (cat of d.categorySales; track cat.categoryName) {
+                <div class="er-gbar-v-row">
+                  <span class="er-gbar-v-label">{{ cat.categoryName }}</span>
+                  <div class="er-gbar-v-track">
+                    <div class="er-gbar-v gbar-v-qty" [style.width]="getBarWidth(cat.totalQuantity, maxCatQty())"></div>
+                    <div class="er-gbar-v gbar-v-amt" [style.width]="getBarWidth(cat.totalAmount, d.categorySales[0]?.totalAmount || 1)"></div>
+                  </div>
+                  <div class="er-gbar-v-values">
+                    <small>{{ cat.totalQuantity }} uds</small>
+                    <span>{{ formatCurrency(cat.totalAmount) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="er-legend">
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:var(--primary-300)"></span> Unidades</span>
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:var(--primary-700)"></span> Ingresos</span>
+            </div>
+          </div>
         </div>
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'horario') {
       <div class="er-section">
-        <h2 class="er-section-title">Análisis por Horario</h2>
-        <div class="er-table-wrap">
+        <h2 class="er-section-title">Analisis por Horario</h2>
+
+        <div class="er-chart-grid-2">
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Transacciones por Franja Horaria</h4>
+            <div class="er-vbar-chart">
+              @for (h of d.hourlySales; track h.hour) {
+                <div class="er-vbar-col">
+                  <span class="er-vbar-count">{{ h.transactionCount }}</span>
+                  <div class="er-vbar-track">
+                    <div class="er-vbar-fill" [style.height]="getBarWidth(h.transactionCount, maxHourTx())"></div>
+                  </div>
+                  <span class="er-vbar-label">{{ h.rangeLabel.split(' - ')[0] }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Ingresos por Hora</h4>
+            <div class="er-line-chart">
+              <svg class="er-line-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+                <polyline class="er-line-path" [attr.points]="getLinePoints(d.hourlySales.map(h => h.totalAmount))" />
+                @for (h of d.hourlySales; track h.hour; let i = $index) {
+                  <circle class="er-line-dot" [attr.cx]="getLineX(i, d.hourlySales.length)" [attr.cy]="getLineY(h.totalAmount, d.hourlySales.map(h2 => h2.totalAmount))" r="3" />
+                }
+              </svg>
+              <div class="er-line-labels">
+                @for (h of d.hourlySales.slice(0, 6); track h.hour) {
+                  <span class="er-line-label">{{ h.rangeLabel.split(' - ')[0] }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="er-chart-card" style="margin-top:16px">
+          <h4 class="er-chart-title">Mapa de Calor por Horario</h4>
+          <div class="er-heatmap">
+            @for (h of d.hourlySales; track h.hour) {
+              <div class="er-heat-cell" [style.background]="getHeatColor(h.transactionCount, maxHourTx())">
+                <span class="er-heat-cell-label">{{ h.rangeLabel.split(' - ')[0] }}</span>
+                <span class="er-heat-cell-value">{{ h.transactionCount }} tx</span>
+                <span class="er-heat-cell-amount">{{ formatCurrency(h.totalAmount) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="er-table-wrap" style="margin-top:20px">
           <table class="er-table">
             <thead><tr><th>Rango Horario</th><th style="text-align:right">Transacciones</th><th style="text-align:right">Total</th></tr></thead>
             <tbody>
               @for (h of d.hourlySales; track h.hour) {
                 <tr>
                   <td><span class="er-badge">{{ h.rangeLabel }}</span></td>
-                  <td style="text-align:right">{{ h.transactionCount }}</td>
-                  <td style="text-align:right;font-weight:600">{{ formatCurrency(h.totalAmount) }}</td>
+                  <td style="text-align:right;font-weight:600">{{ h.transactionCount }}</td>
+                  <td style="text-align:right;font-weight:700;color:var(--primary-700)">{{ formatCurrency(h.totalAmount) }}</td>
                 </tr>
               }
             </tbody>
@@ -148,88 +322,269 @@
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'productos') {
       <div class="er-section">
-        <h2 class="er-section-title">Top 10 Productos más Vendidos</h2>
-        <div class="er-table-wrap">
+        <h2 class="er-section-title">Top Productos mas Vendidos</h2>
+
+        <div class="er-chart-grid-2">
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Top 10 Productos</h4>
+            <div class="er-hbar-list">
+              @for (p of d.topProducts.slice(0, 10); track p.productName; let i = $index) {
+                <div class="er-hbar-row">
+                  <span class="er-hbar-rank">{{ i + 1 }}</span>
+                  <div class="er-hbar-info">
+                    <span class="er-hbar-name">{{ p.productName }}</span>
+                    <span class="er-hbar-cat">{{ p.categoryName }}</span>
+                  </div>
+                  <div class="er-hbar-track">
+                    <div class="er-hbar-fill" [style.width]="getBarWidth(p.totalAmount, d.topProducts[0]?.totalAmount || 1)"></div>
+                  </div>
+                  <span class="er-hbar-amt">{{ formatCurrency(p.totalAmount) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          
+          @if (d.bottomProducts.length > 0) {
+            <div class="er-chart-card">
+              <h4 class="er-chart-title">Menos Vendidos</h4>
+              <div class="er-hbar-list">
+                @for (p of d.bottomProducts.slice(0, 5); track p.productName; let i = $index) {
+                  <div class="er-hbar-row">
+                    <span class="er-hbar-rank er-hbar-rank-bot">{{ i + 1 }}</span>
+                    <div class="er-hbar-info">
+                      <span class="er-hbar-name">{{ p.productName }}</span>
+                      <span class="er-hbar-cat">{{ p.categoryName }}</span>
+                    </div>
+                    <div class="er-hbar-track">
+                      <div class="er-hbar-fill er-hbar-fill-bot" [style.width]="getBarWidth(p.totalAmount, d.bottomProducts[0]?.totalAmount || 1)"></div>
+                    </div>
+                    <span class="er-hbar-amt">{{ p.totalQuantity }} uds</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        
+        <div class="er-table-wrap" style="margin-top:20px">
           <table class="er-table">
-            <thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total</th></tr></thead>
+            <thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total</th><th style="text-align:right">%</th></tr></thead>
             <tbody>
-              @for (p of d.topProducts; track p.productName) {
+              @for (p of d.topProducts; track p.productName; let i = $index) {
                 <tr>
-                  <td><span class="er-rank">#{{ $index + 1 }}</span></td>
+                  <td><span class="er-rank">{{ i + 1 }}</span></td>
                   <td><strong>{{ p.productName }}</strong></td>
                   <td><span class="er-badge">{{ p.categoryName }}</span></td>
                   <td style="text-align:right">{{ p.totalQuantity }}</td>
                   <td style="text-align:right;font-weight:600">{{ formatCurrency(p.totalAmount) }}</td>
+                  <td style="text-align:right">{{ getProductPct(p.totalAmount, d.topProducts) }}%</td>
                 </tr>
               }
             </tbody>
           </table>
         </div>
-        @if (d.bottomProducts.length > 0) {
-          <h2 class="er-section-title" style="margin-top:24px">Menos Vendidos</h2>
-          <div class="er-table-wrap">
-            <table class="er-table">
-              <thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th style="text-align:right">Cantidad</th><th style="text-align:right">Total</th></tr></thead>
-              <tbody>
-                @for (p of d.bottomProducts; track p.productName) {
-                  <tr>
-                    <td><span class="er-rank er-rank-bot">{{ $index + 1 }}</span></td>
-                    <td><strong>{{ p.productName }}</strong></td>
-                    <td><span class="er-badge">{{ p.categoryName }}</span></td>
-                    <td style="text-align:right">{{ p.totalQuantity }}</td>
-                    <td style="text-align:right;font-weight:600">{{ formatCurrency(p.totalAmount) }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'turnos') {
       <div class="er-section">
         <h2 class="er-section-title">Ventas por Turno</h2>
-        <div class="er-bar-chart">
-          @for (t of d.turnSales; track t.turnName) {
-            <div class="er-bar-row">
-              <div class="er-bar-label">{{ t.turnName }}</div>
-              <div class="er-bar-track">
-                <div class="er-bar-fill er-bar-fill-turn" [style.width]="getBarWidth(t.totalAmount, d.turnSales[0]?.totalAmount || 1)"></div>
-              </div>
-              <div class="er-bar-value">{{ formatCurrency(t.totalAmount) }} <small>{{ t.transactionCount }} tx</small></div>
+
+        <div class="er-chart-grid-2">
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Facturación por Turno</h4>
+            <div class="er-turn-chart">
+              @for (t of d.turnSales; track t.turnName) {
+                <div class="er-turn-col">
+                  <span class="er-turn-icon">
+                    @if (t.turnName.includes('Manana')) {
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    }
+                    @else if (t.turnName.includes('Tarde')) {
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v9h6a8.969 8.969 0 0 0-2-5.9"/></svg>
+                    }
+                    @else if (t.turnName.includes('Noche')) {
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3"/><path d="M17.2 15.4a6 6 0 0 1-8.6-8.6 9 9 0 0 0 8.6 8.6z"/></svg>
+                    }
+                    @else {
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 3 2 5 2 5s2 3 6 3 6-3 6-3 2-2 2-5a8 8 0 0 0-8-8z"/><circle cx="12" cy="9" r="1"/></svg>
+                    }
+                  </span>
+                  <div class="er-vbar-track er-turn-track">
+                    <div class="er-vbar-fill er-turn-fill" [style.height]="getBarWidth(t.totalAmount, maxTurnAmt())"></div>
+                  </div>
+                  <span class="er-turn-value">{{ formatCurrency(t.totalAmount) }}</span>
+                  <span class="er-turn-label">{{ t.turnName.split(' ')[0] }}</span>
+                </div>
+              }
             </div>
-          }
+          </div>
+
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Volumen vs Ingreso</h4>
+            <div class="er-grouped-bar-v">
+              @for (t of d.turnSales; track t.turnName) {
+                <div class="er-gbar-v-row">
+                  <span class="er-gbar-v-label" style="font-size:12px">{{ t.turnName }}</span>
+                  <div class="er-gbar-v-track">
+                    <div class="er-gbar-v gbar-v-qty" [style.width]="getBarWidth(t.transactionCount, maxTurnTx())" style="background:#42A5F5"></div>
+                    <div class="er-gbar-v gbar-v-amt" [style.width]="getBarWidth(t.totalAmount, maxTurnAmt())" style="background:#FF7043"></div>
+                  </div>
+                  <div class="er-gbar-v-values">
+                    <small>{{ t.transactionCount }} tx</small>
+                    <span>{{ formatCurrency(t.totalAmount) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="er-legend" style="margin-top:10px">
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:#42A5F5"></span> Transacciones</span>
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:#FF7043"></span> Ingresos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="er-table-wrap" style="margin-top:20px">
+          <table class="er-table">
+            <thead><tr><th>Turno</th><th style="text-align:right">Transacciones</th><th style="text-align:right">Total</th></tr></thead>
+            <tbody>
+              @for (t of d.turnSales; track t.turnName) {
+                <tr>
+                  <td>{{ t.turnName }}</td>
+                  <td style="text-align:right;font-weight:600">{{ t.transactionCount }}</td>
+                  <td style="text-align:right;font-weight:700;color:var(--primary-700)">{{ formatCurrency(t.totalAmount) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'pagos') {
       <div class="er-section">
-        <h2 class="er-section-title">Métodos de Pago</h2>
-        <div class="er-bar-chart">
-          @for (p of d.paymentMethodBreakdown; track p.method) {
-            <div class="er-bar-row">
-              <div class="er-bar-label">{{ p.method }}</div>
-              <div class="er-bar-track">
-                <div class="er-bar-fill er-bar-fill-pay" [style.width.%]="p.percentage"></div>
+        <h2 class="er-section-title">Metodos de Pago</h2>
+
+        <div class="er-chart-grid-2">
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Proporción de Métodos de Pago</h4>
+            <div class="er-donut-wrapper">
+              <svg class="er-donut" viewBox="0 0 100 100">
+                @for (p of d.paymentMethodBreakdown; track p.method; let i = $index) {
+                  <circle class="er-donut-segment" cx="50" cy="50" r="40"
+                    [attr.stroke-dasharray]="getDonutDash(p.percentage, d.paymentMethodBreakdown)"
+                    [attr.stroke-dashoffset]="getDonutOffset(i, d.paymentMethodBreakdown)"
+                    [attr.stroke]="i === 0 ? '#2E7D32' : '#1565C0'" stroke-width="16" fill="none" />
+                }
+                <text x="50" y="48" text-anchor="middle" class="er-donut-text-main">{{ d.totalTransactions }}</text>
+                <text x="50" y="58" text-anchor="middle" class="er-donut-text-sub">Transacciones</text>
+              </svg>
+              <div class="er-donut-legend">
+                @for (p of d.paymentMethodBreakdown; track p.method; let i = $index) {
+                  <div class="er-donut-legend-item">
+                    <span class="er-donut-dot" [style.background]="i === 0 ? '#2E7D32' : '#1565C0'"></span>
+                    <span>{{ p.method }}</span>
+                    <span class="er-donut-pct">{{ p.percentage }}%</span>
+                  </div>
+                }
               </div>
-              <div class="er-bar-value">{{ formatCurrency(p.total) }} <small>{{ p.percentage }}% ({{ p.count }} tx)</small></div>
             </div>
-          }
+          </div>
+
+          
+          <div class="er-chart-card">
+            <h4 class="er-chart-title">Transacciones vs Monto por Método</h4>
+            <div class="er-grouped-bar-v">
+              @for (p of d.paymentMethodBreakdown; track p.method) {
+                <div class="er-gbar-v-row">
+                  <span class="er-gbar-v-label">{{ p.method }}</span>
+                  <div class="er-gbar-v-track">
+                    <div class="er-gbar-v gbar-v-qty" [style.width]="getBarWidth(p.count, maxPayTx())" style="background:#66BB6A"></div>
+                    <div class="er-gbar-v gbar-v-amt" [style.width]="getBarWidth(p.total, maxPayAmt())" style="background:#42A5F5"></div>
+                  </div>
+                  <div class="er-gbar-v-values">
+                    <small>{{ p.count }} tx</small>
+                    <span>{{ formatCurrency(p.total) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="er-legend">
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:#66BB6A"></span> Transacciones</span>
+              <span class="er-legend-item"><span class="er-legend-dot" style="background:#42A5F5"></span> Monto</span>
+            </div>
+          </div>
         </div>
       </div>
     }
 
+    
+    
+    
     @if (activeTab() === 'descuentos') {
       <div class="er-section">
         <h2 class="er-section-title">Descuentos Aplicados</h2>
+
         @if (d.discounts.length === 0) {
           <p class="er-empty">No se aplicaron descuentos en este período.</p>
         } @else {
-          <div class="er-table-wrap">
+          <div class="er-chart-grid-2">
+            
+            <div class="er-chart-card">
+              <h4 class="er-chart-title">Resumen de Descuentos</h4>
+              <div class="er-metric-grid">
+                <div class="er-metric-item">
+                  <span class="er-metric-label">Ventas con descuento</span>
+                  <span class="er-metric-value">{{ d.discounts.length }}</span>
+                </div>
+                <div class="er-metric-item">
+                  <span class="er-metric-label">Total descontado</span>
+                  <span class="er-metric-value" style="color:#C62828">{{ formatCurrency(getTotalDiscounts(d.discounts)) }}</span>
+                </div>
+                <div class="er-metric-item">
+                  <span class="er-metric-label">Promedio desc./venta</span>
+                  <span class="er-metric-value">{{ formatCurrency(getAvgDiscount(d.discounts)) }}</span>
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="er-chart-card">
+              <h4 class="er-chart-title">Descuentos por Colaborador</h4>
+              <div class="er-hbar-list">
+                @for (c of getDiscountByUser(d.discounts); track c.user; let i = $index) {
+                  <div class="er-hbar-row">
+                    <span class="er-hbar-rank er-hbar-rank-bot">{{ i + 1 }}</span>
+                    <span class="er-hbar-name" style="flex:1">{{ c.user }}</span>
+                    <div class="er-hbar-track">
+                      <div class="er-hbar-fill er-hbar-fill-bot" [style.width]="getBarWidth(c.total, getDiscountByUser(d.discounts)[0]?.total || 1)"></div>
+                    </div>
+                    <span class="er-hbar-amt" style="color:#C62828">{{ formatCurrency(c.total) }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="er-table-wrap" style="margin-top:20px">
             <table class="er-table">
               <thead><tr><th>Venta</th><th>Colaborador</th><th style="text-align:right">Subtotal</th><th style="text-align:right">Descuento</th><th style="text-align:right">Total</th><th>Pago</th><th>Fecha</th></tr></thead>
               <tbody>
@@ -238,8 +593,8 @@
                     <td>#{{ disc.saleId }}</td>
                     <td>{{ disc.colaborador }}</td>
                     <td style="text-align:right">{{ formatCurrency(disc.subtotal) }}</td>
-                    <td style="text-align:right;color:#C62828">-{{ formatCurrency(disc.discountAmount) }}</td>
-                    <td style="text-align:right;font-weight:600">{{ formatCurrency(disc.total) }}</td>
+                    <td style="text-align:right;color:#C62828;font-weight:600">-{{ formatCurrency(disc.discountAmount) }}</td>
+                    <td style="text-align:right;font-weight:700">{{ formatCurrency(disc.total) }}</td>
                     <td><span class="er-badge">{{ disc.paymentMethod }}</span></td>
                     <td>{{ formatDate(disc.issueDate) }}</td>
                   </tr>

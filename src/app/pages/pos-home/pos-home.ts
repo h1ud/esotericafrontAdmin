@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PosMenuService, CategoryDTO, ProductDTO } from '../../service/pos-menu.service';
+import { PromotionService, PromotionDTO } from '../../service/promotion.service';
 import { SaleService } from '../../service/sale.service';
 import { SaleListService, SaleResponse } from '../../service/sale-list.service';
 import { AuthService } from '../../service/Auth/auth.service';
+import { ClientService, Client } from '../../service/client.service';
+import { jsPDF } from 'jspdf';
 import {
   CashRegisterService,
   CashStatus,
@@ -28,6 +31,9 @@ interface Toast {
 interface ReceiptData {
   saleId: number;
   total: number;
+  subtotal: number;
+  discountAmount: number;
+  discountLabel: string;
   paymentMethod: string;
   issueDate: string;
   items: { name: string; qty: number; price: number }[];
@@ -51,11 +57,11 @@ export class PosHome implements OnInit {
   loading: boolean = false;
   errorMessage: string = '';
 
-  /** Category grid navigation */
+  
   showCategoryGrid: boolean = true;
   selectedCategory: CategoryDTO | null = null;
 
-  /** Cash register */
+  
   cashStatus: CashStatus = {
     isOpen: false,
     cashOpeningId: null,
@@ -76,13 +82,62 @@ export class PosHome implements OnInit {
   showCashSummary: boolean = false;
   cashLoading: boolean = false;
 
-    /** Saved cart for later */
+    
+  
+  
+
+  applyPromoCode(): void {
+    const code = this.promoCodeInput.trim();
+    if (!code) {
+      this.promoError = 'Ingrese un código promocional';
+      return;
+    }
+
+    this.promoLoading = true;
+    this.promoError = '';
+    this.appliedPromotion = null;
+
+    this.promotionService.getPromotionByCode(code).subscribe({
+      next: (promo) => {
+        this.appliedPromotion = promo;
+        this.promoLoading = false;
+        this.pushToast('success', 'Promoción aplicada: ' + promo.title + ' (' + promo.discount + '% desc.)');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.promoLoading = false;
+        this.promoError = err.error?.message || 'Código promocional no válido';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  removePromoCode(): void {
+    this.appliedPromotion = null;
+    this.promoCodeInput = '';
+    this.promoError = '';
+    this.cdr.detectChanges();
+  }
+
+  
   savedCarts: { name: string; items: CartItem[] }[] = [];
   showSaveCartModal: boolean = false;
   savedCartName: string = '';
   showLoadCartModal: boolean = false;
 
-  /** Checkout */
+  
+  documentType: 'boleta_simple' | 'boleta_dni' | 'factura' = 'boleta_simple';
+  clientDni: string = '';
+  clientName: string = '';
+  clientBusinessName: string = '';
+  clientAddress: string = '';
+  clientFound: Client | null = null;
+  dniLoading: boolean = false;
+  dniError: string = '';
+  showNewClientForm: boolean = false;
+  showBoletaPreview: boolean = false;
+
+  
   isCheckout: boolean = false;
   paymentMethod: PaymentMethod = 'efectivo';
   amountPaid: number = 0;
@@ -90,18 +145,28 @@ export class PosHome implements OnInit {
   showReceipt: boolean = false;
   receiptData: ReceiptData | null = null;
   processingPayment: boolean = false;
+  receiptStep: 'document' | 'preview' | 'done' = 'document';
 
-  /** Recent sales */
+
+  
+  promoCodeInput: string = '';
+  appliedPromotion: PromotionDTO | null = null;
+  promoLoading: boolean = false;
+  promoError: string = '';
+
+  
   recentSales: SaleResponse[] = [];
   loadingSales: boolean = false;
   showRecentSales: boolean = false;
 
-  /** Toasts */
+  
   private toastSeq = 0;
   toasts: Toast[] = [];
 
   constructor(
     private posMenuService: PosMenuService,
+    private promotionService: PromotionService,
+    private clientService: ClientService,
     private saleService: SaleService,
     private saleListService: SaleListService,
     private cashRegisterService: CashRegisterService,
@@ -116,9 +181,9 @@ export class PosHome implements OnInit {
     this.loadRecentSales();
   }
 
-  // ============================================================
-  // CASH REGISTER
-  // ============================================================
+  
+  
+  
 
   loadCashStatus(): void {
     this.cashLoading = true;
@@ -173,7 +238,7 @@ export class PosHome implements OnInit {
     this.cashCloseNotes = '';
     this.cashCloseSummary = null;
     this.showCloseCashModal = true;
-    // refresh status to get latest totals
+    
     this.loadCashStatus();
     this.cdr.detectChanges();
   }
@@ -211,9 +276,9 @@ export class PosHome implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // ============================================================
-  // LOGOUT
-  // ============================================================
+  
+  
+  
 
   logout(): void {
     this.authService.logout();
@@ -224,9 +289,9 @@ export class PosHome implements OnInit {
     }, 500);
   }
 
-  // ============================================================
-  // CATEGORIES & PRODUCTS
-  // ============================================================
+  
+  
+  
 
   loadCategories(): void {
     this.posMenuService.getCategories().subscribe({
@@ -291,9 +356,9 @@ export class PosHome implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // ============================================================
-  // RECENT SALES
-  // ============================================================
+  
+  
+  
 
   loadRecentSales(): void {
     this.loadingSales = true;
@@ -331,9 +396,9 @@ export class PosHome implements OnInit {
     });
   }
 
-  // ============================================================
-  // CART
-  // ============================================================
+  
+  
+  
 
   addToCart(product: ProductDTO): void {
     const existingItem = this.cart.find((item) => item.product.id === product.id);
@@ -364,17 +429,26 @@ export class PosHome implements OnInit {
     this.cdr.detectChanges();
   }
 
-  getTotal(): number {
+  getSubtotal(): number {
     return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  }
+
+  getDiscountAmount(): number {
+    if (!this.appliedPromotion) return 0;
+    return this.getSubtotal() * (this.appliedPromotion.discount / 100);
+  }
+
+  getTotal(): number {
+    return this.getSubtotal() - this.getDiscountAmount();
   }
 
   getItemCount(): number {
     return this.cart.reduce((sum, item) => sum + item.quantity, 0);
   }
 
-  // ============================================================
-  // SAVE / LOAD CART
-  // ============================================================
+  
+  
+  
 
   openSaveCartModal(): void {
     this.savedCartName = '';
@@ -432,9 +506,9 @@ export class PosHome implements OnInit {
     this.goToCheckout();
   }
 
-  // ============================================================
-  // CHECKOUT
-  // ============================================================
+  
+  
+  
 
   goToCheckout(): void {
     if (this.cart.length === 0) {
@@ -448,6 +522,8 @@ export class PosHome implements OnInit {
     this.isCheckout = true;
     this.amountPaid = 0;
     this.yapeConfirmed = false;
+    this.resetDocumentState();
+    this.showBoletaPreview = false;
     this.cdr.detectChanges();
   }
 
@@ -455,6 +531,7 @@ export class PosHome implements OnInit {
     this.isCheckout = false;
     this.amountPaid = 0;
     this.yapeConfirmed = false;
+    this.showBoletaPreview = false;
     this.cdr.detectChanges();
   }
 
@@ -463,7 +540,7 @@ export class PosHome implements OnInit {
     return change > 0 ? change : 0;
   }
 
-  /** Numeric keypad helpers */
+  
   appendDigit(digit: string): void {
     const current = String(this.amountPaid);
     if (digit === '.') {
@@ -501,16 +578,27 @@ export class PosHome implements OnInit {
       this.pushToast('error', 'Debe confirmar que recibio la transferencia');
       return;
     }
-
     this.processingPayment = true;
+    this.finalizeSale();
+  }
 
-    const saleRequest = {
+  private finalizeSale(): void {
+    const saleRequest: any = {
       paymentMethod: this.paymentMethod,
       items: this.cart.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
       })),
+      documentType: this.documentType,
+      clientDni: this.clientDni || null,
+      clientName: this.clientName || null,
+      clientBusinessName: this.clientBusinessName || null,
+      clientAddress: this.clientAddress || null,
     };
+
+    if (this.appliedPromotion) {
+      saleRequest.promoCode = this.appliedPromotion.code;
+    }
 
     this.saleService.createSale(saleRequest).subscribe({
       next: (response) => {
@@ -518,6 +606,9 @@ export class PosHome implements OnInit {
         this.receiptData = {
           saleId: response.saleOperationId,
           total: response.totalAmount,
+          subtotal: response.subtotal || this.getSubtotal(),
+          discountAmount: response.discountAmount || this.getDiscountAmount(),
+          discountLabel: this.appliedPromotion ? this.appliedPromotion.code + ' (' + this.appliedPromotion.discount + '%)' : '',
           paymentMethod: this.paymentMethod,
           issueDate: response.issueDate,
           items: this.cart.map((item) => ({
@@ -527,11 +618,15 @@ export class PosHome implements OnInit {
           })),
         };
         this.showReceipt = true;
+        this.receiptStep = 'document';
         this.cart = [];
         this.isCheckout = false;
         this.amountPaid = 0;
+        this.appliedPromotion = null;
+        this.promoCodeInput = '';
+        this.promoError = '';
         this.loadRecentSales();
-        this.loadCashStatus(); // refresh totals
+        this.loadCashStatus();
         this.pushToast('success', 'Venta #' + response.saleOperationId + ' registrada con exito');
         this.cdr.detectChanges();
       },
@@ -544,16 +639,45 @@ export class PosHome implements OnInit {
     });
   }
 
-  dismissReceipt(): void {
-    this.showReceipt = false;
-    this.receiptData = null;
-    this.yapeConfirmed = false;
+  goToBoletaPreview(): void {
+    if (this.documentType !== 'boleta_simple') {
+      if (!this.clientDni || this.clientDni.length < (this.documentType === 'factura' ? 11 : 8)) {
+        this.pushToast('error', 'Debe ingresar un documento valido');
+        return;
+      }
+      if (!this.clientFound) {
+        this.pushToast('error', 'Debe buscar o registrar el cliente primero');
+        return;
+      }
+      if (this.documentType === 'factura' && (!this.clientBusinessName.trim() || !this.clientAddress.trim())) {
+        this.pushToast('error', 'Debe completar la Razon Social y Direccion');
+        return;
+      }
+    }
+    this.receiptStep = 'preview';
     this.cdr.detectChanges();
   }
 
-  // ============================================================
-  // TOASTS
-  // ============================================================
+  goToDone(): void {
+    this.receiptStep = 'done';
+    this.cdr.detectChanges();
+  }
+
+  dismissReceipt(): void {
+    this.showReceipt = false;
+    this.receiptData = null;
+    this.receiptStep = 'document';
+    this.yapeConfirmed = false;
+    this.appliedPromotion = null;
+    this.promoCodeInput = '';
+    this.promoError = '';
+    this.resetDocumentState();
+    this.cdr.detectChanges();
+  }
+
+  
+  
+  
 
   pushToast(type: Toast['type'], message: string): void {
     const id = ++this.toastSeq;
@@ -588,6 +712,209 @@ export class PosHome implements OnInit {
     this.cdr.detectChanges();
   }
 
+  
+  
+  
+
+  downloadBoletaPDF(): void {
+    if (!this.receiptData) return;
+    this.goToDone();
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageW = 190;
+    let y = 15;
+    const margin = 10;
+
+    const title = this.getDocumentTypeLabel();
+    const now = new Date();
+    const serie = 'B001';
+    const correlativo = String(this.receiptData.saleId).padStart(8, '0');
+
+    
+    doc.setFontSize(18); doc.setTextColor(60, 40, 40);
+    doc.text('ESOTERICA E.I.R.L.', margin, y); y += 6;
+    doc.setFontSize(9); doc.setTextColor(100, 100, 100);
+    doc.text('RUC: 20605074001', margin, y); y += 4;
+    doc.text('Av. Principal 123 - Lima', margin, y); y += 4;
+    doc.text('Tel: 999-888-777', margin, y); y += 8;
+
+    
+    doc.setDrawColor(180, 150, 150); doc.setLineWidth(0.5);
+    doc.line(margin, y, pageW, y); y += 4;
+    doc.setFontSize(16); doc.setTextColor(80, 50, 50);
+    doc.text(title, pageW / 2, y, { align: 'center' }); y += 2;
+    doc.setFontSize(9); doc.setTextColor(120, 120, 120);
+    doc.text(serie + '-' + correlativo, pageW / 2, y, { align: 'center' }); y += 5;
+    doc.line(margin, y, pageW, y); y += 5;
+
+    
+    doc.setFontSize(9); doc.setTextColor(60, 60, 60);
+    doc.text('Fecha: ' + now.toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }), margin, y); y += 5;
+
+    
+    if (this.documentType !== 'boleta_simple' && this.clientDni) {
+      doc.text('DNI: ' + this.clientDni, margin, y); y += 4;
+      if (this.clientName) doc.text('Cliente: ' + this.clientName, margin, y); y += 4;
+      if (this.documentType === 'factura') {
+        if (this.clientBusinessName) doc.text('Razon Social: ' + this.clientBusinessName, margin, y); y += 4;
+        if (this.clientAddress) doc.text('Direccion: ' + this.clientAddress, margin, y); y += 4;
+      }
+      y += 2;
+    }
+
+    
+    doc.setDrawColor(180, 150, 150); doc.line(margin, y, pageW, y); y += 4;
+    doc.setFontSize(8); doc.setTextColor(80, 50, 50); doc.setFont('helvetica', 'bold');
+    const colW = [12, 78, 30, 30, 30];
+    let x = margin + 2;
+    doc.text('Cant', x, y); x += colW[0];
+    doc.text('Descripcion', x, y); x += colW[1];
+    doc.text('P.Unit', x, y, { align: 'right' }); x += colW[2];
+    doc.text('Importe', x, y, { align: 'right' }); x += colW[3];
+    y += 4;
+    doc.setDrawColor(180, 150, 150); doc.line(margin, y, pageW, y); y += 3;
+
+    
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(40, 40, 40);
+    this.receiptData.items.forEach((item: any) => {
+      if (y > 260) { doc.addPage(); y = 15; }
+      x = margin + 2;
+      doc.text(String(item.qty), x, y); x += colW[0];
+      doc.text((item.name || '').substring(0, 28), x, y); x += colW[1];
+      doc.text('S/ ' + item.price.toFixed(2), x, y, { align: 'right' }); x += colW[2];
+      doc.text('S/ ' + (item.price * item.qty).toFixed(2), x, y, { align: 'right' });
+      y += 5;
+    });
+
+    
+    y += 2;
+    doc.setDrawColor(180, 150, 150); doc.line(margin, y, pageW, y); y += 4;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.text('OP. GRAVADAS', margin + 130, y);
+    doc.text('S/ ' + this.receiptData.subtotal.toFixed(2), pageW, y, { align: 'right' }); y += 5;
+    if (this.receiptData.discountAmount > 0) {
+      doc.setTextColor(180, 50, 50);
+      doc.text('DESCUENTO', margin + 130, y);
+      doc.text('- S/ ' + this.receiptData.discountAmount.toFixed(2), pageW, y, { align: 'right' }); y += 5;
+      doc.setTextColor(40, 40, 40);
+    }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text('TOTAL A PAGAR', margin + 130, y);
+    doc.text('S/ ' + this.receiptData.total.toFixed(2), pageW, y, { align: 'right' }); y += 6;
+
+    
+    y = Math.max(y, 260);
+    doc.setDrawColor(180, 150, 150); doc.line(margin, y, pageW, y); y += 4;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(140, 140, 140);
+    doc.text('Representacion impresa de la ' + title, pageW / 2, y, { align: 'center' }); y += 3;
+    doc.text('Autorizado mediante Res. N. 000-2026/SUNAT', pageW / 2, y, { align: 'center' }); y += 3;
+    doc.text('Consulta tu comprobante en: www.esoterica.pe/validar', pageW / 2, y, { align: 'center' });
+
+    doc.save('boleta_' + serie + '-' + correlativo + '.pdf');
+  }
+
+  
+  
+  
+
+  selectDocumentType(type: 'boleta_simple' | 'boleta_dni' | 'factura'): void {
+    this.documentType = type;
+    this.showBoletaPreview = false;
+    this.dniError = '';
+    this.showNewClientForm = false;
+    if (type === 'boleta_simple') {
+      this.clientDni = '';
+      this.clientName = '';
+      this.clientBusinessName = '';
+      this.clientAddress = '';
+      this.clientFound = null;
+    }
+    this.cdr.detectChanges();
+  }
+
+  resetDocumentState(): void {
+    this.documentType = 'boleta_simple';
+    this.clientDni = '';
+    this.clientName = '';
+    this.clientBusinessName = '';
+    this.clientAddress = '';
+    this.clientFound = null;
+    this.dniLoading = false;
+    this.dniError = '';
+    this.showNewClientForm = false;
+    this.showBoletaPreview = false;
+  }
+
+  lookupClientByDni(): void {
+    const dni = this.clientDni.trim();
+    if (dni.length < 8) {
+      this.dniError = 'Ingrese un DNI válido (8 dígitos)';
+      return;
+    }
+    this.dniLoading = true;
+    this.dniError = '';
+    this.clientFound = null;
+    this.showNewClientForm = false;
+
+    this.clientService.findByDni(dni).subscribe({
+      next: (client) => {
+        this.clientFound = client;
+        this.clientName = client.name;
+        this.dniLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.dniLoading = false;
+        
+        this.showNewClientForm = true;
+        this.clientName = '';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  quickRegisterClient(): void {
+    if (!this.clientName.trim()) {
+      this.dniError = 'Ingrese el nombre del cliente';
+      return;
+    }
+    this.dniLoading = true;
+    this.dniError = '';
+
+    this.clientService.quickRegister({
+      name: this.clientName,
+      dni: this.clientDni,
+      password_hash: 'default123',
+      birthdayDate: new Date().toISOString().split('T')[0],
+    }).subscribe({
+      next: (client) => {
+        this.clientFound = client;
+        this.dniLoading = false;
+        this.showNewClientForm = false;
+        this.pushToast('success', 'Cliente registrado correctamente');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.dniLoading = false;
+        this.dniError = err.error?.error || 'Error al registrar cliente';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  goBackFromPreview(): void {
+    this.showBoletaPreview = false;
+    this.cdr.detectChanges();
+  }
+
+  getDocumentTypeLabel(): string {
+    switch (this.documentType) {
+      case 'boleta_simple': return 'Boleta Simple';
+      case 'boleta_dni': return 'Boleta con DNI';
+      case 'factura': return 'Factura';
+      default: return 'Boleta Simple';
+    }
+  }
+
   getPaymentStatusClass(status: string): string {
     switch (status?.toLowerCase()) {
       case 'pagado': return 'status-paid';
@@ -596,4 +923,4 @@ export class PosHome implements OnInit {
       default: return '';
     }
   }
-}
+}

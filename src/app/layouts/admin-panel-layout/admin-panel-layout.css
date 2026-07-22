@@ -24,7 +24,7 @@ app-sidebar {
   z-index: 1;
 }
 
-/* Responsive: cuando el sidebar se reduce, que el layout se adapte */
+
 @media (max-width: 768px) {
   app-sidebar {
     flex: 0 0 72px;
@@ -45,4 +45,4 @@ app-sidebar {
   .content-panel {
     padding: 8px;
   }
-}
+}

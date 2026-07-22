@@ -44,10 +44,10 @@ export class Employees implements OnInit {
   readonly toasts = signal<Toast[]>([]);
   private toastSeq = 0;
 
-  /** Formulario reactivo */
+  
   employeeForm: FormGroup<EmployeeForm>;
 
-  /** Columnas de la tabla */
+  
   readonly employeeColumns: TableColumn[] = [
     { key: 'id', label: 'ID', width: '60px' },
     { key: 'username', label: 'Username' },
@@ -58,7 +58,7 @@ export class Employees implements OnInit {
     { key: 'actions', label: 'Acciones', width: '150px' },
   ];
 
-  /** Empleados filtrados por búsqueda */
+  
   readonly filteredEmployees = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     if (!term) return this.employees();
@@ -87,9 +87,9 @@ export class Employees implements OnInit {
     this.loadRoles();
   }
 
-  // ============================================================
-  // DATA
-  // ============================================================
+  
+  
+  
 
   loadEmployees(): void {
     this.loading.set(true);
@@ -120,9 +120,9 @@ export class Employees implements OnInit {
     });
   }
 
-  // ============================================================
-  // FORM
-  // ============================================================
+  
+  
+  
 
   openForm(employee?: Employee): void {
     if (employee) {
@@ -134,12 +134,12 @@ export class Employees implements OnInit {
         password: '',
         idRole: employee.idRole,
       });
-      // En edición, la contraseña es opcional
+      
       this.employeeForm.controls.password.setValidators([]);
     } else {
       this.editingId.set(null);
       this.employeeForm.reset({ username: '', name: '', lastName: '', password: '', idRole: 0 });
-      // En creación, la contraseña es obligatoria
+      
       this.employeeForm.controls.password.setValidators([Validators.required, Validators.minLength(6)]);
     }
     this.employeeForm.controls.password.updateValueAndValidity();
@@ -191,9 +191,9 @@ export class Employees implements OnInit {
     this.openForm(employee);
   }
 
-  // ============================================================
-  // DETAIL
-  // ============================================================
+  
+  
+  
 
   viewEmployee(employee: Employee): void {
     this.selectedEmployee.set(employee);
@@ -205,9 +205,9 @@ export class Employees implements OnInit {
     this.selectedEmployee.set(null);
   }
 
-  // ============================================================
-  // DELETE
-  // ============================================================
+  
+  
+  
 
   deleteEmployee(id: number): void {
     this.employeeToDelete.set(id);
@@ -237,9 +237,9 @@ export class Employees implements OnInit {
     this.employeeToDelete.set(null);
   }
 
-  // ============================================================
-  // TOASTS
-  // ============================================================
+  
+  
+  
 
   pushToast(type: Toast['type'], message: string): void {
     const id = ++this.toastSeq;
@@ -251,9 +251,9 @@ export class Employees implements OnInit {
     this.toasts.update(t => t.filter(x => x.id !== id));
   }
 
-  // ============================================================
-  // HELPERS
-  // ============================================================
+  
+  
+  
 
   getInitials(name: string, lastName: string): string {
     return (name[0] ?? '').toUpperCase() + (lastName[0] ?? '').toUpperCase();
@@ -269,4 +269,4 @@ export class Employees implements OnInit {
   getRoleName(roleId: number): string {
     return this.roles().find(r => r.id === roleId)?.roleName ?? `Rol #${roleId}`;
   }
-}
+}

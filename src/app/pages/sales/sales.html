@@ -1,6 +1,6 @@
 <div class="sales-page">
 
-  <!-- Header -->
+  
   <header class="sales-header">
     <div>
       <h1>Ventas</h1>
@@ -19,12 +19,12 @@
     </div>
   </header>
 
-  <!-- Error -->
+  
   @if (errorMessage) {
     <div class="error-message">{{ errorMessage }}</div>
   }
 
-  <!-- Loading -->
+  
   @if (loading) {
     <div class="sales-loading">
       <div class="loading-spinner"></div>
@@ -32,7 +32,7 @@
     </div>
   }
 
-  <!-- Sales list -->
+  
   @if (!loading && sales.length > 0) {
     <div class="sales-table-wrap">
       <table class="sales-table">
@@ -133,7 +133,7 @@
       </table>
     </div>
 
-    <!-- Pagination -->
+    
     @if (totalPages > 1) {
       <div class="pagination">
         <button class="page-btn" (click)="goToPage(0)" [disabled]="currentPage === 0" title="Primera">
@@ -166,7 +166,7 @@
     }
   }
 
-  <!-- Empty state -->
+  
   @if (!loading && sales.length === 0 && !errorMessage) {
     <div class="sales-empty">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">

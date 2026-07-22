@@ -31,7 +31,7 @@ export class EmployeeService {
     return this.http.post<void>(this.apiUrl, emp);
   }
 
-  // 🔄 Cambiado de <any> a <void> para acoplarse al ResponseEntity<Void> del backend
+  
   updateEmployee(id: number, emp: any): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, emp);
   }
@@ -40,7 +40,7 @@ export class EmployeeService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // 🔄 Tipado con la interfaz Role para mayor control en tu HTML
+  
   listRoles(): Observable<Role[]> {
     return this.http.get<Role[]>('/api/admin/roles');
   }

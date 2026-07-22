@@ -2,9 +2,9 @@
   <h1>Gestión de Empleados</h1>
   <p class="section-subtitle">Administra los usuarios del sistema</p>
 
-  <!-- ============================================================ -->
-  <!-- TOASTS -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (toasts().length > 0) {
     <div class="toasts-container">
       @for (t of toasts(); track t.id) {
@@ -16,26 +16,26 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- ERROR -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (errorMessage()) {
     <div class="error-message">
       {{ errorMessage() }}
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- LOADING -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (loading()) {
     <div class="loading-indicator">
       Cargando empleados…
     </div>
   } @else {
-    <!-- ============================================================ -->
-    <!-- BARRA SUPERIOR -->
-    <!-- ============================================================ -->
+    
+    
+    
     <div class="top-controls">
       <button class="btn btn-primary" (click)="openForm()">
         + Agregar Empleado
@@ -51,9 +51,9 @@
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- TABLA REUTILIZABLE -->
-    <!-- ============================================================ -->
+    
+    
+    
     <app-table-base
       [data]="filteredEmployees()"
       [columns]="employeeColumns"
@@ -91,9 +91,9 @@
     </app-table-base>
   }
 
-  <!-- ============================================================ -->
-  <!-- DETALLE DE EMPLEADO (Modal) -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showDetail() && selectedEmployee(); as emp) {
     <div class="form-section">
       <div class="form-overlay" (click)="closeDetail()"></div>
@@ -135,9 +135,9 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- FORMULARIO (Modal) — Reactive Forms -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showForm()) {
     <div class="form-section">
       <div class="form-overlay" (click)="closeForm()"></div>
@@ -256,9 +256,9 @@
     </div>
   }
 
-  <!-- ============================================================ -->
-  <!-- CONFIRMAR ELIMINACIÓN (Modal) -->
-  <!-- ============================================================ -->
+  
+  
+  
   @if (showDeleteConfirm()) {
     <div class="form-section">
       <div class="form-overlay" (click)="cancelDelete()"></div>
@@ -272,4 +272,4 @@
       </div>
     </div>
   }
-</div>
+</div>

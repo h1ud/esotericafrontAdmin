@@ -14,6 +14,7 @@ export interface Client {
 @Injectable({ providedIn: 'root' })
 export class ClientService {
   private apiUrl = '/api/admin/clients';
+  private posApiUrl = '/api/pos/clients';
 
   constructor(private http: HttpClient) {}
 
@@ -31,5 +32,15 @@ export class ClientService {
 
   deleteClient(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  
+  findByDni(dni: string): Observable<Client> {
+    return this.http.get<Client>(`${this.posApiUrl}/by-dni/${dni}`);
+  }
+
+  
+  quickRegister(client: Partial<Client>): Observable<Client> {
+    return this.http.post<Client>(`${this.posApiUrl}/quick-register`, client);
   }
 }

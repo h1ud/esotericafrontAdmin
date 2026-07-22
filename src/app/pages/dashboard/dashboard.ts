@@ -47,17 +47,17 @@ export class Dashboard implements AfterViewInit {
   readonly loading = signal(true);
   readonly error = signal('');
 
-  // Real data from API
+  
   readonly kpis = signal<Kpi[]>([]);
   readonly salesByDay = signal<BarPoint[]>([]);
   readonly recentActivity = signal<ActivityItem[]>([]);
 
-  // Payment breakdown
+  
   readonly paymentBreakdown = signal<{ method: string; count: number; total: number }[]>([]);
   readonly monthData = signal<DashboardData['month'] | null>(null);
   readonly todayData = signal<DashboardData['today'] | null>(null);
 
-  // Saludo dinámico
+  
   readonly greeting = computed(() => {
     const h = this.currentDate().getHours();
     if (h < 12) return 'Buenos días';
@@ -124,7 +124,7 @@ export class Dashboard implements AfterViewInit {
     this.todayData.set(data.today);
     this.monthData.set(data.month);
 
-    // KPIs
+    
     this.kpis.set([
       {
         label: 'Ventas hoy',
@@ -149,7 +149,7 @@ export class Dashboard implements AfterViewInit {
       },
     ]);
 
-    // Weekly sales
+    
     this.salesByDay.set(
       data.weekSales.map(d => ({
         label: this.dayNames[new Date(d.date).getDay()],
@@ -157,10 +157,10 @@ export class Dashboard implements AfterViewInit {
       })),
     );
 
-    // Payment breakdown
+    
     this.paymentBreakdown.set(data.paymentBreakdown);
 
-    // Recent activity
+    
     this.recentActivity.set(
       data.recentActivity.slice(0, 6).map(a => ({
         title: a.title,
@@ -174,16 +174,16 @@ export class Dashboard implements AfterViewInit {
     this.router.navigate(['/admin/sales']);
   }
 
-  // ============================================================
-  // Animaciones GSAP
-  // ============================================================
+  
+  
+  
   @ViewChildren('kpiCard') kpiCards!: QueryList<ElementRef<HTMLElement>>;
   @ViewChildren('kpiNumber') kpiNumbers!: QueryList<ElementRef<HTMLElement>>;
   @ViewChildren('barFill') barFills!: QueryList<ElementRef<HTMLElement>>;
   @ViewChildren('activityItem') activityItems!: QueryList<ElementRef<HTMLElement>>;
 
   private runAnimations(): void {
-    // 1) KPI cards entrance
+    
     const cards = this.kpiCards?.map(c => c.nativeElement) || [];
     if (cards.length) {
       gsap.from(cards, {
@@ -195,7 +195,7 @@ export class Dashboard implements AfterViewInit {
       });
     }
 
-    // 2) Count-up on KPIs
+    
     this.kpiNumbers?.forEach((ref, i) => {
       const kpi = this.kpis()[i];
       if (!kpi) return;
@@ -213,7 +213,7 @@ export class Dashboard implements AfterViewInit {
       });
     });
 
-    // 3) Bar grow
+    
     this.barFills?.forEach((ref, i) => {
       const point = this.salesByDay()[i];
       if (!point) return;
@@ -225,7 +225,7 @@ export class Dashboard implements AfterViewInit {
       );
     });
 
-    // 4) Activity items stagger
+    
     const items = this.activityItems?.map(i => i.nativeElement) || [];
     if (items.length) {
       gsap.from(items, {
@@ -242,4 +242,4 @@ export class Dashboard implements AfterViewInit {
   navigateTo(path: string): void {
     this.router.navigate([path]);
   }
-}
+}
