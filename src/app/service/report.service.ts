@@ -15,7 +15,7 @@ export interface SaleReportDTO {
 @Injectable({ providedIn: 'root' })
 export class ReportService {
   
-  private apiUrl = 'http:
+  private apiUrl = '/api/admin/reports';
 
   constructor(private http: HttpClient) {}
 
